@@ -1,0 +1,23 @@
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Single column on small screens */
+}
+
+@media (min-width: 768px) {
+
+    /* Adjust breakpoint as needed */
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* Two columns on larger screens */
+    }
+}
+
+.switch-field label {
+    margin-left: 1rem;
+    /* Space between switch and label */
+}
+
+.p-fluid .p-button {
+    width: auto !important;
+}

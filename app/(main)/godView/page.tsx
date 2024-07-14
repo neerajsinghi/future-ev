@@ -13,18 +13,29 @@ const center = {
     lng: 77.209
 };
 
+type cityType = {
+    id: string;
+    name: string;
+    active: boolean;
+    numberOfStations: undefined;
+    numberOfVehicles: undefined;
+    locationPolygon: {
+        type: string;
+        coordinates: [number, number][][];
+    };
+};
+
 const MapComponent = () => {
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
     });
 
-    const [cities, setCities] = useState([]);
+    const [cities, setCities] = useState<cityType[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await getCity(); // Assuming getCity fetches all city data
-                console.log('Fetched data:', response.data); // Check the fetched data
                 if (response.success && response.data) {
                     setCities(response.data); // Assuming response.data is an array of cities
                 }
@@ -36,11 +47,11 @@ const MapComponent = () => {
         fetchData();
     }, []);
 
-    const onEdit = useCallback((e, cityIndex, polygonIndex) => {
+    const onEdit = useCallback((e: any, cityIndex: number, polygonIndex: number) => {
         const newPath = e
             .getPath()
             .getArray()
-            .map((latlng) => ({
+            .map((latlng: { lat(): () => number; lng(): () => number }) => ({
                 lat: latlng.lat(),
                 lng: latlng.lng()
             }));
@@ -58,7 +69,7 @@ const MapComponent = () => {
                 city.locationPolygon.coordinates.map((polygon, polygonIndex) => (
                     <Polygon
                         key={`${city.id}_${polygonIndex}`}
-                        paths={polygon[0].map((coord) => ({
+                        paths={polygon[0].map((coord: any) => ({
                             lat: coord[1],
                             lng: coord[0]
                         }))}
@@ -75,7 +86,7 @@ const MapComponent = () => {
             )}
         </GoogleMap>
     ) : (
-        <p style={{ color: 'red' }}>Loading...</p>
+        <p style={{ color: 'white', textAlign: 'center' }}>Loading...</p>
     );
 };
 

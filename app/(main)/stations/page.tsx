@@ -13,7 +13,23 @@ import { InputNumber } from "primereact/inputnumber";
 import { setStation, getStations, getUsers, updateStation } from "@/app/api/iotBikes";
 import Link from 'next/link'
 import { Tag } from "primereact/tag";
+import { getCity } from "@/app/api/services";
+import { MultiSelect } from "primereact/multiselect";
 
+/*
+Name
+Description
+ShortName
+Address
+Location
+Active
+Group
+SupervisorID
+Stock
+Public
+Status
+ServicesAvailable
+*/
 interface StationFormData {
     name: string;
     description: string;
@@ -26,6 +42,7 @@ interface StationFormData {
     stock: number;
     public: boolean;
     status: string;
+    servicesAvailable: string[];
 }
 interface Address {
     address: string;
@@ -43,7 +60,10 @@ const Stations = () => {
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
     const [users, setUsers] = useState<any>([])
+    const [city, setCity] = useState<any>([])
+    const [selectedCity, setSelectedCity] = useState<any>(null)
     const [selectedUser, setSelectedUser] = useState<any>(null)
+    const [selectedServices, setSelectedServices] = useState<any[]>([])
     // const [column2, setColumn2] = useState<any>([
     //     { key: "vehicletype", label: "Vehicle Type", _props: { scope: 'col' } },
     //     { key: "name", label: "Name", _props: { scope: 'col' } },
@@ -71,7 +91,7 @@ const Stations = () => {
             state: ''
         },
         location: {
-            type: '',
+            type: 'Point',
             coordinates: [0, 0]
         },
         active: true,
@@ -79,23 +99,33 @@ const Stations = () => {
         supervisorID: '',
         stock: 0,
         public: true,
-        status: 'available'
+        status: 'available',
+        servicesAvailable: [],
     });
-
     const handleChange = (name: string, value: any) => {
+
         if (name.startsWith('address.')) {
             setFormData({
                 ...formData,
                 address: { ...formData.address, [name.substring(8)]: value },
             });
         } else if (name.startsWith('location.')) {
-            setFormData({
-                ...formData,
-                location: { ...formData.location, [name.substring(9)]: value },
-            });
+
+            const form = { ...formData }
+            form.location.coordinates = [...form.location.coordinates]
+            if (name === 'location.coordinates[0]') {
+                form.location.coordinates[0] = value
+            }
+            if (name === 'location.coordinates[1]') {
+                form.location.coordinates[1] = value
+            }
+            setFormData(form)
         } else if (name === 'supervisorID') {
             setSelectedUser(value)
             setFormData({ ...formData, [name]: value.code });
+        } else if (name === 'servicesAvailable') {
+            setSelectedServices(value)
+
         } else {
             setFormData({ ...formData, [name]: value });
         }
@@ -105,6 +135,13 @@ const Stations = () => {
         e.preventDefault();
         // Send formData to your backend for processing
         console.log(formData);
+        for (let i = 0; i < selectedServices.length; i++) {
+            if (selectedServices[i].name === 'ride now') {
+                formData.servicesAvailable.push('hourly')
+                return
+            }
+            formData.servicesAvailable.push(selectedServices[i].name)
+        }
         const response = await setStation(formData)
         if (response.success && response.data) {
             setShowDialog(false)
@@ -113,13 +150,20 @@ const Stations = () => {
             console.log('Failed')
         }
     };
-    const fetchData = async () => {
-
-        const response = await getStations()
-        if (response.success && response.data) {
-
-            setItems(response.data)
+    const getCityD = async () => {
+        let response = await getCity()
+        if (response.success) {
+            if (response.data) {
+                const data: any[] = []
+                for (let i = 0; i < response.data.length; i++) {
+                    data.push({ name: response.data[i].name, code: response.data[i].name })
+                }
+                setCity(() => data)
+            }
         }
+    }
+    const fetchData = async () => {
+        getCityD()
         const response1 = await getUsers("admin")
         if (response1.success && response1.data) {
             const data = []
@@ -130,6 +174,14 @@ const Stations = () => {
             }
             setUsers(data)
         }
+        const response = await getStations()
+        if (response.success && response.data) {
+            for (let i = 0; i < response.data.length; i++) {
+                response.data[i].superVisorName = await response1.data.find((item: any) => item.id === response.data[i].supervisorID)?.name
+            }
+            setItems(response.data)
+        }
+
         setLoading1(false)
     }
     useEffect(() => {
@@ -191,11 +243,9 @@ const Stations = () => {
         { key: 'city', label: 'City', _props: { scope: 'col' }, body: statusCityTemplate },
         { key: 'long', label: 'Longitude', _props: { scope: 'col' }, body: statusLongTemplate },
         { key: 'lat', label: 'Latitude', _props: { scope: 'col' }, body: statusLatTemplate },
-        { key: 'active', label: 'Active', _props: { scope: 'col' } },
         { key: 'group', label: 'Group', _props: { scope: 'col' } },
-        { key: 'supervisorID', label: 'Supervisor ID', _props: { scope: 'col' } },
+        { key: 'superVisorName', label: 'Supervisor Name', _props: { scope: 'col' } },
         { key: 'stock', label: 'Stock', _props: { scope: 'col' }, body: statusStockTemplate },
-        { key: 'public', label: 'Public', _props: { scope: 'col' }, body: statusPublicTemplate },
         { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate },
     ]
 
@@ -232,7 +282,10 @@ const Stations = () => {
                         <label htmlFor="description">Description</label>
                         <InputTextarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
                     </div>
-
+                    <div className="field col-12 md:col-6">
+                        <label htmlFor="service">Services Available</label>
+                        <MultiSelect value={selectedServices} options={['ride now', 'rental', 'charging', 'eCar']} onChange={(e) => handleChange('servicesAvailable', e.value)} />
+                    </div>
                     {/* Address Fields */}
                     <div className="field col-12"></div>
                     <div className="field col-12"><h4>Address</h4></div>
@@ -254,8 +307,12 @@ const Stations = () => {
                     {/* ... (other address fields - city, state) */}
                     <div className="field col-12 md:col-6">
                         <label htmlFor="address.city">City</label>
-                        <InputText id="address.city" value={formData.address.city} onChange={(e) => handleChange('address.city', e.target.value)} />
+                        <Dropdown id="address.city" value={selectedCity} options={city} onChange={(e) => {
+                            setSelectedCity(e.value)
+                            handleChange('address.city', e.value.code)
+                        }} optionLabel="name" placeholder="Select a City" />
                     </div>
+
                     {/* ... (other address fields - state) */}
                     <div className="field col-12 md:col-6">
                         <label htmlFor="address.state">State</label>
@@ -268,10 +325,6 @@ const Stations = () => {
                     <div className="field col-12"><h4>Location</h4></div>
                     <div className="field col-12"></div>
 
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="location.type">Type</label>
-                        <Dropdown id="location.type" value={formData.location.type} options={['Point']} onChange={(e) => handleChange('location.type', e.value)} />
-                    </div>
                     {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
                     <div className="field col-12 md:col-6">
                         <label htmlFor="location.coordinates[0]">Longitude</label>

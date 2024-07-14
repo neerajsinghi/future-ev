@@ -11,15 +11,38 @@ import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Calendar } from "primereact/calendar";
 import { InputTextarea } from "primereact/inputtextarea";
+import { MultiSelect } from "primereact/multiselect";
 
 
 
-
+/*
+ServiceType    []string
+City           []string
+VehicleType    []string
+Code           string             `json
+CouponType     string             `json
+MinValue       float64            `json
+MaxValue       float64            `json
+MaxUsageByUser int                `json
+Discount       float64            `json
+ValidityFrom   string             `json
+ValidTill      string             `json
+Description    string             `json
+*/
 interface CouponProps {
+    selectType: string[];
+    city: string[];
+    vehicleType: string[];
     code: string;
+    couponType: string;
+    minValue: number;
+    maxValue: number;
+    maxUsageByUser: number;
     discount: number;
-    validTill: string;
+    validityFrom: Date;
+    validTill: Date;
     description: string;
+
 }
 const Coupon = () => {
 
@@ -28,9 +51,17 @@ const Coupon = () => {
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState<any>(null)
     const [formData, setFormData] = useState<CouponProps>({
+        selectType: [],
+        city: [],
+        vehicleType: [],
         code: '',
+        couponType: '',
+        minValue: 0,
+        maxValue: 0,
+        maxUsageByUser: 0,
         discount: 0,
-        validTill: '',
+        validityFrom: new Date(),
+        validTill: new Date(),
         description: '',
     });
     const columns = [
@@ -83,21 +114,56 @@ const Coupon = () => {
             <Dialog header="Bikes Stationed" visible={showDialog} style={{ width: '50vw' }} modal onHide={() => { setShowDialog(false) }}>
                 <form onSubmit={handleSubmit} className="p-fluid grid">
                     <div className="field col-12 lg:col-6">
+                        <label htmlFor="selectType">Select Type</label>
+                        <MultiSelect id="selectType" value={formData.selectType} options={[]} onChange={(e) => handleChange('selectType', e.value)} />
+                    </div>
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="city">City</label>
+                        <MultiSelect id="city" value={formData.city} options={[]} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                    </div>
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="vehicleType">Vehicle Type</label>
+                        <MultiSelect id="vehicleType" value={formData.vehicleType} options={[]} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
+                    </div>
+
+                    <div className="field col-12 lg:col-6">
                         <label htmlFor="name">Name</label>
                         <InputText id="name" value={formData.code} onChange={(e) => handleChange('code', e.target.value)} />
                     </div>
+
                     <div className="field col-12 lg:col-6">
-                        <label htmlFor="price">Price</label>
-                        <InputNumber id="price" value={formData.discount} onValueChange={(e) => handleChange('discount', e.value)} mode="decimal" minFractionDigits={2} />
+                        <label htmlFor="couponType">Coupon Type</label>
+                        <Dropdown value={formData.couponType} options={[]} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
                     </div>
-                    <div className="field col-12 lg:6">
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="minValue">Min Value</label>
+                        <InputNumber id="minValue" value={formData.minValue} onValueChange={(e) => handleChange('minValue', e.value)} />
+                    </div>
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="maxValue">Max Value</label>
+                        <InputNumber id="maxValue" value={formData.maxValue} onValueChange={(e) => handleChange('maxValue', e.value)} />
+                    </div>
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="maxUsageByUser">Max Usage By User</label>
+                        <InputNumber id="maxUsageByUser" value={formData.maxUsageByUser} onValueChange={(e) => handleChange('maxUsageByUser', e.value)} />
+                    </div>
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="discount">Discount</label>
+                        <InputNumber id="discount" value={formData.discount} onValueChange={(e) => handleChange('discount', e.value)} />
+                    </div>
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="validityFrom">Validity From</label>
+                        <Calendar id="validityFrom" value={formData.validityFrom} onChange={(e) => handleChange('validityFrom', e.value)} />
+                    </div>
+                    <div className="field col-12 lg:col-6">
                         <label htmlFor="validTill">Valid Till</label>
-                        <Calendar id="validTill" onChange={(e) => handleChange('validTill', e.target.value?.toDateString())} dateFormat="dd/mm/yy" />
+                        <Calendar id="validTill" value={formData.validTill} onChange={(e) => handleChange('validTill', e.value)} />
                     </div>
-                    <div className="field col-12 lg:6">
+                    <div className="field col-12">
                         <label htmlFor="description">Description</label>
                         <InputTextarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
                     </div>
+
                     <div className="field col-2 button-row">
                         <Button label="Submit" type="submit" />
                     </div>

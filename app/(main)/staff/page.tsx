@@ -49,18 +49,21 @@ interface Address {
     address: string;
     city: string;
     country: string;
-    postalCode: string;
+    pin: string;
 }
 const Staff = () => {
     const [items, setItems] = useState<any>([])
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
+    const [showStatusDialog, setShowStatusDialog] = useState(false);
     const [selectedGender, setSelectedGender] = useState<any>(null)
     const [showAccessDialog, setShowAccessDialog] = useState(false);
+    const [id, setId] = useState<string>("")
     const [city, setCity] = useState<any>([]);
     const [selectedCity, setSelectedCity] = useState<any>({});
     const [accessData, setAccessData] = useState<AccessOptions>({} as AccessOptions)
     const [selectedId, setSelectedId] = useState<string>("")
+    const [selectStatus, setSelectStatus] = useState<any>([])
     const [formData, setFormData] = useState<UserFormData>({
         name: '',
         email: '',
@@ -69,7 +72,7 @@ const Staff = () => {
             address: '',
             city: '',
             country: '',
-            postalCode: ''
+            pin: ''
         },
         dob: '',
         joiningDate: '',
@@ -104,17 +107,25 @@ const Staff = () => {
             setFormData({ ...formData, [name]: value.code });
             return
         }
+        if (name === 'staffStatus') {
+            setSelectStatus(value)
+            setFormData({ ...formData, [name]: value.code });
+            return
 
+        }
 
         setFormData({ ...formData, [name]: value });
     };
-    const changeStatus = async (status: boolean, id: string) => {
+    const changeStatus = async (status: any) => {
+        debugger
         const body: any = {
-            statusBool: status,
+            staffStatus: status.code,
         }
+        setSelectStatus(status)
         const response = await updateUser(body, id)
         if (response.success && response.data) {
             fetchData()
+            setShowStatusDialog(false)
         } else {
             console.log('Failed')
         }
@@ -131,6 +142,7 @@ const Staff = () => {
         }
     }
     const handleSubmit = async (e: React.FormEvent) => {
+        debugger
         e.preventDefault();
         // Send formData to your backend for processing
         console.log(formData);
@@ -153,10 +165,19 @@ const Staff = () => {
     }
     const statusPostalCodeTemplate = (rowData: any) => {
 
-        return <div>{rowData.address?.postalCode}</div>;
+        return <div>{rowData.address?.pin}</div>;
     }
     const statusStausTemplate = (rowData: any) => {
-        return <Button className={`customer-badge status-${rowData}`} severity={rowData && rowData.statusBool ? 'success' : 'danger'} onClick={() => changeStatus(!rowData.statusBool, rowData.id)}>{rowData && rowData.statusBool ? "Active" : "InActive"}</Button>;
+        return (rowData?.staffStatus ? <Button className={`customer-badge status-${rowData}`}
+            onClick={() => {
+
+                setId(rowData.id)
+                setShowStatusDialog(true)
+            }
+            }
+        > {rowData.staffStatus
+            }</Button> : <></>
+        );
     }
     const accessTemplate = (rowData: any) => {
         return <>{rowData.access && <Button className="p-button-text" onClick={() => {
@@ -167,7 +188,7 @@ const Staff = () => {
                 bikes: rowData.access.bikes,
                 stations: rowData.access.stations,
                 plans: rowData.access.plans,
-                service: rowData.access.services,
+                service: rowData.access.service,
                 reports: rowData.access.reports,
                 bikesStations: rowData.access.bikesStations,
                 coupons: rowData.access.coupons,
@@ -223,11 +244,17 @@ const Staff = () => {
         { key: 'phoneNumber', label: 'Phone', _props: { scope: 'col' } },
         { key: 'address', label: 'Address', _props: { scope: 'col' }, body: statusAddressTemplate },
         { key: 'city', label: 'City', _props: { scope: 'col' }, body: statusCityTemplate },
-        { key: 'postalCode', label: 'Pincode', _props: { scope: 'col' }, body: statusPostalCodeTemplate },
+        { key: 'pin', label: 'Pincode', _props: { scope: 'col' }, body: statusPostalCodeTemplate },
+        { key: "staffStatus", label: "Status", _props: { scope: "col" }, body: statusStausTemplate },
+        { key: "stationCount", label: "Station Count", _props: { scope: "col" } },
         { key: 'dob', label: 'Dob', _props: { scope: 'col' } },
         { key: 'role', label: 'Role', _props: { scope: 'col' } },
         { key: 'gender', label: 'Gender', _props: { scope: 'col' } },
         { key: 'access', label: 'Access', _props: { scope: 'col' }, body: accessTemplate },
+        { key: 'staffVerificationId', label: 'Staff Verification Id', _props: { scope: 'col' } },
+        { key: 'staffId', label: 'Staff Id', _props: { scope: 'col' } },
+        { key: 'staffShiftStartTime', label: 'Staff Shift Start Time', _props: { scope: 'col' } },
+        { key: 'staffShiftEndTime', label: 'Staff Shift End Time', _props: { scope: 'col' } },
     ]
     useEffect(() => {
 
@@ -253,7 +280,32 @@ const Staff = () => {
         let response = await getUsers("admin")
         if (response.success) {
             if (response.data) {
+                for (let i = 0; i < response.data.length; i++) {
+                    const ISTOffset = 330; // in minutes
+                    debugger
+                    const currentTime = response.data[i].staffShiftStartTime
+                    // Calculate the time in IST coordinates
+                    const ISTTime = new Date(currentTime);
 
+                    // Format the time as HH:mm:ss (e.g., 13:11:05)
+                    const hoursIST = ISTTime.getHours().toString().padStart(2, '0');
+                    const minutesIST = ISTTime.getMinutes().toString().padStart(2, '0');
+
+                    const formattedISTTime = `${hoursIST}:${minutesIST}`;
+                    response.data[i].staffShiftStartTime = formattedISTTime
+
+                    const currentTime1 = response.data[i].staffShiftEndTime
+                    // Calculate the time in IST coordinates
+                    const ISTTime1 = new Date(currentTime1);
+
+                    // Format the time as HH:mm:ss (e.g., 13:11:05)
+                    const hoursIST1 = ISTTime1.getHours().toString().padStart(2, '0');
+                    const minutesIST1 = ISTTime1.getMinutes().toString().padStart(2, '0');
+
+                    const formattedISTTime1 = `${hoursIST1}:${minutesIST1}`;
+                    response.data[i].stationCount = response.data[i].station.length
+                    response.data[i].staffShiftEndTime = formattedISTTime1
+                }
                 setItems(response.data)
             }
         }
@@ -309,8 +361,8 @@ const Staff = () => {
                         <InputText id="country" value={formData.address.country} onChange={(e) => { handleChange('address', { ...formData.address, country: e.target.value }) }} />
                     </div>
                     <div className="field col-12 lg:col-6">
-                        <label htmlFor="postalCode">Postal Code</label>
-                        <InputText id="postalCode" value={formData.address.postalCode} onChange={(e) => handleChange('address', { ...formData.address, postalCode: e.target.value })} />
+                        <label htmlFor="pin">Postal Code</label>
+                        <InputText id="pin" value={formData.address.pin} onChange={(e) => handleChange('address', { ...formData.address, pin: e.target.value })} />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="dob">DOB</label>
@@ -328,11 +380,11 @@ const Staff = () => {
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="staffShiftStartTime">Staff Shift Start Time</label>
-                        <Calendar id="staffShiftStartTime" value={formData.staffShiftStartTime} onChange={(e) => handleChange('staffShiftStartTime', e.value)} showTime />
+                        <Calendar timeOnly id="staffShiftStartTime" value={formData.staffShiftStartTime} onChange={(e) => handleChange('staffShiftStartTime', e.value)} showTime />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="staffShiftEndTime">Staff Shift End Time</label>
-                        <Calendar id="staffShiftEndTime" value={formData.staffShiftEndTime} onChange={(e) => handleChange('staffShiftEndTime', e.value)} showTime />
+                        <Calendar timeOnly id="staffShiftEndTime" value={formData.staffShiftEndTime} onChange={(e) => handleChange('staffShiftEndTime', e.value)} showTime />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="staffStatus">Staff Status</label>
@@ -340,7 +392,7 @@ const Staff = () => {
                             { name: "On Duty", code: "On Duty" },
                             { name: "Leave", code: "Leave" },
                             { name: "Out of working hours", code: "Out of working hours" }
-                        ]} value={formData.staffStatus} onChange={(e) => handleChange("staffStatus", e.value)} optionLabel="name" placeholder="Select Staff Status" />
+                        ]} value={selectStatus} onChange={(e) => handleChange("staffStatus", e.value)} optionLabel="name" placeholder="Select Staff Status" />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="staffVerificationId">Staff Verification Document Upload</label>
@@ -436,7 +488,7 @@ const Staff = () => {
                                     <div className="col-3">
                                         <label htmlFor="staff">Services:</label>
                                     </div>
-                                    <SelectButton width={30} onChange={(e) => handleChange('access', { ...formData.access, services: e.value.code })} optionLabel="name" options={[
+                                    <SelectButton width={30} onChange={(e) => handleChange('access', { ...formData.access, service: e.value.code })} optionLabel="name" options={[
                                         { name: "View", code: "View" },
                                         { name: "Edit", code: "Edit" },
                                         { name: "None", code: "None" }
@@ -686,6 +738,19 @@ const Staff = () => {
                     </div>
                 </>
             </Dialog >
+            < Dialog header="Change Status" visible={showStatusDialog} style={{ width: '50vw' }} onHide={() => setShowStatusDialog(false)}>
+                <div className=" grid">
+                    <div className="field col-12 lg:col-6">
+
+                        <label htmlFor="staffStatus" style={{ marginRight: "40px" }}>Staff Status </label>
+                        <Dropdown options={[
+                            { name: "On Duty", code: "On Duty" },
+                            { name: "Leave", code: "Leave" },
+                            { name: "Out of working hours", code: "Out of working hours" }
+                        ]} value={selectStatus} onChange={(e) => changeStatus(e.value)} optionLabel="name" placeholder="Select Staff Status" />
+                    </div>
+                </div>
+            </Dialog>
         </>
 
     )

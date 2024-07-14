@@ -27,3 +27,7 @@
 .p-button {
     padding: 5px;
 }
+
+.p-fluid .p-button {
+    width: auto !important;
+}

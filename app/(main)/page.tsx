@@ -22,7 +22,7 @@ const LoginPage = () => {
     const handleSubmit = async () => {
         const response = await userLogin(email, password)
         if (response.success && response.data && response.data["role"] === "admin") {
-            localStorage.setItem('user', response.data)
+            localStorage.setItem('user', JSON.stringify(response.data))
             if (response.data["access"]) {
                 localStorage.setItem('access', JSON.stringify(response.data["access"]))
             }

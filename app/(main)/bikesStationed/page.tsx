@@ -12,19 +12,36 @@ import "./plan.css"
 import CustomTable from "../components/table";
 import { Tag } from "primereact/tag";
 import QRCode from "react-qr-code";
+import { getCity } from "@/app/api/services";
+import { Calendar } from "primereact/calendar";
+import { FileUpload } from "primereact/fileupload";
 
 export const dynamic = 'force-dynamic';
 
 /*
+City
+Type
 DeviceID
 VehicleTypeID
 StationID
-Status*/
+Status
+Description
+InsuranceDate
+InsurancePolicy
+VehicleRegistration
+PermitsRequired []
+*/
 interface BikesStationedProps {
+    city: string;
+    type: string;
     deviceID: string;
     vehicleTypeID: string;
     stationID: string;
-    status: string;
+    status: "booked" | "available" | "damaged" | "maintenance" | "deployment" | "";
+    insuranceDate: Date;
+    insurancePolicy: string;
+    vehicleRegistration: string;
+    permitsRequired: string[];
 }
 
 const BikesStationed = ({ searchParams }: { searchParams: any }) => {
@@ -32,6 +49,8 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
     const [station, setStation] = useState<any[]>([])
     const [devices, setDevices] = useState<{ name: string; code: string }[]>([])
     const [vehicleType, setVehicleType] = useState<{ name: string; code: string }[]>([])
+    const [city, setCity] = useState<any>([])
+    const [selectedCity, setSelectedCity] = useState<any>(null)
     const [selectedStation, setSelectedStation] = useState<any>(null)
     const [selectedVehicleType, setSelectedVehicleType] = useState<any>(null)
     const [selectedDevice, setSelectedDevice] = useState<any>(null)
@@ -40,10 +59,16 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
     const [showDialog, setShowDialog] = useState(false);
     const qrcodeRefs = useRef<{ [key: string]: RefObject<any> }>({});
     const [formData, setFormData] = useState<BikesStationedProps>({
+        city: '',
+        type: '',
         deviceID: '',
         vehicleTypeID: '',
         stationID: '',
         status: '',
+        insuranceDate: new Date(),
+        insurancePolicy: '',
+        vehicleRegistration: '',
+        permitsRequired: [],
     });
     const statusVehicleNameTemplate = (rowData: any) => {
         return <Tag value={rowData.vehicleType.name} />;
@@ -52,13 +77,6 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
 
         return <div>{rowData.deviceData.name}</div>;
     }
-    /**deviceBatteryLevel
-deviceIgnition
-deviceSpeed
-deviceStatus
-deviceTotalDistance
-deviceType
-deviceValid */
     const statusDeviceBatteryLevelTemplate = (rowData: any) => {
         return <div>{rowData.deviceData.batteryLevel}</div>;
     }
@@ -145,7 +163,6 @@ deviceValid */
         { key: 'deviceValid', label: 'Valid', _props: { scope: 'col' }, body: statusDeviceValidTemplate },
         { key: 'deviceQR', label: 'Device QR', _props: { scope: 'col' }, body: qrCodeTemplate },
         { key: 'stationName', label: 'Station Name', _props: { scope: 'col' }, body: statusStationNameTemplate },
-
         { key: 'stationId', label: 'Station ID', _props: { scope: 'col' } },
         { key: 'status', label: 'Status', _props: { scope: 'col' } },
     ];
@@ -155,7 +172,9 @@ deviceValid */
         if (response.success && response.data) {
             const stations = []
             for (let i = 0; i < response.data.length; i++) {
-                stations.push({ name: response.data[i]["name"], code: response.data[i]["id"], location: response.data[i]["location"] })
+                if (response.data[i]["address"]["city"] === selectedCity["name"]) {
+                    stations.push({ name: response.data[i]["name"], code: response.data[i]["id"], location: response.data[i]["location"], city: response.data[i]["address"]["city"] })
+                }
             }
             setStation(stations)
         }
@@ -172,17 +191,38 @@ deviceValid */
         }
         setLoading1(false)
     }
+    const getCityD = async () => {
+        let response = await getCity()
+        if (response.success) {
+            if (response.data) {
+                const data: any[] = []
+                for (let i = 0; i < response.data.length; i++) {
+                    data.push({ name: response.data[i].name, code: response.data[i].name })
+                }
+                setCity(() => data)
+            }
+        }
+    }
     useEffect(() => {
         fetchBikes()
         getAVehicleTypes()
-
-        getAStations()
+        getCityD()
     }, [])
+    useEffect(() => {
+        if (selectedCity) {
+            getAStations()
+        }
+    }, [selectedCity])
 
     const handleChange = async (name: keyof BikesStationedProps, value: any) => {
-
+        let valueL = "";
         if (name === 'vehicleTypeID') {
             setSelectedVehicleType(value)
+            valueL = value.code
+        } else if (name === "city") {
+            debugger
+            setSelectedCity(value)
+            valueL = value.code
         } else if (name === 'stationID') {
             setDevices([])
             setSelectedStation(value)
@@ -201,14 +241,19 @@ deviceValid */
                     devices.push({ name: response.data[i]["name"], code: response.data[i]["deviceId"] })
                 }
                 setDevices(devices)
+                valueL = value.code
             }
         } else if (name === 'deviceID') {
             setSelectedDevice(value)
+            valueL = value.code
         } else if (name === 'status') {
             setSelectedStatus(value)
+            valueL = value.code
+        } else {
+            valueL = value
         }
 
-        setFormData({ ...formData, [name]: value.code });
+        setFormData({ ...formData, [name]: valueL });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -275,6 +320,11 @@ deviceValid */
             <Dialog header="Bikes Stationed" visible={showDialog} style={{ width: '50vw' }} modal onHide={() => { setShowDialog(false) }}>
                 <form onSubmit={handleSubmit} className="p-fluid grid">
                     <div className="field col-12 lg:col-6">
+                        <label htmlFor="name">City</label>
+                        <Dropdown value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                    </div>
+
+                    <div className="field col-12 lg:col-6">
                         <label htmlFor="VehicleTypeID">Vehicle Type ID</label>
                         <Dropdown id="VehicleTypeID" value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleTypeID', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" filter filterBy="name" />
                     </div>
@@ -288,7 +338,36 @@ deviceValid */
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="Status">Status</label>
-                        <Dropdown id="Status" options={[{ name: "Active", code: "Active" }, { name: "Inactive", code: "Inactive" }]} value={selectedStatus} onChange={(e) => handleChange('status', e.value)} optionLabel="name" placeholder="Select a Status" />
+
+                        <Dropdown id="Status" options={[
+                            { name: 'Booked', code: 'booked' },
+                            { name: 'Available', code: 'available' },
+                            { name: 'Damaged', code: 'damaged' },
+                            { name: 'Under Maintenance', code: 'maintenance' },
+                            { name: 'Ready For Deployment', code: 'deployment' },
+                        ]} value={selectedStatus} onChange={(e) => handleChange('status', e.value)} optionLabel="name" placeholder="Select a Status" />
+                    </div>
+
+                    {/* 
+                    insuranceDate: Date; Calendar   
+                    insurancePolicy: string; upload file
+                    vehicleRegistration: string;upload file
+                                    permitsRequired: string[];upload files */}
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="insuranceDate">Insurance Date</label>
+                        <Calendar id="insuranceDate" value={formData.insuranceDate} onChange={(e) => handleChange('insuranceDate', e.value)} />
+                    </div>
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="insurancePolicy">Insurance Policy</label>
+                        <FileUpload id="insurancePolicy" accept="image/*" customUpload uploadHandler={() => { }} emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} multiple={false} />
+                    </div>
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="vehicleRegistration">Vehicle Registration</label>
+                        <FileUpload id="vehicleRegistration" accept="image/*" customUpload uploadHandler={() => { }} emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} multiple={false} />
+                    </div>
+                    <div className="field col-12 lg:6">
+                        <label htmlFor="permitsRequired">Permits Required</label>
+                        <FileUpload id="permitsRequired" accept="image/*" customUpload uploadHandler={() => { }} multiple emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} />
                     </div>
                     <div className="field col-2 button-row">
                         <Button label="Submit" type="submit" />

@@ -12,10 +12,18 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+    const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
-                <link id="theme-css" href={`/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
+                {
+                    darkThemeMq.matches ? (
+                        <link id="theme-css" href={`https://unpkg.com/primereact/resources/themes/lara-dark-indigo/theme.css`} rel="stylesheet"></link>
+                    ) : (
+                        <link id="theme-css" href={`https://unpkg.com/primereact/resources/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>
+                    )
+                }
             </head>
             <body>
                 <PrimeReactProvider>

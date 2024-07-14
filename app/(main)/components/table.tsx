@@ -134,7 +134,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { co
                 className="p-datatable-gridlines"
                 showGridlines
                 rows={10}
-                rowsPerPageOptions={[10, 25, 50]}
+                rowsPerPageOptions={[10, 25, 50, 100]}
                 dataKey="id"
                 filters={filters1}
                 filterDisplay="menu"
@@ -157,7 +157,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { co
                             sortable
                             filter={col.key === "type" || col.key === "status" ? true : false}
                             body={col.body ? col.body : col.key === "status" ? statusBodyTemplate : null}
-                            filterElement={col.key === "type" ? typeFilterTemplate : null}
+                            filterElement={col.elementFilter ? col.elementFilter : col.key === "type" ? typeFilterTemplate : null}
                             editor={col.cellEditor ? (options) => col.cellEditor(options) : null} onCellEditComplete={col.onCellEditComplete}
                         />
                     ))

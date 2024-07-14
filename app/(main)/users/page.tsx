@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import CustomTable from "../components/table";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
+import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import "./plan.css";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputNumber } from "primereact/inputnumber";
@@ -16,6 +16,7 @@ import { Image } from "primereact/image";
 import { Tooltip } from 'primereact/tooltip';
 import Link from "next/link";
 import { flattenData } from "@/app/api/user";
+import { ColumnFilterElementTemplateOptions } from "primereact/column";
 export const dynamic = 'force-dynamic';
 
 const Users = ({ searchParams }: { searchParams: any }) => {
@@ -26,12 +27,20 @@ const Users = ({ searchParams }: { searchParams: any }) => {
     const [idFrontImage, setIdFrontImage] = useState<any>(null)
     const [dlBackImage, setDlBackImage] = useState<any>(null)
     const [idBackImage, setIdBackImage] = useState<any>(null)
+    const [idVerified, setIdVerified] = useState<any>(false)
+    const [dlVerified, setDlVerified] = useState<any>(false)
     const [selectedId, setSelectedId] = useState<any>(null)
     const [blockedBy, setBlockedBy] = useState<any>("")
     const [BlockReason, setBlockReason] = useState<any>("")
     const [blockedDialog, setBlockedDialog] = useState(false)
     const [walletData, setWalletData] = useState<any>([])
     const [ridesData, setRidesData] = useState<any>([])
+    const services = [
+        { name: "Ride Now", value: "hourly" },
+        { name: "Rental", value: "rental" },
+        { name: "Charging", value: "charging" },
+        { name: "ECar", value: "ECar" },
+    ]
     const localUser = JSON.parse(localStorage.getItem("user") || "{}")
     const fetchData = async () => {
 
@@ -122,6 +131,7 @@ const Users = ({ searchParams }: { searchParams: any }) => {
         }
     }
     const validateDl = async () => {
+        debugger
         const body: any = {
             dlVerified: true,
         }
@@ -173,6 +183,13 @@ const Users = ({ searchParams }: { searchParams: any }) => {
             }}
         > {rowData.totalRides} </Link> : 0}</div>;
     }
+
+    const statusItemTemplate = (option: any) => {
+        return <span className={`customer-badge status-${option}`}>{option}</span>;
+    };
+    const typeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+        return <Dropdown value={options.value} options={services} onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear />;
+    };
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
         { key: 'name', label: 'Name', _props: { scope: 'col' } },
@@ -180,10 +197,9 @@ const Users = ({ searchParams }: { searchParams: any }) => {
             key: 'totalBalance', label: 'Total Balance', _props: { scope: 'col' }, body: balanceTemplate
         },
         { key: "totalRides", label: "Total Bookings", body: totalRidesTemplate },
-        { key: 'dob', label: 'DOB', _props: { scope: 'col' } },
-        { key: 'email', label: 'Email', _props: { scope: 'col' } },
+        { key: "status", label: "Status", _props: { scope: 'col' } },
         { key: 'phoneNumber', label: 'Phone Number', _props: { scope: 'col' } },
-        { key: 'plan.name', label: 'Service', _props: { scope: 'col' }, body: (rowData: any) => rowData.plan && rowData.plan.name ? rowData.plan.name : "NA" },
+        { key: 'serviceType', label: 'Service', _props: { scope: 'col' }, body: (rowData: any) => rowData.plan && rowData.plan.name ? rowData.plan.name : "NA", elementFilter: typeFilterTemplate },
         { key: "userBlocked", label: "User Blocked", _props: { scope: 'col' }, body: blockedUserTemplate },
         { key: 'referralCode', label: 'Referral Code', _props: { scope: 'col' } },
         {
@@ -198,7 +214,8 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                     setSelectedId(rowData.id)
                     setShowDialog(true)
                 }
-            }}>Yes</div> : <div onClick={() => {
+                setIdVerified(true)
+            }}><span style={{ color: rowData.idFrontImage && rowData.idBackImage ? "green" : "white" }}>Yes</span></div> : <div onClick={() => {
                 if (rowData.idFrontImage) {
                     setIdFrontImage(rowData.idFrontImage)
                 }
@@ -209,7 +226,7 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                     setSelectedId(rowData.id)
                     setShowDialog(true)
                 }
-            }}>No</div>
+            }}><span style={{ color: rowData.idFrontImage && rowData.idBackImage ? "green" : "white" }}>No</span></div>
         },
         {
             key: 'dlVerified', label: 'DL Verified', _props: { scope: 'col' }, body: (rowData: any) => rowData.dlVerified ? <div
@@ -225,10 +242,12 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                         if (rowData.dlFrontImage && rowData.dlBackImage) {
                             setSelectedId(rowData.id)
                             setShowDialog(true)
+
                         }
+                        setDlVerified(true)
                     }
                 }
-            >Yes</div> : <div onClick={
+            ><span style={{ color: rowData.dlFrontImage && rowData.dlBackImage ? "green" : "white" }}>Yes</span></div> : <div onClick={
                 () => {
                     if (rowData.dlFrontImage) {
                         setDlFrontImage(rowData.dlFrontImage)
@@ -242,10 +261,9 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                     }
                 }
             }
-            > No</div >
+            > <span style={{ color: rowData.dlFrontImage && rowData.dlBackImage ? "green" : "white" }}>No</span></div >
         },
     ]
-
 
     return (
         <>
@@ -267,7 +285,11 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                 </div>
             </div>
             <Dialog header="Image Validation" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
+                {
+                    dlFrontImage && <h4>DL Verification Images</h4>
+                }
                 <div className="grid">
+
                     {
                         dlFrontImage && <div className="col-12 md:col-6">
                             <Image src={dlFrontImage} alt="dlFrontImage" width="200" height="200" />
@@ -279,6 +301,15 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                         </div>
                     }
                     {
+                        dlFrontImage && dlBackImage && !dlVerified && <div className="col-12 md:col-6">
+                            <Button label="Validate DL" onClick={validateDl} />
+                        </div>
+                    }
+                    {<div className="col-12">
+                        {idFrontImage && <h4>ID Verification Images</h4>}
+                    </div>
+                    }
+                    {
                         idFrontImage && <div className="col-12 md:col-6">
                             <Image src={idFrontImage} alt="idFrontImage" width="200" height="200" />
                         </div>
@@ -288,13 +319,9 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                             <Image src={idBackImage} alt="idFrontImage" width="200" height="200" />
                         </div>
                     }
+
                     {
-                        dlFrontImage && dlBackImage && <div className="col-12 md:col-6">
-                            <Button label="Validate DL" onClick={validateDl} />
-                        </div>
-                    }
-                    {
-                        idFrontImage && idBackImage && <div className="col-12 md:col-6">
+                        idFrontImage && idBackImage && !idVerified && <div className="col-12 md:col-6">
                             <Button label="Validate ID" onClick={validateId} />
                         </div>
                     }

@@ -13,6 +13,9 @@ import "./plan.css";
 import { Calendar } from "primereact/calendar";
 import { FileUpload } from "primereact/fileupload";
 import { getCity } from "@/app/api/services";
+import { storage } from "@/app/api/common";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { Image } from "primereact/image";
 
 interface UserFormData {
     name: string;
@@ -64,6 +67,7 @@ const Staff = () => {
     const [accessData, setAccessData] = useState<AccessOptions>({} as AccessOptions)
     const [selectedId, setSelectedId] = useState<string>("")
     const [selectStatus, setSelectStatus] = useState<any>([])
+    const [progresspercent, setProgresspercent] = useState(0);
     const [formData, setFormData] = useState<UserFormData>({
         name: '',
         email: '',
@@ -282,7 +286,6 @@ const Staff = () => {
             if (response.data) {
                 for (let i = 0; i < response.data.length; i++) {
                     const ISTOffset = 330; // in minutes
-                    debugger
                     const currentTime = response.data[i].staffShiftStartTime
                     // Calculate the time in IST coordinates
                     const ISTTime = new Date(currentTime);
@@ -310,6 +313,34 @@ const Staff = () => {
             }
         }
         setLoading1(false)
+    }
+
+    const onUpload = (e: any) => {
+        debugger
+        const file = e.files[0]
+
+        if (!file) return;
+
+        const storageRef = ref(storage, `files/${file.name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on("state_changed",
+            (snapshot) => {
+                debugger
+                const progress =
+                    Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                setProgresspercent(progress);
+            },
+            (error) => {
+                alert(error);
+            },
+            () => {
+                debugger
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    setFormData({ ...formData, staffVerificationId: downloadURL });
+                });
+            }
+        );
     }
     return (
         <>
@@ -396,7 +427,8 @@ const Staff = () => {
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="staffVerificationId">Staff Verification Document Upload</label>
-                        {formData.staffVerificationId == "" ? <FileUpload name="demo[]" url={'/api/upload'} multiple accept="image/*" maxFileSize={1000000} emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} /> : formData.staffVerificationId}
+                        {formData.staffVerificationId == "" ? <FileUpload mode={"basic"} name={"staffVerificationId"} multiple={false} customUpload={true}
+                            uploadHandler={(e) => { onUpload(e); }} maxFileSize={1000000} emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} url="/api/upload" /> : <Image alt="idFrontImage" width="100" height="100" src={formData.staffVerificationId} />}
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="gender">Gender</label>

@@ -7,7 +7,7 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
-import { createRef, RefObject, useEffect, useRef, useState } from "react";
+import { createRef, RefObject, use, useEffect, useRef, useState } from "react";
 import "./plan.css"
 import CustomTable from "../components/table";
 import { Tag } from "primereact/tag";
@@ -15,6 +15,8 @@ import QRCode from "react-qr-code";
 import { getCity } from "@/app/api/services";
 import { Calendar } from "primereact/calendar";
 import { FileUpload } from "primereact/fileupload";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from "@/app/api/common";
 
 export const dynamic = 'force-dynamic';
 
@@ -57,6 +59,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
     const [selectedStatus, setSelectedStatus] = useState<any>(null)
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
+    const [progresspercent, setProgresspercent] = useState(0);
     const qrcodeRefs = useRef<{ [key: string]: RefObject<any> }>({});
     const [formData, setFormData] = useState<BikesStationedProps>({
         city: '',
@@ -220,7 +223,6 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             setSelectedVehicleType(value)
             valueL = value.code
         } else if (name === "city") {
-            debugger
             setSelectedCity(value)
             valueL = value.code
         } else if (name === 'stationID') {
@@ -298,7 +300,50 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         }
         setLoading1(false)
     }
+    const onUpload = async (e: any, name: string, multiple: boolean) => {
+        debugger
+        if (!multiple) {
+            const file = e.files[0]
 
+            if (!file) return;
+
+            const storageRef = ref(storage, `files/${file.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on("state_changed",
+                (snapshot) => {
+                    const progress =
+                        Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setProgresspercent(progress);
+                },
+                (error) => {
+                    alert(error);
+                },
+                () => {
+                    debugger
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        setFormData({ ...formData, [name]: downloadURL });
+                    });
+                }
+            );
+        } else if (multiple && name === "permitsRequired") {
+            const urls = []
+            for (let i = 0; i < e.files.length; i++) {
+                const file = e.files[i]
+                debugger
+                if (!file) return;
+
+                const storageRef = ref(storage, `files/${file.name}`);
+                const uploadTask = await uploadBytesResumable(storageRef, file);
+                const val = await getDownloadURL(uploadTask.ref)
+                urls.push(val)
+            }
+            setFormData({ ...formData, [name]: urls });
+        }
+    }
+    useEffect(() => {
+        console.log(formData.permitsRequired)
+    }, [formData.permitsRequired])
     return (
         <>
             <div className="grid">
@@ -359,15 +404,15 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="insurancePolicy">Insurance Policy</label>
-                        <FileUpload id="insurancePolicy" accept="image/*" customUpload uploadHandler={() => { }} emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} multiple={false} />
+                        {formData.insurancePolicy == "" ? <FileUpload id="insurancePolicy" customUpload mode={'basic'} uploadHandler={(e) => { onUpload(e, 'insurancePolicy', false) }} emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} multiple={false} /> : <div>Uploaded</div>}
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="vehicleRegistration">Vehicle Registration</label>
-                        <FileUpload id="vehicleRegistration" accept="image/*" customUpload uploadHandler={() => { }} emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} multiple={false} />
+                        {formData.vehicleRegistration == "" ? <FileUpload id="vehicleRegistration" mode={'basic'} customUpload uploadHandler={(e) => { onUpload(e, 'vehicleRegistration', false) }} emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} multiple={false} /> : <div>Uploaded</div>}
                     </div>
                     <div className="field col-12 lg:6">
                         <label htmlFor="permitsRequired">Permits Required</label>
-                        <FileUpload id="permitsRequired" accept="image/*" customUpload uploadHandler={() => { }} multiple emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} />
+                        {formData.permitsRequired.length <= 0 ? <FileUpload id="permitsRequired" customUpload uploadHandler={(e) => { onUpload(e, 'permitsRequired', true) }} multiple emptyTemplate={<p className="m-0">Drag and drop files to here to upload.</p>} /> : <div>Uploaded</div>}
                     </div>
                     <div className="field col-2 button-row">
                         <Button label="Submit" type="submit" />

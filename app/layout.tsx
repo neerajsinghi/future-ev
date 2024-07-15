@@ -6,19 +6,22 @@ import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../styles/layout/layout.scss';
 import '../styles/demo/Demos.scss';
+import { useEffect, useState } from 'react';
 
 interface RootLayoutProps {
     children: React.ReactNode;
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
-    const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
-
+    const [theme, setTheme] = useState<any>();
+    useEffect(() => {
+        setTheme(window.matchMedia("(prefers-color-scheme: dark)"))
+    }, [])
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
                 {
-                    darkThemeMq.matches ? (
+                    theme && theme.matches ? (
                         <link id="theme-css" href={`https://unpkg.com/primereact/resources/themes/lara-dark-indigo/theme.css`} rel="stylesheet"></link>
                     ) : (
                         <link id="theme-css" href={`https://unpkg.com/primereact/resources/themes/lara-light-indigo/theme.css`} rel="stylesheet"></link>

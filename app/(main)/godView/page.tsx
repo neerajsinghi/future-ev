@@ -18,7 +18,7 @@ const MapComponent = () => {
         googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
     });
 
-    const [cities, setCities] = useState([]);
+    const [cities, setCities] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,26 +36,10 @@ const MapComponent = () => {
         fetchData();
     }, []);
 
-    const onEdit = useCallback((e, cityIndex, polygonIndex) => {
-        const newPath = e
-            .getPath()
-            .getArray()
-            .map((latlng) => ({
-                lat: latlng.lat(),
-                lng: latlng.lng()
-            }));
-
-        setCities((prevCities) => {
-            const updatedCities = [...prevCities];
-            updatedCities[cityIndex].locationPolygon.coordinates[polygonIndex][0] = newPath;
-            return updatedCities;
-        });
-    }, []);
-
     return isLoaded ? (
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={5}>
             {cities.map((city, cityIndex) =>
-                city.locationPolygon.coordinates.map((polygon, polygonIndex) => (
+                city.locationPolygon.coordinates.map((polygon: any[][], polygonIndex: any) => (
                     <Polygon
                         key={`${city.id}_${polygonIndex}`}
                         paths={polygon[0].map((coord) => ({
@@ -64,7 +48,6 @@ const MapComponent = () => {
                         }))}
                         editable={true}
                         draggable={true}
-                        onMouseUp={(e) => onEdit(e, cityIndex, polygonIndex)}
                         options={{
                             strokeColor: '#FF0000',
                             fillColor: '#FF0000',

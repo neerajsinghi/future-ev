@@ -14,7 +14,7 @@ import "./plan.css";
 import { ColumnEditorOptions, ColumnEvent } from "primereact/column";
 import { Dropdown } from "primereact/dropdown";
 import { getCity } from "@/app/api/services";
-import { RentalPlanForm } from "../rental/page";
+import RentalPlanForm from "../component/rentalPlan";
 interface ProductFormData {
     city: string;
     vehicleType: string;

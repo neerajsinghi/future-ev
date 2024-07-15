@@ -150,7 +150,7 @@ const Dashboard = () => {
             setTotalChargers(resp.data[0][7].Value)
             setTotalRides(resp.data[0][8].Value[0])
             setTotalDistance(resp.data[0][9].Value[0])
-            setTotalCompletedRides(resp.data[0][10].Value[0])
+            setTotalCompletedRides(resp.data[0][10]?.Value[0] ? resp.data[0][10]?.Value[0] : 0)
             setTotalVehicles(resp.data[0][11].Value[0])
             setTotalActiveVeficles(resp.data[0][12].Value[0])
             setTotalVehicleOnRoad(resp.data[0][13].Value[0])

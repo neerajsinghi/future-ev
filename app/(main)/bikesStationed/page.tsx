@@ -1,13 +1,11 @@
 'use client';
 
 import { getBikeByStation, getBikeStand, getBikesNearby, getStations, getStationsByID, getVehicleTypes, setBikeStand } from "@/app/api/iotBikes";
-import { stat } from "fs";
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
-import { createRef, RefObject, use, useEffect, useRef, useState } from "react";
+import { createRef, RefObject, use, useCallback, useEffect, useRef, useState } from "react";
 import "./plan.css"
 import CustomTable from "../components/table";
 import { Tag } from "primereact/tag";
@@ -170,7 +168,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         { key: 'status', label: 'Status', _props: { scope: 'col' } },
     ];
 
-    const getAStations = async () => {
+    const getAStations = useCallback(async () => {
         const response = await getStations()
         if (response.success && response.data) {
             const stations = []
@@ -182,7 +180,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             setStation(stations)
         }
         setLoading1(false)
-    }
+    }, [selectedCity])
     const getAVehicleTypes = async () => {
         const response = await getVehicleTypes()
         if (response.success) {
@@ -206,16 +204,47 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             }
         }
     }
+    const fetchBikes = useCallback(async () => {
+        if (searchParams && searchParams.search) {
+            const response = await getBikeByStation(searchParams.search)
+            if (response.success && response.data) {
+                for (let i = 0; i < response.data.length; i++) {
+                    if (response.data[i]["stationId"]) {
+                        const resp = await getStationsByID(response.data[i]["stationId"])
+                        if (resp.success && resp.data) {
+                            response.data[i]["station"] = resp.data
+                        }
+                    }
+                }
+                setItems([...response.data])
+            }
+            setLoading1(false)
+            return
+        }
+        const response = await getBikeStand()
+        if (response.success && response.data) {
+            for (let i = 0; i < response.data.length; i++) {
+                if (response.data[i]["stationId"]) {
+                    const resp = await getStationsByID(response.data[i]["stationId"])
+                    if (resp.success && resp.data) {
+                        response.data[i]["station"] = resp.data
+                    }
+                }
+            }
+            setItems([...response.data])
+        }
+        setLoading1(false)
+    }, [searchParams])
     useEffect(() => {
         fetchBikes()
         getAVehicleTypes()
         getCityD()
-    }, [])
+    }, [fetchBikes])
     useEffect(() => {
         if (selectedCity) {
             getAStations()
         }
-    }, [selectedCity])
+    }, [])
 
     const handleChange = async (name: keyof BikesStationedProps, value: any) => {
         let valueL = "";
@@ -269,37 +298,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             console.log('Failed')
         }
     };
-    const fetchBikes = async () => {
-        if (searchParams && searchParams.search) {
-            const response = await getBikeByStation(searchParams.search)
-            if (response.success && response.data) {
-                for (let i = 0; i < response.data.length; i++) {
-                    if (response.data[i]["stationId"]) {
-                        const resp = await getStationsByID(response.data[i]["stationId"])
-                        if (resp.success && resp.data) {
-                            response.data[i]["station"] = resp.data
-                        }
-                    }
-                }
-                setItems([...response.data])
-            }
-            setLoading1(false)
-            return
-        }
-        const response = await getBikeStand()
-        if (response.success && response.data) {
-            for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i]["stationId"]) {
-                    const resp = await getStationsByID(response.data[i]["stationId"])
-                    if (resp.success && resp.data) {
-                        response.data[i]["station"] = resp.data
-                    }
-                }
-            }
-            setItems([...response.data])
-        }
-        setLoading1(false)
-    }
+
     const onUpload = async (e: any, name: string, multiple: boolean) => {
         debugger
         if (!multiple) {

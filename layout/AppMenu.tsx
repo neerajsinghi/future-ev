@@ -38,7 +38,6 @@ const AppMenu = () => {
             { label: 'Stations', icon: 'pi pi-fw pi-map-marker', to: '/stations' },
 
             { label: 'Bikes', icon: 'pi pi-spin pi-fw pi-circle', to: '/bikes' },
-            { label: 'Plan', icon: 'pi pi-fw pi-clipboard', to: '/plan' },
             { label: "Bike Stationed", icon: "pi pi-fw pi-map-marker", to: "/bikesStationed" },
             { label: 'Coupons', icon: 'pi pi-fw pi-ticket', to: '/coupons' },
             { label: 'Users', icon: 'pi pi-fw pi-user', to: '/users' },

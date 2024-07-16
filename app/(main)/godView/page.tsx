@@ -4,6 +4,7 @@ import { GoogleMap, useJsApiLoader, Data } from '@react-google-maps/api';
 import { getCity } from '@/app/api/services'; // Ensure this import path is correct
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
 
 const containerStyle = {
     width: '100%',
@@ -54,40 +55,45 @@ const MapComponent = () => {
     const cityObject = cities.find((place) => place.name === city);
 
     return city ? (
-        isLoaded ? (
-            <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={6}>
-                {cityObject && (
-                    <Data
-                        options={{
-                            controlPosition: window.google.maps.ControlPosition.TOP_LEFT,
-                            editable: true,
-                            draggable: true,
-                            style: {
-                                fillColor: '#FF0000',
-                                strokeColor: '#FF0000',
-                                strokeWeight: 2
-                            }
-                        }}
-                        onAddFeature={(e) => {
-                            e.feature.toGeoJson((geoJson) => {
-                                console.log('Added Feature:', geoJson);
-                            });
-                        }}
-                        onSetFeature={(e: any) => {
-                            e.feature.toGeoJson((geoJson: any) => {
-                                console.log('Set Feature:', geoJson);
-                            });
-                        }}
-                        onLoad={(data) => {
-                            data.addGeoJson({
-                                type: 'Feature',
-                                geometry: cityObject.locationPolygon,
-                                properties: { id: cityObject.id }
-                            });
-                        }}
-                    />
-                )}
-            </GoogleMap>
+        isLoaded ? (<>
+            <div className="card">
+                <div className="card-header">
+                    <div className="grid">
+                        <div className="col-10">
+                            <h1>Map</h1>
+                        </div>
+                        <Button onClick={() => setCity("")} type={"button"} label="Select City" className="col-1 m-3" style={{ padding: "0px" }} />
+                    </div>
+                </div>
+                <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={11}>
+                    {cityObject && (
+                        <Data
+                            options={{
+                                map: new google.maps.Map(document.createElement('div')), // Create a new Map object
+                                style: {
+                                    fillColor: '#FF0000',
+                                    strokeColor: '#FF0000',
+                                    strokeWeight: 2
+                                }
+                            }}
+                            onAddFeature={(e) => {
+                                e.feature.toGeoJson((geoJson) => {
+
+                                });
+                            }}
+                            onLoad={(data) => {
+                                data.addGeoJson({
+                                    type: 'Feature',
+                                    geometry: cityObject.locationPolygon,
+                                    properties: { id: cityObject.id },
+                                    Options: { fillColor: 'red' }
+                                });
+                            }}
+                        />
+                    )}
+                </GoogleMap>
+            </div>
+        </>
         ) : (
             <p style={{ color: 'white', textAlign: 'center' }}>Loading...</p>
         )

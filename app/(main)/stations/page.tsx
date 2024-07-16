@@ -2,7 +2,7 @@
 
 import { BreadCrumb } from "primereact/breadcrumb";
 import { Button } from "primereact/button";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import CustomTable from "../components/table";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { Tag } from "primereact/tag";
 import { getCity } from "@/app/api/services";
 import { MultiSelect } from "primereact/multiselect";
+import { GoogleMap, Marker, MarkerF, useJsApiLoader } from "@react-google-maps/api";
 
 /*
 Name
@@ -56,6 +57,9 @@ interface Location {
     coordinates: number[];  // [longitude, latitude]
 }
 const Stations = () => {
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
+    });
     const [items, setItems] = useState<any>([])
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -64,6 +68,7 @@ const Stations = () => {
     const [selectedCity, setSelectedCity] = useState<any>(null)
     const [selectedUser, setSelectedUser] = useState<any>(null)
     const [selectedServices, setSelectedServices] = useState<any[]>([])
+    const [markers, setMarkers] = useState<any>()
     // const [column2, setColumn2] = useState<any>([
     //     { key: "vehicletype", label: "Vehicle Type", _props: { scope: 'col' } },
     //     { key: "name", label: "Name", _props: { scope: 'col' } },
@@ -249,6 +254,21 @@ const Stations = () => {
         { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate },
     ]
 
+    const onMapClick = (event: any) => {
+        debugger
+        setMarkers({
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng(),
+        });
+    };
+    useEffect(() => {
+        if (markers) {
+            const form = { ...formData }
+            console.log({ markers })
+            form.location.coordinates = [markers.lng, markers.lat]
+            setFormData(form)
+        }
+    }, [markers])
     return (
         <>
             <div className="grid">
@@ -326,13 +346,18 @@ const Stations = () => {
                     <div className="field col-12"></div>
 
                     {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="location.coordinates[0]">Longitude</label>
-                        <InputNumber id="location.coordinates[0]" value={formData.location.coordinates[0]} onChange={(e) => handleChange('location.coordinates[0]', e.value)} mode="decimal" maxFractionDigits={20} />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="location.coordinates[1]">Latitude</label>
-                        <InputNumber id="location.coordinates[1]" value={formData.location.coordinates[1]} onChange={(e) => handleChange('location.coordinates[1]', e.value)} mode="decimal" maxFractionDigits={20} />
+                    <div className="field col-12 md:col-12">
+                        {isLoaded && < GoogleMap
+                            mapContainerStyle={{ width: '100%', height: '400px' }}
+                            center={{ lat: 28.607375879782598, lng: 77.22906196175623 }} // Initial map center (adjust)
+                            zoom={10}
+                            onClick={onMapClick}
+                        >
+                            <MarkerF
+                                position={markers}
+                            />
+
+                        </GoogleMap>}
                     </div>
                     <div className="field col-12"></div>
 

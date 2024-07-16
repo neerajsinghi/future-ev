@@ -31,3 +31,15 @@
 .p-fluid .p-button {
     width: auto !important;
 }
+
+.map-icon {
+    color: white;
+    text-align: center;
+}
+
+.map-icon:hover {
+    color: rgb(82, 28, 191);
+    cursor: pointer;
+    scale: 1.3;
+    transition: all 0.3s ease;
+}

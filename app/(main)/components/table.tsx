@@ -1,31 +1,26 @@
 'use client';
 
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { Button } from "primereact/button";
-import { Column, ColumnFilterElementTemplateOptions } from "primereact/column";
-import { DataTable, DataTableFilterMeta } from "primereact/datatable";
-import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
-import { Tag } from "primereact/tag";
-import { useEffect, useRef, useState } from "react";
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { Button } from 'primereact/button';
+import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
+import { Tag } from 'primereact/tag';
+import { useEffect, useRef, useState } from 'react';
 
-
-
-const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { columns: any[], columns2: any[], items: any[], loading1: any, editMode: string | undefined }) => {
-
+const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { columns: any[]; columns2: any[]; items: any[]; loading1: any; editMode: string | undefined }) => {
     const [filters1, setFilters1] = useState<DataTableFilterMeta>({});
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
-    const [statuses] = useState<string[]>(["personal", "bike", "car"]);
+    const [statuses] = useState<string[]>(['personal', 'bike', 'car']);
     const [expandedRows, setExpandedRows] = useState<any>(null);
     const dt = useRef<DataTable<any>>(null);
 
     useEffect(() => {
-
         initFilters1();
 
-        return () => {
-        }
-    }, [])
+        return () => {};
+    }, []);
     const statusBodyTemplate = (rowData: any) => {
         return <Tag value={rowData.status} />;
     };
@@ -76,16 +71,15 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { co
     const renderHeader1 = () => {
         return (
             <div className="flex justify-content-between">
-                <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined onClick={clearFilter1} />
+                <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined onClick={clearFilter1} className="px-3" />
                 <span className="p-input-icon-left">
-                    <i className="pi pi-search" />
-                    <InputText value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Keyword Search" />
-                    <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" style={{ margin: "0px 10px" }} />
-
+                    <span style={{ position: 'relative' }}>
+                        <i className="pi pi-search" style={{ position: 'absolute', left: '10px', top: '1.5px' }} />
+                        <InputText value={globalFilterValue1} style={{ paddingLeft: '30px' }} onChange={onGlobalFilterChange1} placeholder="Keyword Search" />
+                    </span>
+                    <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" style={{ margin: '0px 10px' }} />
                 </span>
-
             </div>
-
         );
     };
     const header1 = renderHeader1();
@@ -93,23 +87,25 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { co
         return <span className={`customer-badge status-${option}`}>{option}</span>;
     };
     const typeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
-        return <Dropdown value={options.value} options={statuses} onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear />;
+        return (
+            <Dropdown value={options.value} options={statuses} onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear />
+        );
     };
 
     const rowExpansionTemplate = (data: any) => {
+        console.log(data.data);
         return (
-            <div className="p-3">
+            <div className="p-3" style={{ border: '2px solid white' }}>
                 <DataTable value={data.data}>
-
                     {columns2.map((col) => (
                         <Column
                             key={col.key}
                             field={col.key}
                             header={col.label}
                             sortable
-                            filter={col.key === "type" || col.key === "status" ? true : false}
-                            body={col.body ? col.body : col.key === "status" ? statusBodyTemplate : null}
-                            filterElement={col.key === "type" ? typeFilterTemplate : null}
+                            filter={col.key === 'type' || col.key === 'status' ? true : false}
+                            body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
+                            filterElement={col.key === 'type' ? typeFilterTemplate : null}
                         />
                     ))}
                 </DataTable>
@@ -119,16 +115,14 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { co
     const exportCSV = (selectionOnly: boolean) => {
         //export items as csv
         dt.current?.exportCSV({ selectionOnly });
-
     };
 
     return (
         <>
-
             <DataTable
                 ref={dt}
                 editMode={editMode}
-                exportFunction={(e) => typeof e.data === 'object' ? JSON.stringify(e.data).replace(",", " ") : e.data}
+                exportFunction={(e) => (typeof e.data === 'object' ? JSON.stringify(e.data).replace(',', ' ') : e.data)}
                 value={items}
                 paginator
                 className="p-datatable-gridlines"
@@ -143,30 +137,30 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { co
                 emptyMessage="No customers found."
                 header={header1}
                 size={'normal'}
-                expandedRows={expandedRows} onRowToggle={(e) => setExpandedRows(e.data)}
+                expandedRows={expandedRows}
+                onRowToggle={(e) => setExpandedRows(e.data)}
                 rowExpansionTemplate={rowExpansionTemplate}
             >
-
-                {
-
-                    columns.map((col, i) => (
+                {columns.map((col, i) => {
+                    console.log(col);
+                    return (
                         <Column
                             key={i}
                             field={col.key}
                             header={col.label}
                             sortable
-                            filter={col.key === "type" || col.key === "status" ? true : false}
-                            body={col.body ? col.body : col.key === "status" ? statusBodyTemplate : null}
-                            filterElement={col.elementFilter ? col.elementFilter : col.key === "type" ? typeFilterTemplate : null}
-                            editor={col.cellEditor ? (options) => col.cellEditor(options) : null} onCellEditComplete={col.onCellEditComplete}
+                            filter={col.key === 'type' || col.key === 'status' ? true : false}
+                            body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
+                            filterElement={col.key === 'type' ? typeFilterTemplate : null}
+                            editor={col.cellEditor ? (options) => col.cellEditor(options) : null}
+                            onCellEditComplete={col.onCellEditComplete}
                         />
-                    ))
-                }
+                    );
+                })}
                 <Column expander={columns2.length > 0} style={{ width: '5rem' }} />
-
-            </DataTable >
+            </DataTable>
         </>
-    )
-}
+    );
+};
 
 export default CustomTable;

@@ -1,3 +1,4 @@
+import { baseUrl } from './common';
 import { getErrorResponse, getSuccessResponse, webService } from './WebServices';
 
 export async function userLogin(username: string, password: string) {
@@ -8,7 +9,7 @@ export async function userLogin(username: string, password: string) {
     };
 
     try {
-        let response = await webService.post('http://3.110.123.55:1995/api/v1/email/login', body);
+        let response = await webService.post(`${baseUrl}email/login`, body);
         responseObj = getSuccessResponse(response, responseObj);
     } catch {
         responseObj = getErrorResponse(responseObj);

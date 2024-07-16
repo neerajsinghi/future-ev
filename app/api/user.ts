@@ -9,7 +9,7 @@ export async function userLogin(username: string, password: string) {
     };
 
     try {
-        let response = await webService.post(baseUrl + 'email/login', body);
+        let response = await webService.post(`${baseUrl}email/login`, body);
         responseObj = getSuccessResponse(response, responseObj);
     } catch {
         responseObj = getErrorResponse(responseObj);

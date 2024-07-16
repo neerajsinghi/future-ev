@@ -39,7 +39,7 @@ const Layout = ({ children }: ChildContainerProps) => {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     useEffect(() => {
-        setIsLogin(localStorage.getItem("user") ? true : false);
+        setIsLogin(localStorage.getItem('user') ? true : false);
     }, []);
     useEffect(() => {
         hideMenu();
@@ -126,7 +126,7 @@ const Layout = ({ children }: ChildContainerProps) => {
         'p-ripple-disabled': !layoutConfig.ripple
     });
 
-    return (isLogin ?
+    return isLogin ? (
         <React.Fragment>
             <div className={containerClass}>
                 <AppTopbar ref={topbarRef} />
@@ -140,7 +140,9 @@ const Layout = ({ children }: ChildContainerProps) => {
                 <AppConfig />
                 <div className="layout-mask"></div>
             </div>
-        </React.Fragment> : <React.Fragment>
+        </React.Fragment>
+    ) : (
+        <React.Fragment>
             {children}
             <AppConfig simple />
         </React.Fragment>

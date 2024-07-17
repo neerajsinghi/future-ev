@@ -147,11 +147,8 @@ const Stations = () => {
         // Send formData to your backend for processing
         console.log(formData);
         for (let i = 0; i < selectedServices.length; i++) {
-            if (selectedServices[i].name === 'ride now') {
-                formData.servicesAvailable.push('hourly');
-                return;
-            }
-            formData.servicesAvailable.push(selectedServices[i].name);
+            debugger
+            formData.servicesAvailable.push(selectedServices[i]);
         }
         const response = await setStation(formData);
         if (response.success && response.data) {
@@ -328,7 +325,7 @@ const Stations = () => {
                     </div>
                     <div className="field col-12 md:col-6">
                         <label htmlFor="service">Services Available</label>
-                        <MultiSelect value={selectedServices} options={['ride now', 'rental', 'charging', 'eCar']} onChange={(e) => handleChange('servicesAvailable', e.value)} />
+                        <MultiSelect value={selectedServices} options={[{ name: 'ride now', code: "hourly" }, { name: 'rental', code: "rental" }, { name: 'charging', code: "charging" }, { name: 'eCar', code: 'eCar' }]} onChange={(e) => handleChange('servicesAvailable', e.value)} optionLabel='name' optionValue='code' />
                     </div>
                     {/* Address Fields */}
                     <div className="field col-12"></div>

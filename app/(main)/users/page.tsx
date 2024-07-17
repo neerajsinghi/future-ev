@@ -238,7 +238,7 @@ const Users = ({ searchParams }: { searchParams: any }) => {
         { key: 'totalRides', label: 'Total Bookings', body: totalRidesTemplate },
         { key: 'status', label: 'Status', _props: { scope: 'col' } },
         { key: 'phoneNumber', label: 'Phone Number', _props: { scope: 'col' } },
-        { key: 'serviceType', label: 'Service', _props: { scope: 'col' }, body: (rowData: any) => (rowData.plan && rowData.plan.name ? rowData.plan.name : 'NA'), elementFilter: typeFilterTemplate },
+        { key: 'serviceType', label: 'Service', _props: { scope: 'col' }, body: (rowData: any) => (rowData.serviceType ? rowData.serviceType : 'NA'), elementFilter: typeFilterTemplate },
         { key: 'userBlocked', label: 'User Blocked', _props: { scope: 'col' }, body: blockedUserTemplate },
         { key: 'referralCode', label: 'Referral Code', _props: { scope: 'col' } },
         {
@@ -319,11 +319,11 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                 <div className="col-12">
                     <BreadCrumb model={[{ label: 'User' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
-                <div className="col-12">
+                {/* <div className="col-12">
                     <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
                         <Button type="button" icon="pi pi-plus-circle" label="User" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
-                </div>
+                </div> */}
                 <div className="col-12 m-10">
                     <div className="card">
                         <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />

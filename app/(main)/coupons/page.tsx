@@ -1,20 +1,19 @@
 'use client';
 
-import { createCoupon, getCoupons } from "@/app/api/iotBikes";
-import { BreadCrumb } from "primereact/breadcrumb";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-import { Dropdown } from "primereact/dropdown";
-import { useEffect, useState } from "react";
-import CustomTable from "../components/table";
-import { InputText } from "primereact/inputtext";
-import { InputNumber } from "primereact/inputnumber";
-import { Calendar } from "primereact/calendar";
-import { InputTextarea } from "primereact/inputtextarea";
-import { MultiSelect } from "primereact/multiselect";
-
-
-
+import { createCoupon, getCoupons, getServices, getVehicleTypes } from '@/app/api/iotBikes';
+import { BreadCrumb } from 'primereact/breadcrumb';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
+import { useEffect, useState } from 'react';
+import CustomTable from '../components/table';
+import { InputText } from 'primereact/inputtext';
+import { InputNumber } from 'primereact/inputnumber';
+import { Calendar } from 'primereact/calendar';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { MultiSelect } from 'primereact/multiselect';
+import { getCity } from '@/app/api/services';
+import { format } from 'date-fns';
 /*
 ServiceType    []string
 City           []string
@@ -30,7 +29,7 @@ ValidTill      string             `json
 Description    string             `json
 */
 interface CouponProps {
-    selectType: string[];
+    serviceType: string[];
     city: string[];
     vehicleType: string[];
     code: string;
@@ -42,19 +41,40 @@ interface CouponProps {
     validityFrom: Date;
     validTill: Date;
     description: string;
+}
 
+interface serviceTypes {
+    id: string;
+    name: string;
+    type: string;
+    description: string;
+    price: number;
+    active: boolean;
+    discount: number;
+    status: string;
+    createdTime: string;
+}
+
+interface vehicleProps {
+    id: string;
+    name: string;
+    price: number;
+    description: string;
+    created_time: string;
 }
 const Coupon = () => {
-
-    const [items, setItems] = useState<any>([])
+    const [items, setItems] = useState<any>([]);
     const [loading1, setLoading] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState<any>(null)
+    const [serviceType, setserviceType] = useState<serviceTypes[]>([]);
+    const [cities, setCities] = useState<any[]>([]);
+    const [selectedStatus, setSelectedStatus] = useState<any>(null);
+    const [vehicleTypes, setVehicleTypes] = useState<vehicleProps[]>([]);
     const [formData, setFormData] = useState<CouponProps>({
-        selectType: [],
+        serviceType: [],
         city: [],
         vehicleType: [],
-        code: '',
+        code: generateCouponCode(10),
         couponType: '',
         minValue: 0,
         maxValue: 0,
@@ -62,37 +82,100 @@ const Coupon = () => {
         discount: 0,
         validityFrom: new Date(),
         validTill: new Date(),
-        description: '',
+        description: ''
     });
+
+    // Define your discount template
+    const discountTemplate = (rowData: CouponProps) => {
+        return <div>{rowData.code ? rowData.discount : 'NA'}</div>;
+    };
+
+    // Define date format template
+    const dateTemplate = (rowData: any, field: string) => {
+        const date = new Date(rowData[field]);
+        return date.getFullYear() === 1 ? 'N/A' : format(date, 'yyyy-MM-dd');
+    };
+
+    // Define your columns
     const columns = [
-        { key: 'code', label: 'Code', _props: { scope: 'col' } },
+        { key: 'code', label: 'Coupon Code', _props: { scope: 'col' }, body: discountTemplate },
         { key: 'discount', label: 'Discount', _props: { scope: 'col' } },
-        { key: 'validTill', label: 'Valid Till', _props: { scope: 'col' } },
-        { key: 'description', label: 'Description', _props: { scope: 'col' } },
+        { key: 'validFrom', label: 'Valid From', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validFrom') },
+        { key: 'validTill', label: 'Valid Till', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validTill') },
+        { key: 'couponType', label: 'Coupon Type', _props: { scope: 'col' } },
+        { key: 'description', label: 'Description', _props: { scope: 'col' } }
     ];
 
+    // Filter items based on coupon code and validity
+    const filteredItems = items.filter((item: any) => {
+        const validTillDate = new Date(item.validTill);
+        return item.code && validTillDate > new Date();
+    });
+
     const getCouponsData = async () => {
-        const response = await getCoupons()
+        const response = await getCoupons();
         if (response.success && response.data) {
-            setItems(response.data)
+            console.log(response.data);
+            setItems(response.data);
         }
-        setLoading(false)
-    }
+        setLoading(false);
+    };
+
+    const getAvailableServiceTypes = async () => {
+        const response = await getServices();
+        if (response.data && response.success) {
+            setserviceType(response.data);
+        }
+        setLoading(false);
+    };
+    const getAvailableVehicleTypes = async () => {
+        const response = await getVehicleTypes();
+        if (response.data && response.success) {
+            setVehicleTypes(response.data);
+        }
+        setLoading(false);
+    };
+
+    const fetchCities = async () => {
+        const data: any = [];
+        const response = await getCity();
+        if (response.success && response.data) {
+            for (let i = 0; i < response.data.length; i++) {
+                data.push({ name: response.data[i].name, code: response.data[i].name });
+            }
+            setCities(() => data);
+        }
+        setLoading(false);
+    };
+
     useEffect(() => {
-        getCouponsData()
-    }, [])
+        getCouponsData();
+        getAvailableServiceTypes();
+        fetchCities();
+        getAvailableVehicleTypes();
+    }, []);
     const handleChange = (name: keyof CouponProps, value: any) => {
         setFormData({ ...formData, [name]: value });
-
-    }
+    };
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        const response = await createCoupon(formData)
+        e.preventDefault();
+        const response = await createCoupon(formData);
         if (response.success) {
-            getCouponsData()
-            setShowDialog(false)
+            getCouponsData();
+            setShowDialog(false);
         }
+    };
+
+    function generateCouponCode(length: number) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let couponCode = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            couponCode += characters[randomIndex];
+        }
+        return couponCode;
     }
+
     return (
         <>
             <div className="grid">
@@ -100,40 +183,50 @@ const Coupon = () => {
                     <BreadCrumb model={[{ label: 'Coupon' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
                 <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: "0px" }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Station" style={{ marginBottom: "0px" }} onClick={() => setShowDialog(true)} />
+                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                        <Button type="button" icon="pi pi-plus-circle" label="Coupons" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
-
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />                    </div>
+                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={filteredItems} loading1={loading1} />{' '}
+                    </div>
                 </div>
             </div>
 
-            <Dialog header="Bikes Stationed" visible={showDialog} style={{ width: '50vw' }} modal onHide={() => { setShowDialog(false) }}>
+            <Dialog
+                header="Add Coupons"
+                visible={showDialog}
+                style={{ width: '50vw' }}
+                modal
+                onHide={() => {
+                    setShowDialog(false);
+                }}
+            >
                 <form onSubmit={handleSubmit} className="p-fluid grid">
                     <div className="field col-12 lg:col-6">
-                        <label htmlFor="selectType">Select Type</label>
-                        <MultiSelect id="selectType" value={formData.selectType} options={[]} onChange={(e) => handleChange('selectType', e.value)} />
-                    </div>
-                    <div className="field col-12 lg:col-6">
-                        <label htmlFor="city">City</label>
-                        <MultiSelect id="city" value={formData.city} options={[]} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
-                    </div>
-                    <div className="field col-12 lg:col-6">
-                        <label htmlFor="vehicleType">Vehicle Type</label>
-                        <MultiSelect id="vehicleType" value={formData.vehicleType} options={[]} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
+                        <label htmlFor="serviceType">Service Type</label>
+                        <MultiSelect id="serviceType" value={formData.serviceType} placeholder="Select a Service Type" options={serviceType?.map((service: serviceTypes) => service.name)} onChange={(e) => handleChange('serviceType', e.value)} />
                     </div>
 
                     <div className="field col-12 lg:col-6">
-                        <label htmlFor="name">Name</label>
-                        <InputText id="name" value={formData.code} onChange={(e) => handleChange('code', e.target.value)} />
+                        <label htmlFor="city">City</label>
+                        <Dropdown id="city" value={formData.city} options={cities} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                    </div>
+
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="vehicleType">Vehicle Type</label>
+                        <MultiSelect id="vehicleType" value={formData.vehicleType} options={vehicleTypes?.map((vehicle) => vehicle.name)} onChange={(e) => handleChange('vehicleType', e.value)} placeholder="Select a Vehicle Type" />
+                    </div>
+
+                    <div className="field col-12 lg:col-6">
+                        <label htmlFor="code">Coupon Code</label>
+                        <InputText id="code" placeholder="Enter Code Name" value={formData.code} onChange={(e) => handleChange('code', e.target.value)} />
                     </div>
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="couponType">Coupon Type</label>
-                        <Dropdown value={formData.couponType} options={[]} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
+                        <Dropdown value={formData.couponType} options={['discount', 'freeRide']} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="minValue">Min Value</label>
@@ -164,16 +257,13 @@ const Coupon = () => {
                         <InputTextarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
                     </div>
 
-                    <div className="field col-2 button-row">
+                    <div className="field col-2 button-row w-full">
                         <Button label="Submit" type="submit" />
                     </div>
                 </form>
-            </Dialog >
+            </Dialog>
         </>
-    )
-}
+    );
+};
 
 export default Coupon;
-
-
-

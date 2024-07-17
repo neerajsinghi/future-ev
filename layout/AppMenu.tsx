@@ -67,12 +67,12 @@ const AppMenu = () => {
                 { label: 'Stations', icon: 'pi pi-fw pi-map-marker', to: '/stations' },
                 { label: 'GodView', icon: 'pi pi-fw pi-eye', to: '/godView' },
 
-                { label: 'Bikes', icon: 'pi pi-spin pi-fw pi-circle', to: '/bikes' },
-                { label: 'Plan', icon: 'pi pi-fw pi-clipboard', to: '/plan' },
+                // { label: 'Bikes', icon: 'pi pi-spin pi-fw pi-circle', to: '/bikes' },
+                // { label: 'Plan', icon: 'pi pi-fw pi-clipboard', to: '/plan' },
                 { label: 'Vehicle Onboarding', icon: 'pi pi-fw pi-map-marker', to: '/vehicleOnboarding' },
                 { label: 'Coupons', icon: 'pi pi-fw pi-ticket', to: '/coupons' },
                 { label: 'Users', icon: 'pi pi-fw pi-user', to: '/users' },
-                { label: 'Chargers', icon: 'pi pi-fw pi-battery', to: '/chargers' },
+                // { label: 'Chargers', icon: 'pi pi-fw pi-battery', to: '/chargers' },
                 { label: 'FAQ', icon: 'pi pi-fw pi-wallet', to: '/faq' },
                 { label: 'Notification', icon: 'pi pi-fw pi-wallet', to: '/notification' }
             ]

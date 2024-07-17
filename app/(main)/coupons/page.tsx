@@ -107,15 +107,10 @@ const Coupon = () => {
     ];
 
     // Filter items based on coupon code and validity
-    const filteredItems = items.filter((item: any) => {
-        const validTillDate = new Date(item.validTill);
-        return item.code && validTillDate > new Date();
-    });
 
     const getCouponsData = async () => {
         const response = await getCoupons();
         if (response.success && response.data) {
-            console.log(response.data);
             setItems(response.data);
         }
         setLoading(false);
@@ -189,7 +184,7 @@ const Coupon = () => {
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={filteredItems} loading1={loading1} />{' '}
+                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
                     </div>
                 </div>
             </div>
@@ -211,7 +206,7 @@ const Coupon = () => {
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="city">City</label>
-                        <Dropdown id="city" value={formData.city} options={cities} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                        <MultiSelect id="city" value={formData.city} options={cities.map((city) => city.name)} onChange={(e) => handleChange('city', e.value)} placeholder="Select a City" />
                     </div>
 
                     <div className="field col-12 lg:col-6">
@@ -242,7 +237,7 @@ const Coupon = () => {
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="discount">Discount</label>
-                        <InputNumber id="discount" value={formData.discount} onValueChange={(e) => handleChange('discount', e.value)} />
+                        <InputNumber suffix=" %" id="discount" value={formData.discount} onValueChange={(e) => handleChange('discount', e.value)} />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="validityFrom">Validity From</label>

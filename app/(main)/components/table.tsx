@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname, useRouter } from 'next/navigation';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Button } from 'primereact/button';
 import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
@@ -9,12 +10,14 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { useEffect, useRef, useState } from 'react';
 
-const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { columns: any[]; columns2: any[]; items: any[]; loading1: any; editMode: string | undefined }) => {
+const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNavigatePath }: { columns: any[]; columns2: any[]; items: any[]; loading1: any; editMode: string | undefined; mapNavigatePath?: string }) => {
     const [filters1, setFilters1] = useState<DataTableFilterMeta>({});
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [statuses] = useState<string[]>(['personal', 'bike', 'car']);
     const [expandedRows, setExpandedRows] = useState<any>(null);
     const dt = useRef<DataTable<any>>(null);
+    const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
         initFilters1();
@@ -72,13 +75,18 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { co
         return (
             <div className="flex justify-content-between">
                 <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined onClick={clearFilter1} className="px-3" />
-                <span className="p-input-icon-left">
+                <div className="flex item p-input-icon-left">
                     <span style={{ position: 'relative' }}>
-                        <i className="pi pi-search" style={{ position: 'absolute', left: '10px', top: '1.5px' }} />
+                        <i className="pi pi-search" style={{ position: 'absolute', left: '10px', top: '12px' }} />
                         <InputText value={globalFilterValue1} style={{ paddingLeft: '30px' }} onChange={onGlobalFilterChange1} placeholder="Keyword Search" />
                     </span>
-                    <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" style={{ margin: '0px 10px' }} />
-                </span>
+                    <Button type="button" icon="pi pi-file" rounded onClick={() => exportCSV(false)} data-pr-tooltip="CSV" style={{ margin: '0px 10px', fontSize: '20px' }} />
+                    {pathname == '/stations' && mapNavigatePath && (
+                        <Button onClick={(e) => router.push(mapNavigatePath)} style={{ padding: '0px 10px', borderRadius: '50%' }}>
+                            <i className="pi pi-map-marker" style={{ fontSize: '18px' }}></i>
+                        </Button>
+                    )}
+                </div>
             </div>
         );
     };
@@ -142,7 +150,6 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode }: { co
                 rowExpansionTemplate={rowExpansionTemplate}
             >
                 {columns.map((col, i) => {
-                    console.log(col);
                     return (
                         <Column
                             key={i}

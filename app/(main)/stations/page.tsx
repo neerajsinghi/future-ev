@@ -16,6 +16,7 @@ import { Tag } from 'primereact/tag';
 import { getCity } from '@/app/api/services';
 import { MultiSelect } from 'primereact/multiselect';
 import { useRouter } from 'next/navigation';
+import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 
 /*
 Name
@@ -57,6 +58,9 @@ interface Location {
     coordinates: number[]; // [longitude, latitude]
 }
 const Stations = () => {
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
+    });
     const router = useRouter();
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
@@ -66,21 +70,9 @@ const Stations = () => {
     const [selectedCity, setSelectedCity] = useState<any>(null);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [selectedServices, setSelectedServices] = useState<any[]>([]);
-    // const [column2, setColumn2] = useState<any>([
-    //     { key: "vehicletype", label: "Vehicle Type", _props: { scope: 'col' } },
-    //     { key: "name", label: "Name", _props: { scope: 'col' } },
-    //     { key: "price", label: "Price", _props: { scope: 'col' } },
-    //     { key: "batteryLevel", label: "Battery Level", _props: { scope: 'col' } },
-    //     { key: "deviceId", label: "Device Id", _props: { scope: 'col' } },
-    //     { key: "deviceImei", label: "Device Imei", _props: { scope: 'col' } },
-    //     { key: "ignition", label: "Ignition", _props: { scope: 'col' } },
-    //     { key: "posId", label: "Pos Id", _props: { scope: 'col' } },
-    //     { key: "speed", label: "Speed", _props: { scope: 'col' } },
-    //     { key: "status", label: "Status", _props: { scope: 'col' } },
-    //     { key: "totalDistance", label: "Total Distance", _props: { scope: 'col' } },
-    //     { key: "type", label: "Type", _props: { scope: 'col' } },
-    //     { key: "valid", label: "Valid", _props: { scope: 'col' } },
-    // ])
+    const [markers, setMarkers] = useState<any>()
+    const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 28.6139, lng: 77.209 });
+    const [zoom, setZoom] = useState<number>(12);
     const [formData, setFormData] = useState<StationFormData>({
         name: '',
         description: '',
@@ -129,7 +121,27 @@ const Stations = () => {
             setFormData({ ...formData, [name]: value });
         }
     };
+    const changeCenter = (selectedCity: string) => {
+        debugger
+        const selectedCityObject = city.find((place: { name: any; }) => place.name === selectedCity);
+        if (selectedCityObject && selectedCityObject.locationPolygon.coordinates.length > 0) {
+            debugger
+            const coordinates = selectedCityObject.locationPolygon.coordinates[0];
+            let centerCoordinates: any | undefined;
 
+            // Handle different structures of coordinates (single set or nested arrays)
+            if (Array.isArray(coordinates[0])) {
+                centerCoordinates = coordinates[0][0]; // Assuming the first set of coordinates
+            } else {
+                centerCoordinates = coordinates[0];
+            }
+
+            if (centerCoordinates) {
+                setCenter({ lat: centerCoordinates[1], lng: centerCoordinates[0] });
+                setZoom(11); // Adjust zoom level as needed
+            }
+        }
+    };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Send formData to your backend for processing
@@ -155,7 +167,7 @@ const Stations = () => {
             if (response.data) {
                 const data: any[] = [];
                 for (let i = 0; i < response.data.length; i++) {
-                    data.push({ name: response.data[i].name, code: response.data[i].name });
+                    data.push({ code: response.data[i].name, ...response.data[i] });
                 }
                 setCity(() => data);
             }
@@ -269,6 +281,17 @@ const Stations = () => {
         { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate }
         // { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
     ];
+    const onMapClick = (event: any) => {
+        debugger
+        setMarkers({
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng(),
+        });
+        const form = { ...formData }
+        console.log({ markers })
+        form.location.coordinates = [event.latLng.lng, event.latLng.lat]
+        setFormData(form)
+    };
 
     return (
         <>
@@ -337,6 +360,7 @@ const Stations = () => {
                             options={city}
                             onChange={(e) => {
                                 setSelectedCity(e.value);
+                                changeCenter(e.value.code);
                                 handleChange('address.city', e.value.code);
                             }}
                             optionLabel="name"
@@ -352,25 +376,26 @@ const Stations = () => {
 
                     {/* Location Fields */}
                     <div className="field col-12"></div>
+                    {selectedCity && <>
+                        <div className="field col-12">
+                            <h4>Location</h4>
+                        </div>
+                        <div className="field col-12"></div>
 
-                    <div className="field col-12">
-                        <h4>Location</h4>
-                    </div>
-                    <div className="field col-12"></div>
-
-                    {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
-                    {/* <div className="field col-12 md:col-12">
-                        {isLoaded && (
-                            <GoogleMap
-                                mapContainerStyle={{ width: '100%', height: '400px' }}
-                                center={{ lat: 28.607375879782598, lng: 77.22906196175623 }} // Initial map center (adjust)
-                                zoom={10}
-                                onClick={onMapClick}
-                            >
-                                <MarkerF position={markers} />
-                            </GoogleMap>
-                        )}
-                    </div> */}
+                        {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
+                        <div className="field col-12 md:col-12">
+                            {isLoaded && (
+                                <GoogleMap
+                                    mapContainerStyle={{ width: '100%', height: '400px' }}
+                                    center={center} // Initial map center (adjust)
+                                    zoom={zoom}
+                                    onClick={onMapClick}
+                                >
+                                    <MarkerF position={markers} />
+                                </GoogleMap>
+                            )}
+                        </div>
+                    </>}
                     <div className="field col-12"></div>
 
                     {/* ... (fields for group, supervisorID, stock, public, status) */}
@@ -395,3 +420,5 @@ const Stations = () => {
 };
 
 export default Stations;
+
+

@@ -23,18 +23,19 @@ const Users = ({ searchParams }: { searchParams: any }) => {
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
-    const [dlFrontImage, setDlFrontImage] = useState<any>(null);
-    const [idFrontImage, setIdFrontImage] = useState<any>(null);
-    const [dlBackImage, setDlBackImage] = useState<any>(null);
-    const [idBackImage, setIdBackImage] = useState<any>(null);
-    const [idVerified, setIdVerified] = useState<any>(false);
-    const [dlVerified, setDlVerified] = useState<any>(false);
-    const [selectedId, setSelectedId] = useState<any>(null);
-    const [blockedBy, setBlockedBy] = useState<any>('');
-    const [BlockReason, setBlockReason] = useState<any>('');
-    const [blockedDialog, setBlockedDialog] = useState(false);
-    const [walletData, setWalletData] = useState<any>([]);
-    const [ridesData, setRidesData] = useState<any>([]);
+
+    const [dlFrontImage, setDlFrontImage] = useState("")
+    const [idFrontImage, setIdFrontImage] = useState("")
+    const [dlBackImage, setDlBackImage] = useState("")
+    const [idBackImage, setIdBackImage] = useState("")
+    const [idVerified, setIdVerified] = useState<any>(false)
+    const [dlVerified, setDlVerified] = useState<any>(false)
+    const [selectedId, setSelectedId] = useState<any>(null)
+    const [blockedBy, setBlockedBy] = useState<any>("")
+    const [BlockReason, setBlockReason] = useState<any>("")
+    const [blockedDialog, setBlockedDialog] = useState(false)
+    const [walletData, setWalletData] = useState<any>([])
+    const [ridesData, setRidesData] = useState<any>([])
     const services = [
         { name: 'Ride Now', value: 'hourly' },
         { name: 'Rental', value: 'rental' },
@@ -241,92 +242,76 @@ const Users = ({ searchParams }: { searchParams: any }) => {
         { key: 'userBlocked', label: 'User Blocked', _props: { scope: 'col' }, body: blockedUserTemplate },
         { key: 'referralCode', label: 'Referral Code', _props: { scope: 'col' } },
         {
-            key: 'idVerified',
-            label: 'ID Verified',
-            _props: { scope: 'col' },
-            body: (rowData: any) =>
-                rowData.idVerified ? (
-                    <div
-                        onClick={() => {
-                            if (rowData.idFrontImage) {
-                                setIdFrontImage(rowData.idFrontImage);
-                            }
-                            if (rowData.idBackImage) {
-                                setIdBackImage(rowData.idBackImage);
-                            }
-                            if (rowData.idFrontImage && rowData.idBackImage) {
-                                setSelectedId(rowData.id);
-                                setShowDialog(true);
-                            }
-                            setIdVerified(true);
-                        }}
-                    >
-                        <span style={{ color: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'white' }}>Yes</span>
-                    </div>
-                ) : (
-                    <div
-                        onClick={() => {
-                            if (rowData.idFrontImage) {
-                                setIdFrontImage(rowData.idFrontImage);
-                            }
-                            if (rowData.idBackImage) {
-                                setIdBackImage(rowData.idBackImage);
-                            }
-                            if (rowData.idFrontImage && rowData.idBackImage) {
-                                setSelectedId(rowData.id);
-                                setShowDialog(true);
-                            }
-                        }}
-                    >
-                        <span style={{ color: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'white' }}>No</span>
-                    </div>
-                )
+            key: 'idVerified', label: 'ID Verified', _props: { scope: 'col' }, body: (rowData: any) => rowData.idVerified ? <div onClick={() => {
+                if (rowData.idFrontImage) {
+                    setIdFrontImage(rowData.idFrontImage)
+                }
+                if (rowData.idBackImage) {
+                    setIdBackImage(rowData.idBackImage)
+                }
+                if (rowData.idFrontImage && rowData.idBackImage) {
+                    setDlBackImage("")
+                    setDlFrontImage("")
+                    setSelectedId(rowData.id)
+                    setShowDialog(true)
+                }
+                setIdVerified(true)
+            }}><span style={{ color: rowData.idFrontImage && rowData.idBackImage ? "green" : "white" }}>Yes</span></div> : <div onClick={() => {
+                if (rowData.idFrontImage) {
+                    setIdFrontImage(rowData.idFrontImage)
+                }
+                if (rowData.idBackImage) {
+
+                    setIdBackImage(rowData.idBackImage)
+                }
+                if (rowData.idFrontImage && rowData.idBackImage) {
+                    setDlBackImage("")
+                    setDlFrontImage("")
+                    setSelectedId(rowData.id)
+                    setShowDialog(true)
+                }
+            }}><span style={{ color: rowData.idFrontImage && rowData.idBackImage ? "green" : "white" }}>No</span></div>
         },
         {
-            key: 'dlVerified',
-            label: 'DL Verified',
-            _props: { scope: 'col' },
-            body: (rowData: any) =>
-                rowData.dlVerified ? (
-                    <div
-                        onClick={() => {
-                            debugger;
-                            if (rowData.dlFrontImage) {
-                                setDlFrontImage(rowData.dlFrontImage);
-                            }
-                            if (rowData.dlBackImage) {
-                                setDlBackImage(rowData.dlBackImage);
-                            }
-                            if (rowData.dlFrontImage && rowData.dlBackImage) {
-                                setSelectedId(rowData.id);
-                                setShowDialog(true);
-                            }
-                            setDlVerified(true);
-                        }}
-                    >
-                        <span style={{ color: rowData.dlFrontImage && rowData.dlBackImage ? 'green' : 'white' }}>Yes</span>
-                    </div>
-                ) : (
-                    <div
-                        onClick={() => {
-                            if (rowData.dlFrontImage) {
-                                setDlFrontImage(rowData.dlFrontImage);
-                            }
-                            if (rowData.dlBackImage) {
-                                setDlBackImage(rowData.dlBackImage);
-                            }
-                            if (rowData.dlFrontImage && rowData.dlBackImage) {
-                                setSelectedId(rowData.id);
-                                setShowDialog(true);
-                            }
-                        }}
-                    >
-                        {' '}
-                        <span style={{ color: rowData.dlFrontImage && rowData.dlBackImage ? 'green' : 'white' }}>No</span>
-                    </div>
-                )
-        }
-    ];
+            key: 'dlVerified', label: 'DL Verified', _props: { scope: 'col' }, body: (rowData: any) => rowData.dlVerified ? <div
+                onClick={
+                    () => {
+                        debugger
+                        if (rowData.dlFrontImage) {
+                            setDlFrontImage(rowData.dlFrontImage)
+                        }
+                        if (rowData.dlBackImage) {
+                            setDlBackImage(rowData.dlBackImage)
+                        }
+                        if (rowData.dlFrontImage && rowData.dlBackImage) {
+                            setIdFrontImage("")
+                            setIdBackImage("")
+                            setSelectedId(rowData.id)
+                            setShowDialog(true)
+
+                        }
+                        setDlVerified(true)
+                    }
+                }
+            ><span style={{ color: rowData.dlFrontImage && rowData.dlBackImage ? "green" : "white" }}>Yes</span></div> : <div onClick={
+                () => {
+                    if (rowData.dlFrontImage) {
+                        setDlFrontImage(rowData.dlFrontImage)
+                    }
+                    if (rowData.dlBackImage) {
+                        setDlBackImage(rowData.dlBackImage)
+                    }
+                    if (rowData.dlFrontImage && rowData.dlBackImage) {
+                        setIdFrontImage("")
+                        setIdBackImage("")
+                        setSelectedId(rowData.id)
+                        setShowDialog(true)
+                    }
+                }
+            }
+            > <span style={{ color: rowData.dlFrontImage && rowData.dlBackImage ? "green" : "white" }}>No</span></div >
+        },
+    ]
 
     return (
         <>

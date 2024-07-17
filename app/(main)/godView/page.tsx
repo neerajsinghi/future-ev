@@ -167,6 +167,7 @@ const MapComponent = () => {
                             }
                         }}
                         options={{
+                            map: new google.maps.Map(document.createElement('div')), // Create a new map object
                             controlPosition: window.google.maps.ControlPosition.TOP_LEFT,
                             style: {
                                 fillColor: '#FF0000',
@@ -179,9 +180,11 @@ const MapComponent = () => {
                                 console.log('Added Feature:', geoJson);
                             });
                         }}
+
                         onSetFeature={(e: any) => {
                             e.feature.toGeoJson((geoJson: any) => {
                                 console.log('Set Feature:', geoJson);
+                  
                             });
                         }}
                     />

@@ -75,6 +75,7 @@ const AppMenu = () => {
                 { label: 'FAQ', icon: 'pi pi-fw pi-wallet', to: '/faq' },
                 { label: 'Notification', icon: 'pi pi-fw pi-wallet', to: '/notification' },
                 { label: 'Feedback', icon: 'pi pi-fw pi-wallet', to: '/feedback' },
+                { label: 'Refer', icon: 'pi pi-fw pi-wallet', to: '/referrals' },
             ]
         },
 

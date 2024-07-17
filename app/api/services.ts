@@ -24,3 +24,27 @@ export async function getFeedback() {
     }
     return responseObj;
 }
+
+export async function getReferral() {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.get(baseUrl + 'referral');
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+
+export async function updateStation(id: string, data: any) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.patch(baseUrl + 'station/' + id, data);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}

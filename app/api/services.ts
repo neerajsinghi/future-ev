@@ -12,3 +12,15 @@ export async function getCity() {
     }
     return responseObj;
 }
+
+export async function getFeedback() {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.get(baseUrl + 'feedback');
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}

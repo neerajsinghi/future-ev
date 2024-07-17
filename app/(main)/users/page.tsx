@@ -23,10 +23,10 @@ const Users = ({ searchParams }: { searchParams: any }) => {
     const [items, setItems] = useState<any>([])
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
-    const [dlFrontImage, setDlFrontImage] = useState<any>(null)
-    const [idFrontImage, setIdFrontImage] = useState<any>(null)
-    const [dlBackImage, setDlBackImage] = useState<any>(null)
-    const [idBackImage, setIdBackImage] = useState<any>(null)
+    const [dlFrontImage, setDlFrontImage] = useState("")
+    const [idFrontImage, setIdFrontImage] = useState("")
+    const [dlBackImage, setDlBackImage] = useState("")
+    const [idBackImage, setIdBackImage] = useState("")
     const [idVerified, setIdVerified] = useState<any>(false)
     const [dlVerified, setDlVerified] = useState<any>(false)
     const [selectedId, setSelectedId] = useState<any>(null)
@@ -211,6 +211,8 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                     setIdBackImage(rowData.idBackImage)
                 }
                 if (rowData.idFrontImage && rowData.idBackImage) {
+                    setDlBackImage("")
+                    setDlFrontImage("")
                     setSelectedId(rowData.id)
                     setShowDialog(true)
                 }
@@ -220,9 +222,12 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                     setIdFrontImage(rowData.idFrontImage)
                 }
                 if (rowData.idBackImage) {
+
                     setIdBackImage(rowData.idBackImage)
                 }
                 if (rowData.idFrontImage && rowData.idBackImage) {
+                    setDlBackImage("")
+                    setDlFrontImage("")
                     setSelectedId(rowData.id)
                     setShowDialog(true)
                 }
@@ -240,6 +245,8 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                             setDlBackImage(rowData.dlBackImage)
                         }
                         if (rowData.dlFrontImage && rowData.dlBackImage) {
+                            setIdFrontImage("")
+                            setIdBackImage("")
                             setSelectedId(rowData.id)
                             setShowDialog(true)
 
@@ -256,6 +263,8 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                         setDlBackImage(rowData.dlBackImage)
                     }
                     if (rowData.dlFrontImage && rowData.dlBackImage) {
+                        setIdFrontImage("")
+                        setIdBackImage("")
                         setSelectedId(rowData.id)
                         setShowDialog(true)
                     }

@@ -1,0 +1,16 @@
+/* Select all scrollbars */
+::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      /* Width of the scrollbar */
+}
+
+/* Handle/Thumb */
+::-webkit-scrollbar-thumb {
+      background-color: #818CF8;
+      /* Color of the thumb */
+      border-radius: 5px;
+      /* Rounded corners */
+      height: 3px;
+      /* Height of the thumb */
+}

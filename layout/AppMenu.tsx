@@ -27,7 +27,7 @@ const AppMenu = () => {
                             to: '/services/ridenow',
                             items: [
                                 { label: 'Ride Now', icon: 'pi pi-fw pi-book', to: '/services/ridenow ' },
-                                { label: 'Ride Now Bookings', icon: 'pi pi-fw pi-book', to: '/services/ridenowbooking' }
+                                { label: 'Ride Now Transactions', icon: 'pi pi-fw pi-book', to: '/services/ridenowTransaction' }
                             ]
                         },
                         {
@@ -65,10 +65,11 @@ const AppMenu = () => {
                 },
                 { label: 'Staff', icon: 'pi pi-spin pi-fw pi-circle', to: '/staff' },
                 { label: 'Stations', icon: 'pi pi-fw pi-map-marker', to: '/stations' },
+                { label: 'GodView', icon: 'pi pi-fw pi-eye', to: '/godView' },
 
                 { label: 'Bikes', icon: 'pi pi-spin pi-fw pi-circle', to: '/bikes' },
                 { label: 'Plan', icon: 'pi pi-fw pi-clipboard', to: '/plan' },
-                { label: 'Bike Stationed', icon: 'pi pi-fw pi-map-marker', to: '/bikesStationed' },
+                { label: 'Vehicle Onboarding', icon: 'pi pi-fw pi-map-marker', to: '/vehicleOnboarding' },
                 { label: 'Coupons', icon: 'pi pi-fw pi-ticket', to: '/coupons' },
                 { label: 'Users', icon: 'pi pi-fw pi-user', to: '/users' },
                 { label: 'Chargers', icon: 'pi pi-fw pi-battery', to: '/chargers' },

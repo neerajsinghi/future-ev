@@ -1,16 +1,49 @@
 .form-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 0fr;
+    gap: 1rem;
     /* Single column on small screens */
 }
 
-@media (min-width: 768px) {
+.notif-dialog {
+    width: 80vw;
+    border-radius: 8px;
+    /* Add some border radius for rounded corners */
+}
 
-    /* Adjust breakpoint as needed */
+.notif-form {
+    display: grid;
+    gap: 1rem;
+    /* Add some gap between the form items */
+}
+
+@media (min-width: 768px) {
+    .notif-dialog {
+        width: 500px;
+    }
+
     .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        /* Single column on larger screens */
+    }
+
+    .notif-form {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
         /* Two columns on larger screens */
     }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    /* Adjust field styling as needed */
+}
+
+.field-full {
+    grid-column: span 2;
 }
 
 .switch-field label {
@@ -22,4 +55,5 @@
     display: flex;
     justify-content: center;
     margin-top: 2rem;
+    grid-column: span 2;
 }

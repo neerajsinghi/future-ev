@@ -244,9 +244,9 @@ const Stations = () => {
             </Button>
         );
     };
-    const ViewStationOnMap = (rowData: any) => {
-        return <i onClick={(e) => router.push(`/stations/${rowData.id}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
-    };
+    // const ViewStationOnMap = (rowData: any) => {
+    //     return <i onClick={(e) => router.push(`/stations/${rowData.id}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
+    // };
     //public template
     const statusPublicTemplate = (rowData: any) => {
         return (
@@ -255,6 +255,7 @@ const Stations = () => {
             </Button>
         );
     };
+
     const columns = [
         { key: 'name', label: 'Name', _props: { scope: 'col' } },
         { key: 'shortName', label: 'Short Name', _props: { scope: 'col' } },
@@ -265,8 +266,8 @@ const Stations = () => {
         { key: 'group', label: 'Group', _props: { scope: 'col' } },
         { key: 'superVisorName', label: 'Supervisor Name', _props: { scope: 'col' } },
         { key: 'stock', label: 'Stock', _props: { scope: 'col' }, body: statusStockTemplate },
-        { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate },
-        { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
+        { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate }
+        // { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
     ];
 
     return (
@@ -282,7 +283,7 @@ const Stations = () => {
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        <CustomTable mapNavigatePath="/stations/viewStationOnMap" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
                     </div>
                 </div>
             </div>

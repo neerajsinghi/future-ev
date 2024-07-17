@@ -4,6 +4,20 @@
     /* Single column on small screens */
 }
 
+
+
+
+/* @media (min-width: 768px) {
+
+    .column-status,
+    .column-phoneNumber,
+    .column-serviceType,
+    .column-userBlocked,
+    .column-referralCode {
+        display: none;
+    }
+} */
+
 @media (min-width: 768px) {
 
     /* Adjust breakpoint as needed */

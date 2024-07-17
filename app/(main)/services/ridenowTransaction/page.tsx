@@ -4,8 +4,10 @@ import { getBookings } from '@/app/api/iotBikes';
 import { useEffect, useState } from 'react';
 import CustomTable from '../../components/table';
 import { BreadCrumb } from 'primereact/breadcrumb';
+import { useRouter } from 'next/navigation';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
+    const router = useRouter();
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     useEffect(() => {
@@ -14,6 +16,10 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
             setItems([]);
         };
     }, []);
+
+    const ViewStationOnMap = (rowData: any) => {
+        return <i onClick={(e) => router.push(`/services/ridenowTransaction/${rowData.id}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
+    };
 
     const columns: any[] = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
@@ -33,11 +39,13 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
         { key: 'startingStationId', label: 'StartingStationId', _props: { scope: 'col' } },
         { key: 'endingStationId', label: 'EndingStationId', _props: { scope: 'col' } },
+        { key: 'userId', label: 'EndingStationId', _props: { scope: 'col' } },
         { key: 'carbonEmissionSaved', label: 'CarbonEmissionSaved', _props: { scope: 'col' } },
         // { key: 'startingStation', label: 'StartingStation', _props: { scope: 'col' } },
         // { key: 'endingStation', label: 'EndingStation', _props: { scope: 'col' } },
         { key: 'couponCode', label: 'CouponCode', _props: { scope: 'col' } },
-        { key: 'discount', label: 'Discount', _props: { scope: 'col' } }
+        { key: 'discount', label: 'Discount', _props: { scope: 'col' } },
+        { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
     ];
     const fetchData = async () => {
         debugger;
@@ -61,7 +69,6 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
             } else {
                 data.push(...response.data);
             }
-            console.log(data);
             setItems(data);
         }
         setLoading1(false);
@@ -72,7 +79,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
                 <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
             </div>
             <div className="col-12">
-                <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                <CustomTable mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
             </div>
         </div>
     );

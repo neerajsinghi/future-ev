@@ -1,26 +1,27 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, Data } from '@react-google-maps/api';
-import { getStationsByID } from '@/app/api/iotBikes';
+import { getStations } from '@/app/api/iotBikes';
 
 const containerStyle = {
     width: '100%',
     height: '100vh'
 };
 
-const ViewStation = ({ params }: { params: any }) => {
+const ViewStations = () => {
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
     });
 
-    const [stationData, setStationData] = useState<any>(null);
+    const [stationsData, setStationsData] = useState<any>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await getStationsByID(params.stationId);
-                setStationData(response);
+                const response = await getStations();
+
+                setStationsData(response.data);
             } catch (error) {
                 console.error('Error fetching station data:', error);
             } finally {
@@ -29,36 +30,34 @@ const ViewStation = ({ params }: { params: any }) => {
         };
 
         fetchData();
-    }, [params.stationId]);
+    }, []);
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    //! even if invalid id it returns success true but no data so validate accordingly
-    if (!stationData || Object.keys(stationData.data).length <= 1) {
-        return <div style={{ textAlign: 'center' }}>Invalid ID, No Station found with this ID</div>;
-    }
-
-    const stationLocation = {
-        type: 'Feature',
-        geometry: {
-            type: 'Point',
-            coordinates: stationData.data.location.coordinates
-        },
-        properties: { id: stationData.data.id, name: stationData.data.name }
+    const geoJsonData = {
+        type: 'FeatureCollection',
+        features: stationsData.map((station: any) => ({
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: station.location.coordinates
+            },
+            properties: { id: station.id, name: station.name }
+        }))
     };
 
     const defaultCenter = {
-        lat: stationData.data.location.coordinates[1],
-        lng: stationData.data.location.coordinates[0]
+        lat: stationsData.length ? stationsData[0].location.coordinates[1] : 0,
+        lng: stationsData.length ? stationsData[0].location.coordinates[0] : 0
     };
 
     return (
         <div>
-            <h1>Station: {stationData.data.name}</h1>
+            <h1>Stations</h1>
             {isLoaded ? (
-                <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={15}>
+                <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={12}>
                     <Data
                         options={{
                             controlPosition: window.google.maps.ControlPosition.TOP_LEFT,
@@ -74,7 +73,7 @@ const ViewStation = ({ params }: { params: any }) => {
                             });
                         }}
                         onLoad={(data) => {
-                            data.addGeoJson(stationLocation);
+                            data.addGeoJson(geoJsonData);
                         }}
                     />
                 </GoogleMap>
@@ -85,4 +84,4 @@ const ViewStation = ({ params }: { params: any }) => {
     );
 };
 
-export default ViewStation;
+export default ViewStations;

@@ -241,6 +241,19 @@ export async function getUsers(type = '') {
     }
     return responseObj;
 }
+
+// export async function getUsersByCategory(category: string, value: string | number | Date) {
+//     let responseObj = { success: false, data: [] as any[], message: '' };
+//     try {
+//         let url = `${baseUrl}users?category=${category}&value=${value}`;
+//         let response = await webService.get(url);
+//         responseObj = getSuccessResponse(response, responseObj);
+//     } catch {
+//         responseObj = getErrorResponse(responseObj);
+//     }
+//     return responseObj;
+// }
+
 export async function addUser(data: any) {
     let responseObj = { success: false, data: null, message: '' };
 

@@ -51,7 +51,8 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
     const [station, setStation] = useState<any[]>([]);
     const [devices, setDevices] = useState<{ name: string; code: string }[]>([]);
     const [vehicleType, setVehicleType] = useState<{ name: string; code: string }[]>([]);
-    const [city, setCity] = useState<any>([]);
+    const [cities, setCities] = useState<any[]>([]);
+
     const [selectedCity, setSelectedCity] = useState<any>(null);
     const [selectedStation, setSelectedStation] = useState<any>(null);
     const [selectedVehicleType, setSelectedVehicleType] = useState<any>(null);
@@ -169,14 +170,22 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         if (response.success && response.data) {
             const stations = [];
             for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i]['address']['city'] === selectedCity['name']) {
-                    stations.push({ name: response.data[i]['name'], code: response.data[i]['id'], location: response.data[i]['location'], city: response.data[i]['address']['city'] });
+                if (response.data[i]['address']['city'] === selectedCity) {
+                    // Correct comparison with selectedCity
+                    stations.push({
+                        name: response.data[i]['name'],
+                        code: response.data[i]['id'],
+                        location: response.data[i]['location'],
+                        city: response.data[i]['address']['city']
+                    });
                 }
             }
-            setStation(stations);
+            console.log(stations);
+            setItems(stations); // Use setItems to update the state with the filtered stations
         }
         setLoading1(false);
     };
+
     const getAVehicleTypes = async () => {
         const response = await getVehicleTypes();
         if (response.success) {
@@ -188,16 +197,14 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         }
         setLoading1(false);
     };
-    const getCityD = async () => {
-        let response = await getCity();
-        if (response.success) {
-            if (response.data) {
-                const data: any[] = [];
-                for (let i = 0; i < response.data.length; i++) {
-                    data.push({ name: response.data[i].name, code: response.data[i].name });
-                }
-                setCity(() => data);
+    const fetchCities = async () => {
+        const data: any = [];
+        const response = await getCity();
+        if (response.success && response.data) {
+            for (let i = 0; i < response.data.length; i++) {
+                data.push({ name: response.data[i].name, code: response.data[i].name });
             }
+            setCities(() => data);
         }
     };
 
@@ -367,6 +374,9 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         }
     };
     useEffect(() => {
+        fetchCities();
+        getAVehicleTypes();
+        getAStations();
         console.log(formData.permitsRequired);
     }, [formData.permitsRequired]);
     return (
@@ -399,7 +409,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                 <form onSubmit={handleSubmit} className="p-fluid grid">
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="name">City</label>
-                        <Dropdown value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                        <Dropdown value={selectedCity} options={cities.map((city) => city.name)} onChange={(e) => handleChange('city', e.value)} placeholder="Select a City" />
                     </div>
 
                     <div className="field col-12 lg:col-6">

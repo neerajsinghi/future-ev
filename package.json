@@ -16,6 +16,7 @@
     "@types/react-dom": "18.2.5",
     "axios": "^1.7.2",
     "chart.js": "4.2.1",
+    "date-fns": "^3.6.0",
     "firebase": "^10.12.3",
     "next": "13.4.8",
     "primeflex": "^3.3.1",

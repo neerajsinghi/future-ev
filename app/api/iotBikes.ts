@@ -122,7 +122,7 @@ export async function updateStation(id: string, data: any) {
     }
     return responseObj;
 }
-export async function getStations() {
+export async function getStations() { 
     let responseObj = { success: false, data: [] as any[], message: '' };
     try {
         let response = await webService.get(baseUrl + 'station');

@@ -6,17 +6,18 @@ import { useEffect, useState } from 'react';
 import CustomTable from '../components/table';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import './plan.css';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { InputNumber } from 'primereact/inputnumber';
-import { setStation, getStations, getUsers, updateStation } from '@/app/api/iotBikes';
+import { setStation, getStations, getUsers, updateStation, getServices } from '@/app/api/iotBikes';
 import Link from 'next/link';
 import { Tag } from 'primereact/tag';
 import { getCity } from '@/app/api/services';
 import { MultiSelect } from 'primereact/multiselect';
 import { useRouter } from 'next/navigation';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
+import { ColumnEditorOptions, ColumnEvent, ColumnFilterElementTemplateOptions } from 'primereact/column';
 
 /*
 Name
@@ -57,6 +58,19 @@ interface Location {
     type: string;
     coordinates: number[]; // [longitude, latitude]
 }
+
+interface serviceTypes {
+    id: string;
+    name: string;
+    type: string;
+    description: string;
+    price: number;
+    active: boolean;
+    discount: number;
+    status: string;
+    createdTime: string;
+}
+
 const Stations = () => {
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
@@ -68,9 +82,10 @@ const Stations = () => {
     const [users, setUsers] = useState<any>([]);
     const [city, setCity] = useState<any>([]);
     const [selectedCity, setSelectedCity] = useState<any>(null);
+    const [serviceType, setServiceType] = useState<serviceTypes[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [selectedServices, setSelectedServices] = useState<any[]>([]);
-    const [markers, setMarkers] = useState<any>()
+    const [markers, setMarkers] = useState<any>();
     const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 28.6139, lng: 77.209 });
     const [zoom, setZoom] = useState<number>(12);
     const [formData, setFormData] = useState<StationFormData>({
@@ -116,16 +131,15 @@ const Stations = () => {
             setSelectedUser(value);
             setFormData({ ...formData, [name]: value.code });
         } else if (name === 'servicesAvailable') {
+            console.log(value);
             setSelectedServices(value);
         } else {
             setFormData({ ...formData, [name]: value });
         }
     };
     const changeCenter = (selectedCity: string) => {
-        debugger
-        const selectedCityObject = city.find((place: { name: any; }) => place.name === selectedCity);
+        const selectedCityObject = city.find((place: { name: any }) => place.name === selectedCity);
         if (selectedCityObject && selectedCityObject.locationPolygon.coordinates.length > 0) {
-            debugger
             const coordinates = selectedCityObject.locationPolygon.coordinates[0];
             let centerCoordinates: any | undefined;
 
@@ -145,19 +159,18 @@ const Stations = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Send formData to your backend for processing
-        console.log(formData);
-        for (let i = 0; i < selectedServices.length; i++) {
-            debugger
-            formData.servicesAvailable.push(selectedServices[i]);
-        }
+        // console.log(formData);
+        formData.servicesAvailable.push(selectedServices);
         const response = await setStation(formData);
         if (response.success && response.data) {
             setShowDialog(false);
             fetchData();
+            // router.refresh();
         } else {
             console.log('Failed');
         }
     };
+
     const getCityD = async () => {
         let response = await getCity();
         if (response.success) {
@@ -170,6 +183,7 @@ const Stations = () => {
             }
         }
     };
+
     const fetchData = async () => {
         getCityD();
         const response1 = await getUsers('admin');
@@ -192,8 +206,17 @@ const Stations = () => {
 
         setLoading1(false);
     };
+
+    const getAvailableServiceTypes = async () => {
+        const response = await getServices();
+        if (response.data && response.success) {
+            setServiceType(response.data);
+        }
+    };
+
     useEffect(() => {
         fetchData();
+        getAvailableServiceTypes();
     }, []);
     const statusAddressTemplate = (rowData: any) => {
         return <div>{rowData.address.address}</div>;
@@ -246,6 +269,34 @@ const Stations = () => {
             fetchData();
         }
     };
+
+    const cellEditor = (options: ColumnEditorOptions) => {
+        return stationCellEditor(options);
+    };
+
+    const onCellEditComplete = async (e) => {
+        let { rowData, newValue, field, originalEvent: event } = e;
+        const body = {
+            [field]: newValue
+        };
+        const response = await updateStation(rowData.id, body);
+        if (response.success) {
+            fetchData();
+        }
+    };
+
+    const stationCellEditor = (options: any) => {
+        console.log(options);
+        return (
+            <MultiSelect
+                value={options.value}
+                options={['ride now', 'rental', 'charging', 'eCar']} // Assuming you have a list of options for the MultiSelect
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => options?.editorCallback && options.editorCallback(e.value)}
+                onKeyDown={(e) => e.stopPropagation()}
+            />
+        );
+    };
+
     const statusTemplate = (rowData: any) => {
         return (
             <Button tooltip="Click to change status" severity={rowData.status === 'available' ? 'success' : 'danger'} onClick={() => changeStatus(rowData.status === 'available' ? 'unavailable' : 'available', rowData.id)}>
@@ -265,9 +316,35 @@ const Stations = () => {
         );
     };
 
+    const statusItemTemplate = (option: any) => {
+        return <span className={`customer-badge status-${option}`}>{option}</span>;
+    };
+
+    const typeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+        return (
+            <MultiSelect
+                value={options.value}
+                options={serviceType}
+                onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)}
+                itemTemplate={statusItemTemplate}
+                placeholder="Select One"
+                className="p-column-filter"
+                showClear
+            />
+        );
+    };
+
     const columns = [
         { key: 'name', label: 'Name', _props: { scope: 'col' } },
         { key: 'shortName', label: 'Short Name', _props: { scope: 'col' } },
+        {
+            key: 'servicesAvailable',
+            label: 'Service',
+            _props: { scope: 'col', className: 'column-serviceType' },
+            body: (rowData: any) => (rowData.servicesAvailable ? rowData.servicesAvailable.join(', ') : 'NA'),
+            cellEditor: cellEditor,
+            onCellEditComplete: onCellEditComplete
+        },
         { key: 'address', label: 'Address', _props: { scope: 'col' }, body: statusAddressTemplate },
         { key: 'city', label: 'City', _props: { scope: 'col' }, body: statusCityTemplate },
         { key: 'long', label: 'Longitude', _props: { scope: 'col' }, body: statusLongTemplate },
@@ -279,16 +356,19 @@ const Stations = () => {
         // { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
     ];
     const onMapClick = (event: any) => {
-        debugger
         setMarkers({
             lat: event.latLng.lat(),
-            lng: event.latLng.lng(),
+            lng: event.latLng.lng()
         });
-        const form = { ...formData }
-        console.log({ markers })
-        form.location.coordinates = [event.latLng.lng, event.latLng.lat]
-        setFormData(form)
+        const form = { ...formData };
+        console.log({ markers });
+        form.location.coordinates = [event.latLng.lng(), event.latLng.lat()];
+        setFormData(form);
     };
+
+    useEffect(() => {
+        console.log(selectedServices);
+    }, [selectedServices]);
 
     return (
         <>
@@ -329,15 +409,10 @@ const Stations = () => {
                         <MultiSelect value={selectedServices} options={[{ name: 'ride now', code: "hourly" }, { name: 'rental', code: "rental" }, { name: 'charging', code: "charging" }, { name: 'eCar', code: 'eCar' }]} onChange={(e) => handleChange('servicesAvailable', e.value)} optionLabel='name' optionValue='code' />
                     </div>
                     {/* Address Fields */}
-                    <div className="field col-12"></div>
-                    <div className="field col-12">
+                    <div className="col-12">
                         <h4>Address</h4>
                     </div>
-                    <div className="field col-12"></div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="address.address">Address Line</label>
-                        <InputTextarea id="address.address" value={formData.address.address} onChange={(e) => handleChange('address.address', e.target.value)} />
-                    </div>
+
                     {/* ... (other address fields - country, pin, city, state) */}
                     <div className="field col-12 md:col-6">
                         <label htmlFor="address.country">Country</label>
@@ -371,29 +446,31 @@ const Stations = () => {
                         <InputText id="address.state" value={formData.address.state} onChange={(e) => handleChange('address.state', e.target.value)} />
                     </div>
 
+                    <div className="field col-12">
+                        <label htmlFor="address.address">Address Line</label>
+                        <InputTextarea id="address.address" value={formData.address.address} onChange={(e) => handleChange('address.address', e.target.value)} />
+                    </div>
                     {/* Location Fields */}
-                    <div className="field col-12"></div>
-                    {selectedCity && <>
-                        <div className="field col-12">
-                            <h4>Location</h4>
-                        </div>
-                        <div className="field col-12"></div>
-
-                        {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
-                        <div className="field col-12 md:col-12">
-                            {isLoaded && (
-                                <GoogleMap
-                                    mapContainerStyle={{ width: '100%', height: '400px' }}
-                                    center={center} // Initial map center (adjust)
-                                    zoom={zoom}
-                                    onClick={onMapClick}
-                                >
-                                    <MarkerF position={markers} />
-                                </GoogleMap>
-                            )}
-                        </div>
-                    </>}
-                    <div className="field col-12"></div>
+                    {selectedCity && (
+                        <>
+                            <div className="col-12">
+                                <h4>Location</h4>
+                            </div>
+                            {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
+                            <div className="field col-12 md:col-12">
+                                {isLoaded && (
+                                    <GoogleMap
+                                        mapContainerStyle={{ width: '100%', height: '400px' }}
+                                        center={center} // Initial map center (adjust)
+                                        zoom={zoom}
+                                        onClick={onMapClick}
+                                    >
+                                        <MarkerF position={markers} />
+                                    </GoogleMap>
+                                )}
+                            </div>
+                        </>
+                    )}
 
                     {/* ... (fields for group, supervisorID, stock, public, status) */}
                     <div className="field col-12 md:col-6">
@@ -406,9 +483,8 @@ const Stations = () => {
                         <Dropdown id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" placeholder="Select a Supervisor" />
                     </div>
                     {/* ... (submit button) */}
-                    <div className="field col-12"></div>
-                    <div className="field col-2 button-row">
-                        <Button label="Submit" type="submit" />
+                    <div className="field col-12 button-row w-full">
+                        <Button label="Submit" type="submit" className="px-5 py-2 w-full" />
                     </div>
                 </form>
             </Dialog>
@@ -417,5 +493,3 @@ const Stations = () => {
 };
 
 export default Stations;
-
-

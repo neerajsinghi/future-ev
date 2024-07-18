@@ -17,6 +17,7 @@ import { Tooltip } from 'primereact/tooltip';
 import Link from 'next/link';
 import { flattenData } from '@/app/api/user';
 import { ColumnFilterElementTemplateOptions } from 'primereact/column';
+import useIsMobile from '@/app/api/hooks';
 export const dynamic = 'force-dynamic';
 
 const Users = ({ searchParams }: { searchParams: any }) => {
@@ -24,24 +25,25 @@ const Users = ({ searchParams }: { searchParams: any }) => {
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
 
-    const [dlFrontImage, setDlFrontImage] = useState("")
-    const [idFrontImage, setIdFrontImage] = useState("")
-    const [dlBackImage, setDlBackImage] = useState("")
-    const [idBackImage, setIdBackImage] = useState("")
-    const [idVerified, setIdVerified] = useState<any>(false)
-    const [dlVerified, setDlVerified] = useState<any>(false)
-    const [selectedId, setSelectedId] = useState<any>(null)
-    const [blockedBy, setBlockedBy] = useState<any>("")
-    const [BlockReason, setBlockReason] = useState<any>("")
-    const [blockedDialog, setBlockedDialog] = useState(false)
-    const [walletData, setWalletData] = useState<any>([])
-    const [ridesData, setRidesData] = useState<any>([])
+    const [dlFrontImage, setDlFrontImage] = useState('');
+    const [idFrontImage, setIdFrontImage] = useState('');
+    const [dlBackImage, setDlBackImage] = useState('');
+    const [idBackImage, setIdBackImage] = useState('');
+    const [idVerified, setIdVerified] = useState<any>(false);
+    const [dlVerified, setDlVerified] = useState<any>(false);
+    const [selectedId, setSelectedId] = useState<any>(null);
+    const [blockedBy, setBlockedBy] = useState<any>('');
+    const [BlockReason, setBlockReason] = useState<any>('');
+    const [blockedDialog, setBlockedDialog] = useState(false);
+    const [walletData, setWalletData] = useState<any>([]);
+    const [ridesData, setRidesData] = useState<any>([]);
     const services = [
         { name: 'Ride Now', value: 'hourly' },
         { name: 'Rental', value: 'rental' },
         { name: 'Charging', value: 'charging' },
         { name: 'ECar', value: 'ECar' }
     ];
+    const isMobile = useIsMobile();
     const localUser = JSON.parse(localStorage.getItem('user') || '{}');
     const fetchData = async () => {
         const response = await getUsers('user');
@@ -56,7 +58,6 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                     data.push(flattenData(response.data[i]));
                 }
             }
-            debugger;
             setItems(data);
         }
 
@@ -125,7 +126,6 @@ const Users = ({ searchParams }: { searchParams: any }) => {
         }
     };
     const validateDl = async () => {
-        debugger;
         const body: any = {
             dlVerified: true
         };
@@ -227,91 +227,118 @@ const Users = ({ searchParams }: { searchParams: any }) => {
         );
     };
     const columns = [
-        { key: 'id', label: 'Id', _props: { scope: 'col' } },
-        { key: 'name', label: 'Name', _props: { scope: 'col' } },
+        !isMobile && { key: 'id', label: 'Id', _props: { scope: 'col', className: 'column-id' } },
+        { key: 'name', label: 'Name', _props: { scope: 'col', className: 'column-name' } },
         {
             key: 'totalBalance',
             label: 'Total Balance',
-            _props: { scope: 'col' },
+            _props: { scope: 'col', className: 'column-totalBalance' },
             body: balanceTemplate
         },
-        { key: 'totalRides', label: 'Total Bookings', body: totalRidesTemplate },
-        { key: 'status', label: 'Status', _props: { scope: 'col' } },
-        { key: 'phoneNumber', label: 'Phone Number', _props: { scope: 'col' } },
-        { key: 'serviceType', label: 'Service', _props: { scope: 'col' }, body: (rowData: any) => (rowData.plan && rowData.plan.name ? rowData.plan.name : 'NA'), elementFilter: typeFilterTemplate },
-        { key: 'userBlocked', label: 'User Blocked', _props: { scope: 'col' }, body: blockedUserTemplate },
-        { key: 'referralCode', label: 'Referral Code', _props: { scope: 'col' } },
+        { key: 'totalRides', label: 'Total Bookings', body: totalRidesTemplate, _props: { className: 'column-totalRides' } },
+        !isMobile && { key: 'status', label: 'Status', _props: { scope: 'col', className: 'column-status' } },
+        !isMobile && { key: 'phoneNumber', label: 'Phone Number', _props: { scope: 'col', className: 'column-phoneNumber' } },
+        !isMobile && { key: 'serviceType', label: 'Service', _props: { scope: 'col', className: 'column-serviceType' }, body: (rowData: any) => (rowData.serviceType ? rowData.serviceType : 'NA'), elementFilter: typeFilterTemplate },
+        !isMobile && { key: 'userBlocked', label: 'User Blocked', _props: { scope: 'col', className: 'column-userBlocked' }, body: blockedUserTemplate },
+        !isMobile && { key: 'referralCode', label: 'Referral Code', _props: { scope: 'col', className: 'column-referralCode' } },
         {
-            key: 'idVerified', label: 'ID Verified', _props: { scope: 'col' }, body: (rowData: any) => rowData.idVerified ? <div onClick={() => {
-                if (rowData.idFrontImage) {
-                    setIdFrontImage(rowData.idFrontImage)
-                }
-                if (rowData.idBackImage) {
-                    setIdBackImage(rowData.idBackImage)
-                }
-                if (rowData.idFrontImage && rowData.idBackImage) {
-                    setDlBackImage("")
-                    setDlFrontImage("")
-                    setSelectedId(rowData.id)
-                    setShowDialog(true)
-                }
-                setIdVerified(true)
-            }}><span style={{ color: rowData.idFrontImage && rowData.idBackImage ? "green" : "white" }}>Yes</span></div> : <div onClick={() => {
-                if (rowData.idFrontImage) {
-                    setIdFrontImage(rowData.idFrontImage)
-                }
-                if (rowData.idBackImage) {
-
-                    setIdBackImage(rowData.idBackImage)
-                }
-                if (rowData.idFrontImage && rowData.idBackImage) {
-                    setDlBackImage("")
-                    setDlFrontImage("")
-                    setSelectedId(rowData.id)
-                    setShowDialog(true)
-                }
-            }}><span style={{ color: rowData.idFrontImage && rowData.idBackImage ? "green" : "white" }}>No</span></div>
+            key: 'idVerified',
+            label: 'ID Verified',
+            _props: { scope: 'col', className: 'column-idVerified' },
+            body: (rowData: any) =>
+                rowData.idVerified ? (
+                    <Button
+                        // className="hidden lg:block"
+                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'red' }}
+                        onClick={() => {
+                            if (rowData.idFrontImage) {
+                                setIdFrontImage(rowData.idFrontImage);
+                            }
+                            if (rowData.idBackImage) {
+                                setIdBackImage(rowData.idBackImage);
+                            }
+                            if (rowData.idFrontImage && rowData.idBackImage) {
+                                setDlBackImage('');
+                                setDlFrontImage('');
+                                setSelectedId(rowData.id);
+                                setShowDialog(true);
+                            }
+                            setIdVerified(true);
+                        }}
+                    >
+                        <span style={{ color: 'white' }}>Yes</span>
+                    </Button>
+                ) : (
+                    <Button
+                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'red' }}
+                        onClick={() => {
+                            if (rowData.idFrontImage) {
+                                setIdFrontImage(rowData.idFrontImage);
+                            }
+                            if (rowData.idBackImage) {
+                                setIdBackImage(rowData.idBackImage);
+                            }
+                            if (rowData.idFrontImage && rowData.idBackImage) {
+                                setDlBackImage('');
+                                setDlFrontImage('');
+                                setSelectedId(rowData.id);
+                                setShowDialog(true);
+                            }
+                        }}
+                    >
+                        <span style={{ color: 'white' }}>No</span>
+                    </Button>
+                )
         },
         {
-            key: 'dlVerified', label: 'DL Verified', _props: { scope: 'col' }, body: (rowData: any) => rowData.dlVerified ? <div
-                onClick={
-                    () => {
-                        debugger
-                        if (rowData.dlFrontImage) {
-                            setDlFrontImage(rowData.dlFrontImage)
-                        }
-                        if (rowData.dlBackImage) {
-                            setDlBackImage(rowData.dlBackImage)
-                        }
-                        if (rowData.dlFrontImage && rowData.dlBackImage) {
-                            setIdFrontImage("")
-                            setIdBackImage("")
-                            setSelectedId(rowData.id)
-                            setShowDialog(true)
-
-                        }
-                        setDlVerified(true)
-                    }
-                }
-            ><span style={{ color: rowData.dlFrontImage && rowData.dlBackImage ? "green" : "white" }}>Yes</span></div> : <div onClick={
-                () => {
-                    if (rowData.dlFrontImage) {
-                        setDlFrontImage(rowData.dlFrontImage)
-                    }
-                    if (rowData.dlBackImage) {
-                        setDlBackImage(rowData.dlBackImage)
-                    }
-                    if (rowData.dlFrontImage && rowData.dlBackImage) {
-                        setIdFrontImage("")
-                        setIdBackImage("")
-                        setSelectedId(rowData.id)
-                        setShowDialog(true)
-                    }
-                }
-            }
-            > <span style={{ color: rowData.dlFrontImage && rowData.dlBackImage ? "green" : "white" }}>No</span></div >
-        },
-    ]
+            key: 'dlVerified',
+            label: 'DL Verified',
+            _props: { scope: 'col', className: 'column-dlVerified' },
+            body: (rowData: any) =>
+                rowData.dlVerified ? (
+                    <Button
+                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'red' }}
+                        onClick={() => {
+                            if (rowData.dlFrontImage) {
+                                setDlFrontImage(rowData.dlFrontImage);
+                            }
+                            if (rowData.dlBackImage) {
+                                setDlBackImage(rowData.dlBackImage);
+                            }
+                            if (rowData.dlFrontImage && rowData.dlBackImage) {
+                                setIdFrontImage('');
+                                setIdBackImage('');
+                                setSelectedId(rowData.id);
+                                setShowDialog(true);
+                            }
+                            setDlVerified(true);
+                        }}
+                    >
+                        <span style={{ color: 'white' }}>Yes</span>
+                    </Button>
+                ) : (
+                    <Button
+                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'red' }}
+                        onClick={() => {
+                            if (rowData.dlFrontImage) {
+                                setDlFrontImage(rowData.dlFrontImage);
+                            }
+                            if (rowData.dlBackImage) {
+                                setDlBackImage(rowData.dlBackImage);
+                            }
+                            if (rowData.dlFrontImage && rowData.dlBackImage) {
+                                setIdFrontImage('');
+                                setIdBackImage('');
+                                setSelectedId(rowData.id);
+                                setShowDialog(true);
+                            }
+                        }}
+                    >
+                        <span style={{ color: 'white' }}>No</span>
+                    </Button>
+                )
+        }
+    ];
 
     return (
         <>
@@ -319,11 +346,11 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                 <div className="col-12">
                     <BreadCrumb model={[{ label: 'User' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
-                <div className="col-12">
+                {/* <div className="col-12">
                     <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
                         <Button type="button" icon="pi pi-plus-circle" label="User" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
-                </div>
+                </div> */}
                 <div className="col-12 m-10">
                     <div className="card">
                         <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />

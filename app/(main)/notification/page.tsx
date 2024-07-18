@@ -7,7 +7,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
+import { InputNumber, InputNumberChangeEvent, InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from 'primereact/multiselect';
@@ -107,13 +107,13 @@ const Notification = () => {
                             console.log(formData.targetValue);
                             filteredUsers = response1.data.filter((user) => {
                                 const userAge = calculateAge(user.dob);
-                                return userAge <= formData.targetValue;
+                                return userAge <= Number(formData.targetValue);
                             });
 
                             console.log('Filtered Users by Age:', filteredUsers);
                             break;
                         case 'birthday':
-                            const targetDate = formatDate(formData.targetValue);
+                            const targetDate = formatDate(String(formData.targetValue));
                             filteredUsers = response1.data.filter((user) => {
                                 return user.dob === targetDate;
                             });
@@ -194,7 +194,7 @@ const Notification = () => {
                         {formData.category === 'city' && (
                             <div className="field">
                                 <label htmlFor="targetValue">City</label>
-                                <InputText className="element" id="targetValue" value={formData.targetValue} onChange={(e) => handleChange('targetValue', e.target.value)} />
+                                <InputText className="element" id="targetValue" value={String(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.target.value)} />
                             </div>
                         )}
                         {formData.category === 'gender' && (
@@ -218,19 +218,19 @@ const Notification = () => {
                         {formData.category === 'age' && (
                             <div className="field">
                                 <label htmlFor="targetValue">Age</label>
-                                <InputNumber className="element" id="targetValue" value={formData.targetValue} onChange={(e: InputNumberValueChangeEvent) => handleChange('targetValue', e.value)} />
+                                <InputNumber className="element" id="targetValue" value={Number(formData.targetValue)} onChange={(e: InputNumberChangeEvent) => handleChange('targetValue', e.value)} />
                             </div>
                         )}
                         {formData.category === 'birthday' && (
                             <div className="field">
                                 <label htmlFor="targetValue">Birthday</label>
-                                <Calendar className="element" id="targetValue" value={formData.targetValue} onChange={(e) => handleChange('targetValue', e.value)} showIcon />
+                                <Calendar className="element" id="targetValue" value={new Date(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.value)} showIcon />
                             </div>
                         )}
                         {formData.category === 'couponCode' && (
                             <div className="field">
                                 <label htmlFor="targetValue">Coupon Code</label>
-                                <InputText className="element" id="targetValue" value={formData.targetValue} onChange={(e) => handleChange('targetValue', e.target.value)} />
+                                <InputText className="element" id="targetValue" value={String(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.target.value)} />
                             </div>
                         )}
                         <div className={!formData.category ? 'field field-full' : 'field'}>

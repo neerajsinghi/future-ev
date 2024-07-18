@@ -81,7 +81,7 @@ const Stations = () => {
     const [showDialog, setShowDialog] = useState(false);
     const [users, setUsers] = useState<any>([]);
     const [city, setCity] = useState<any>([]);
-    const [selectedCity, setSelectedCity] = useState<any>(null);
+    const [selectedCity, setSelectedCity] = useState<any[]>([]);
     const [serviceType, setServiceType] = useState<serviceTypes[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [selectedServices, setSelectedServices] = useState<any[]>([]);
@@ -160,7 +160,7 @@ const Stations = () => {
         e.preventDefault();
         // Send formData to your backend for processing
         // console.log(formData);
-        formData.servicesAvailable.push(selectedServices);
+        formData.servicesAvailable.push(...selectedServices);
         const response = await setStation(formData);
         if (response.success && response.data) {
             setShowDialog(false);
@@ -274,7 +274,7 @@ const Stations = () => {
         return stationCellEditor(options);
     };
 
-    const onCellEditComplete = async (e) => {
+    const onCellEditComplete = async (e: any) => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
             [field]: newValue
@@ -290,8 +290,18 @@ const Stations = () => {
         return (
             <MultiSelect
                 value={options.value}
-                options={['ride now', 'rental', 'charging', 'eCar']} // Assuming you have a list of options for the MultiSelect
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => options?.editorCallback && options.editorCallback(e.value)}
+                options={[
+                    { name: 'ride now', code: 'hourly' },
+                    { name: 'rental', code: 'rental' },
+                    { name: 'charging', code: 'charging' },
+                    { name: 'eCar', code: 'eCar' }
+                ]}
+                onChange={(e) => {
+                    e.preventDefault();
+                    options?.editorCallback && options.editorCallback(e.value);
+                }}
+                optionLabel="name"
+                optionValue="code"
                 onKeyDown={(e) => e.stopPropagation()}
             />
         );
@@ -406,7 +416,18 @@ const Stations = () => {
                     </div>
                     <div className="field col-12 md:col-6">
                         <label htmlFor="service">Services Available</label>
-                        <MultiSelect value={selectedServices} options={[{ name: 'ride now', code: "hourly" }, { name: 'rental', code: "rental" }, { name: 'charging', code: "charging" }, { name: 'eCar', code: 'eCar' }]} onChange={(e) => handleChange('servicesAvailable', e.value)} optionLabel='name' optionValue='code' />
+                        <MultiSelect
+                            value={selectedServices}
+                            options={[
+                                { name: 'ride now', code: 'hourly' },
+                                { name: 'rental', code: 'rental' },
+                                { name: 'charging', code: 'charging' },
+                                { name: 'eCar', code: 'eCar' }
+                            ]}
+                            onChange={(e) => handleChange('servicesAvailable', e.value)}
+                            optionLabel="name"
+                            optionValue="code"
+                        />
                     </div>
                     {/* Address Fields */}
                     <div className="col-12">

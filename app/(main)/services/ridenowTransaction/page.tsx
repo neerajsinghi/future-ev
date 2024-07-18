@@ -18,11 +18,12 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     }, []);
 
     const ViewStationOnMap = (rowData: any) => {
-        return <i onClick={(e) => router.push(`/services/ridenowTransaction/${rowData.id}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
+        return rowData.status === 'completed' ? 'NA' : <i onClick={(e) => router.push(`/services/ridenowTransaction/${rowData.profileId + ' ' + rowData.id}/`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
     };
 
     const columns: any[] = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
+        { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap },
         { key: 'profileId', label: 'ProfileId', _props: { scope: 'col' } },
         { key: 'deviceId', label: 'DeviceId', _props: { scope: 'col' } },
         { key: 'startTime', label: 'StartTime', _props: { scope: 'col' } },
@@ -44,11 +45,10 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         // { key: 'startingStation', label: 'StartingStation', _props: { scope: 'col' } },
         // { key: 'endingStation', label: 'EndingStation', _props: { scope: 'col' } },
         { key: 'couponCode', label: 'CouponCode', _props: { scope: 'col' } },
-        { key: 'discount', label: 'Discount', _props: { scope: 'col' } },
-        { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
+        { key: 'discount', label: 'Discount', _props: { scope: 'col' } }
     ];
     const fetchData = async () => {
-        debugger;
+        // debugger;
         let response = await getBookings('hourly');
         if (response.success && response.data) {
             const data = [];

@@ -1,28 +1,27 @@
 'use client';
-import { BreadCrumb } from "primereact/breadcrumb";
-import { useEffect, useState } from "react";
-import CustomTable from "../components/table";
-import { getFaq, setFaq, updateFaq } from "@/app/api/iotBikes";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { InputNumber, InputNumberValueChangeEvent } from "primereact/inputnumber";
-import "./plan.css";
-import { ColumnEditorOptions, ColumnEvent } from "primereact/column";
+import { BreadCrumb } from 'primereact/breadcrumb';
+import { useEffect, useState } from 'react';
+import CustomTable from '../components/table';
+import { getFaq, setFaq, updateFaq } from '@/app/api/iotBikes';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
+import './plan.css';
+import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 interface ProductFormData {
     question: string;
     answer: string;
 }
 
 const FAQ = () => {
-
-    const [items, setItems] = useState<any>([])
+    const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
     const [formData, setFormData] = useState<ProductFormData>({
         question: '',
-        answer: '',
+        answer: ''
     });
 
     const handleChange = (name: keyof ProductFormData, value: any) => {
@@ -33,31 +32,29 @@ const FAQ = () => {
         e.preventDefault();
         // Send formData to your backend for processing
         console.log(formData);
-        const response = await setFaq(formData)
+        const response = await setFaq(formData);
         if (response.success && response.data) {
-            setShowDialog(false)
-            fetchData()
+            setShowDialog(false);
+            fetchData();
         } else {
-            console.log('Failed')
+            console.log('Failed');
         }
     };
     const changeFaqActive = async (id: string, status: boolean) => {
         const body: any = {
             isActive: status
-        }
-        const response = await updateFaq(body, id)
+        };
+        const response = await updateFaq(body, id);
         if (response.success) {
-            fetchData()
+            fetchData();
         }
-    }
-
+    };
 
     const cellEditor = (options: ColumnEditorOptions) => {
         return textEditor(options);
     };
     const cellNumberEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} mode="currency" currency="INR" locale="en-IN" onKeyDown={(e) => e.stopPropagation()} />;
-
     };
     const textEditor = (options: ColumnEditorOptions) => {
         return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options?.editorCallback && options.editorCallback(e.target.value)} onKeyDown={(e) => e.stopPropagation()} />;
@@ -66,10 +63,10 @@ const FAQ = () => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
             [field]: newValue
-        }
-        const response = await updateFaq(body, rowData.id)
+        };
+        const response = await updateFaq(body, rowData.id);
         if (response.success) {
-            fetchData()
+            fetchData();
         }
     };
 
@@ -77,26 +74,25 @@ const FAQ = () => {
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
         { key: 'question', label: 'Question', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'answer', label: 'Answer', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
-    ]
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } }
+    ];
 
     useEffect(() => {
-
         fetchData();
 
         return () => {
-            setItems([])
-        }
-    }, [])
+            setItems([]);
+        };
+    }, []);
     const fetchData = async () => {
-        let response = await getFaq()
+        let response = await getFaq();
         if (response.success) {
             if (response.data) {
-                setItems(() => response.data)
+                setItems(() => response.data);
             }
         }
-        setLoading1(false)
-    }
+        setLoading1(false);
+    };
 
     return (
         <>
@@ -105,14 +101,13 @@ const FAQ = () => {
                     <BreadCrumb model={[{ label: 'Faq' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
                 <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: "0px" }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Faq" style={{ marginBottom: "0px" }} onClick={() => setShowDialog(true)} />
+                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                        <Button type="button" icon="pi pi-plus-circle" label="Faq" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
-
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={"cell"} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        <CustomTable editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
                     </div>
                 </div>
             </div>
@@ -135,7 +130,7 @@ const FAQ = () => {
                 </div>
             </Dialog>
         </>
-    )
-}
+    );
+};
 
 export default FAQ;

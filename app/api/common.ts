@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 
-export const baseUrl = 'http://15.207.88.89:1995/api/v1/';
+export const baseUrl = 'https://futureev.trestx.com/api/v1/';
 
 // Initialize Firebase
 const app = initializeApp({

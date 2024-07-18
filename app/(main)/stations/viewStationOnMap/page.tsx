@@ -61,6 +61,7 @@ const ViewStations = () => {
                     <Data
                         options={{
                             controlPosition: window.google.maps.ControlPosition.TOP_LEFT,
+                            map: new google.maps.Map(document.createElement('div')),
                             style: {
                                 fillColor: '#FF0000',
                                 strokeColor: '#FF0000',

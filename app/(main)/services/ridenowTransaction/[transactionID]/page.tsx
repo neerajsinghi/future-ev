@@ -7,7 +7,10 @@ const containerStyle = {
     height: '100vh'
 };
 
-const ViewAllBooking = () => {
+const ViewAllBooking = ({ params }: { params: any }) => {
+    console.log(params);
+    const transactionId = params.transactionID.split('%20');
+    console.log(transactionId);
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc' // Replace with your actual Google Maps API key
     });
@@ -18,7 +21,7 @@ const ViewAllBooking = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://15.207.88.89:1995/api/v1/rides/ongoing?userId=66975e7513d5062f6048fbcc&bookingId=669771d213d5062f6048fbfd`);
+                const response = await fetch(`http://15.207.88.89:1995/api/v1/rides/ongoing?userID=${transactionId[0]}&bookingId=${transactionId[1]}`);
                 const data = await response.json();
                 console.log(data.data);
 
@@ -56,13 +59,14 @@ const ViewAllBooking = () => {
                 <p>Loading map...</p>
             ) : (
                 <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={15}>
-                    {geoJsonData.map((booking, index) => {
+                    {geoJsonData.map((booking: any, index: number) => {
                         if (booking.booking.bikeWithDevice?.location) {
                             return (
                                 <Data
                                     key={index}
                                     options={{
                                         controlPosition: window.google.maps.ControlPosition.TOP_LEFT,
+                                        map: new google.maps.Map(document.createElement('div')),
                                         style: (feature) => {
                                             if (feature.getProperty('id') === 'start') {
                                                 return {

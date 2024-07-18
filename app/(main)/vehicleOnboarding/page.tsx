@@ -1,6 +1,6 @@
 'use client';
 
-import { getBikeByStation, getBikeStand, getBikesNearby, getStations, getStationsByID, getVehicleTypes, setBikeStand } from '@/app/api/iotBikes';
+import { getBikeByStation, getBikeStand, getBikes, getBikesNearby, getStations, getStationsByID, getVehicleTypes, setBikeStand } from '@/app/api/iotBikes';
 import { stat } from 'fs';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
@@ -137,7 +137,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         if (!qrcodeRefs.current[rowData?.deviceData?.deviceId]) {
             qrcodeRefs.current[rowData?.deviceData?.deviceId] = createRef();
         }
-        return (
+        return rowData.deviceId ? (
             <div style={{ height: 'auto', margin: '0 auto', maxWidth: 64, width: '100%' }} ref={qrcodeRefs.current[rowData?.deviceData?.deviceId]}>
                 <QRCode size={256} style={{ height: 'auto', maxWidth: '100%', width: '100%' }} value={rowData?.deviceId?.toString()} viewBox={`0 0 256 256`} />
                 <Button text style={{ padding: '0px' }} onClick={downloadQRCode(qrcodeRefs?.current[rowData?.deviceData?.deviceId], rowData?.deviceData?.deviceId?.toString())}>
@@ -145,7 +145,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                     Download{' '}
                 </Button>
             </div>
-        );
+        ) : null;
     };
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
@@ -159,7 +159,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         { key: 'deviceTotalDistance', label: 'Total Distance', _props: { scope: 'col' }, body: statusDeviceTotalDistanceTemplate },
         { key: 'deviceType', label: 'Type', _props: { scope: 'col' }, body: statusDeviceTypeTemplate },
         { key: 'deviceValid', label: 'Valid', _props: { scope: 'col' }, body: statusDeviceValidTemplate },
-        // { key: 'deviceQR', label: 'Device QR', _props: { scope: 'col' }, body: qrCodeTemplate },
+        { key: 'deviceQR', label: 'Device QR', _props: { scope: 'col' }, body: qrCodeTemplate },
         { key: 'stationName', label: 'Station Name', _props: { scope: 'col' }, body: statusStationNameTemplate },
         { key: 'stationId', label: 'Station ID', _props: { scope: 'col' } },
         { key: 'status', label: 'Status', _props: { scope: 'col' } }
@@ -167,10 +167,12 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
 
     const getAStations = async () => {
         const response = await getStations();
+        console.log(response.data);
         if (response.success && response.data) {
             const stations = [];
             for (let i = 0; i < response.data.length; i++) {
                 if (response.data[i]['address']['city'] === selectedCity) {
+                    console.log(response.data[i]['address']);
                     // Correct comparison with selectedCity
                     stations.push({
                         name: response.data[i]['name'],
@@ -181,7 +183,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                 }
             }
             console.log(stations);
-            setItems(stations); // Use setItems to update the state with the filtered stations
+            setStation(stations); // Use setItems to update the state with the filtered stations
         }
         setLoading1(false);
     };
@@ -210,40 +212,40 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
 
     const fetchBikesCallback = useCallback(async () => {
         if (searchParams && searchParams.search) {
-            const response = await getBikeByStation(searchParams.search)
+            const response = await getBikeByStation(searchParams.search);
             if (response.success && response.data) {
                 for (let i = 0; i < response.data.length; i++) {
-                    if (response.data[i]["stationId"]) {
-                        const resp = await getStationsByID(response.data[i]["stationId"])
+                    if (response.data[i]['stationId']) {
+                        const resp = await getStationsByID(response.data[i]['stationId']);
                         if (resp.success && resp.data) {
-                            response.data[i]["station"] = resp.data
+                            response.data[i]['station'] = resp.data;
                         }
                     }
                 }
-                setItems([...response.data])
+                setItems([...response.data]);
             }
-            setLoading1(false)
-            return
+            setLoading1(false);
+            return;
         }
-        const response = await getBikeStand()
+        const response = await getBikeStand();
         if (response.success && response.data) {
             for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i]["stationId"]) {
-                    const resp = await getStationsByID(response.data[i]["stationId"])
+                if (response.data[i]['stationId']) {
+                    const resp = await getStationsByID(response.data[i]['stationId']);
                     if (resp.success && resp.data) {
-                        response.data[i]["station"] = resp.data
+                        response.data[i]['station'] = resp.data;
                     }
                 }
             }
-            setItems([...response.data])
+            setItems([...response.data]);
         }
-        setLoading1(false)
-    }, [searchParams])
+        setLoading1(false);
+    }, [searchParams]);
     useEffect(() => {
-        fetchBikes()
-        getAVehicleTypes()
-        getCityD()
-    }, [fetchBikesCallback])
+        fetchBikes();
+        getAVehicleTypes();
+        getCity();
+    }, [fetchBikesCallback]);
     useEffect(() => {
         if (selectedCity) {
             getAStations();
@@ -265,7 +267,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             for (let i = 0; i < items.length; i++) {
                 selectedBikes.push(items[i].deviceId);
             }
-            const response = await getBikesNearby(value.location.coordinates[1], value.location.coordinates[0]);
+            const response = await getBikes();
             if (response.success && response.data) {
                 const devices = [];
                 for (let i = 0; i < response.data.length; i++) {
@@ -375,9 +377,8 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
     };
     useEffect(() => {
         fetchCities();
-        getAVehicleTypes();
-        getAStations();
-        console.log(formData.permitsRequired);
+        // getAVehicleTypes();
+        // getAStations();
     }, [formData.permitsRequired]);
     return (
         <>
@@ -387,7 +388,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                 </div>
                 <div className="col-12">
                     <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Station" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+                        <Button type="button" icon="pi pi-plus-circle" label="Onboard Vehicle" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
                 </div>
                 <div className="col-12 m-10">
@@ -398,7 +399,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             </div>
 
             <Dialog
-                header="Bikes Stationed"
+                header="Onboard Vehicle"
                 visible={showDialog}
                 style={{ width: '50vw' }}
                 modal
@@ -459,6 +460,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                                 id="insurancePolicy"
                                 customUpload
                                 mode={'basic'}
+                                auto
                                 uploadHandler={(e) => {
                                     onUpload(e, 'insurancePolicy', false);
                                 }}
@@ -476,6 +478,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                                 id="vehicleRegistration"
                                 mode={'basic'}
                                 customUpload
+                                auto
                                 uploadHandler={(e) => {
                                     onUpload(e, 'vehicleRegistration', false);
                                 }}

@@ -72,9 +72,10 @@ const AppMenu = () => {
                 { label: 'Vehicle Onboarding', icon: 'pi pi-fw pi-map-marker', to: '/vehicleOnboarding' },
                 { label: 'Coupons', icon: 'pi pi-fw pi-ticket', to: '/coupons' },
                 { label: 'Users', icon: 'pi pi-fw pi-user', to: '/users' },
-                // { label: 'Chargers', icon: 'pi pi-fw pi-battery', to: '/chargers' },
                 { label: 'FAQ', icon: 'pi pi-fw pi-wallet', to: '/faq' },
-                { label: 'Notification', icon: 'pi pi-fw pi-wallet', to: '/notification' }
+                { label: 'Notification', icon: 'pi pi-fw pi-wallet', to: '/notification' },
+                { label: 'Feedback', icon: 'pi pi-fw pi-wallet', to: '/feedback' },
+                { label: 'Refer', icon: 'pi pi-fw pi-wallet', to: '/referrals' },
             ]
         },
 

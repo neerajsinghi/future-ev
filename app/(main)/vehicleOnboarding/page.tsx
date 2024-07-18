@@ -208,47 +208,47 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         }
     };
 
-    // const fetchBikes = useCallback(async () => {
-    //     if (searchParams && searchParams.search) {
-    //         const response = await getBikeByStation(searchParams.search)
-    //         if (response.success && response.data) {
-    //             for (let i = 0; i < response.data.length; i++) {
-    //                 if (response.data[i]["stationId"]) {
-    //                     const resp = await getStationsByID(response.data[i]["stationId"])
-    //                     if (resp.success && resp.data) {
-    //                         response.data[i]["station"] = resp.data
-    //                     }
-    //                 }
-    //             }
-    //             setItems([...response.data])
-    //         }
-    //         setLoading1(false)
-    //         return
-    //     }
-    //     const response = await getBikeStand()
-    //     if (response.success && response.data) {
-    //         for (let i = 0; i < response.data.length; i++) {
-    //             if (response.data[i]["stationId"]) {
-    //                 const resp = await getStationsByID(response.data[i]["stationId"])
-    //                 if (resp.success && resp.data) {
-    //                     response.data[i]["station"] = resp.data
-    //                 }
-    //             }
-    //         }
-    //         setItems([...response.data])
-    //     }
-    //     setLoading1(false)
-    // }, [searchParams])
-    // useEffect(() => {
-    //     fetchBikes()
-    //     getAVehicleTypes()
-    //     getCityD()
-    // }, [fetchBikes])
-    // useEffect(() => {
-    //     if (selectedCity) {
-    //         getAStations();
-    //     }
-    // }, [selectedCity]);
+    const fetchBikesCallback = useCallback(async () => {
+        if (searchParams && searchParams.search) {
+            const response = await getBikeByStation(searchParams.search)
+            if (response.success && response.data) {
+                for (let i = 0; i < response.data.length; i++) {
+                    if (response.data[i]["stationId"]) {
+                        const resp = await getStationsByID(response.data[i]["stationId"])
+                        if (resp.success && resp.data) {
+                            response.data[i]["station"] = resp.data
+                        }
+                    }
+                }
+                setItems([...response.data])
+            }
+            setLoading1(false)
+            return
+        }
+        const response = await getBikeStand()
+        if (response.success && response.data) {
+            for (let i = 0; i < response.data.length; i++) {
+                if (response.data[i]["stationId"]) {
+                    const resp = await getStationsByID(response.data[i]["stationId"])
+                    if (resp.success && resp.data) {
+                        response.data[i]["station"] = resp.data
+                    }
+                }
+            }
+            setItems([...response.data])
+        }
+        setLoading1(false)
+    }, [searchParams])
+    useEffect(() => {
+        fetchBikes()
+        getAVehicleTypes()
+        getCityD()
+    }, [fetchBikesCallback])
+    useEffect(() => {
+        if (selectedCity) {
+            getAStations();
+        }
+    }, [selectedCity]);
 
     const handleChange = async (name: keyof BikesStationedProps, value: any) => {
         let valueL = '';

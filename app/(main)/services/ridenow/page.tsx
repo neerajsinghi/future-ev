@@ -23,6 +23,7 @@ interface ProductFormData {
     endingMinutes: number[];
     everyXMinutes: number;
     extensionPrice: number;
+    deposit: number;
     isActive: boolean;
 }
 
@@ -45,6 +46,7 @@ const Plan = () => {
         everyXMinutes: 0,
         extensionPrice: 0,
         isActive: true,
+        deposit: 0,
     });
 
     const handleChange = (name: keyof ProductFormData, value: any) => {
@@ -113,14 +115,23 @@ const Plan = () => {
         } />;
     }
     const cellEditor = (options: ColumnEditorOptions) => {
-        return textEditor(options);
+        if (options.field === 'city') {
+            return <Dropdown value={{ name: options.value, code: options.value }} options={city} onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)} optionLabel="name" placeholder="Select a City" />
+        } else if (options.field === 'vehicleType') {
+
+            return <Dropdown value={{ name: options.value, code: options.value }} options={vehicleType} onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)} optionLabel="name" placeholder="Select a Vehicle Type" />
+        }
     };
     const cellNumberEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} mode="currency" currency="INR" locale="en-IN" onKeyDown={(e) => e.stopPropagation()} />;
 
     };
+    const cellMinEditor = (options: ColumnEditorOptions) => {
+        return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} suffix=" min" onKeyDown={(e) => e.stopPropagation()} />;
+
+    };
     const textEditor = (options: ColumnEditorOptions) => {
-        return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options?.editorCallback && options.editorCallback(e.target.value)} onKeyDown={(e) => e.stopPropagation()} />;
+
     };
     const onCellEditComplete = async (e: ColumnEvent) => {
         let { rowData, newValue, field, originalEvent: event } = e;
@@ -136,9 +147,9 @@ const Plan = () => {
     const columns = [
         { key: 'city', label: 'City', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'vehicleType', label: 'Vehicle type', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
-        { key: 'startingMinutes', label: 'Starting Minutes', _props: { scope: 'col' } },
-        { key: 'endingMinutes', label: 'To', _props: { scope: 'col' } },
-        { key: 'everyXMinutes', label: 'Extension', _props: { scope: 'col' } },
+        { key: 'startingMinutes', label: 'Starting Minutes', _props: { scope: 'col' }, cellEditor: cellMinEditor, onCellEditComplete: onCellEditComplete },
+        { key: 'endingMinutes', label: 'To', _props: { scope: 'col' }, cellEditor: cellMinEditor, onCellEditComplete: onCellEditComplete },
+        { key: 'everyXMinutes', label: 'Extension', _props: { scope: 'col' }, cellEditor: cellMinEditor, onCellEditComplete: onCellEditComplete },
         { key: 'price', label: 'Price', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
         { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
     ]
@@ -287,6 +298,10 @@ const Plan = () => {
                                     <InputNumber value={formData.extensionPrice} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('extensionPrice', e.value)} mode="currency" currency="INR" locale="en-IN" />
                                 </div>
                             </div>
+                        </div>
+                        <div className="col-3 align-item-center">
+                            <label htmlFor="validity">Refundable Deposit</label>
+                            <InputNumber value={formData.deposit} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('deposit', e.value)} mode="currency" currency="INR" locale="en-IN" />
                         </div>
                         <div className="field col-12"></div>
                         <div className="field col-2 button-row">

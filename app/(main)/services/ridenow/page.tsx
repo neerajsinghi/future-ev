@@ -151,6 +151,8 @@ const Plan = () => {
         { key: 'endingMinutes', label: 'To', _props: { scope: 'col' }, cellEditor: cellMinEditor, onCellEditComplete: onCellEditComplete },
         { key: 'everyXMinutes', label: 'Extension', _props: { scope: 'col' }, cellEditor: cellMinEditor, onCellEditComplete: onCellEditComplete },
         { key: 'price', label: 'Price', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
+        { key: 'deposit', label: 'Refundable Deposit', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
+        { key: 'isActive', label: 'Active', _props: { scope: 'col' }, body: activeTemplate },
         { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
     ]
 

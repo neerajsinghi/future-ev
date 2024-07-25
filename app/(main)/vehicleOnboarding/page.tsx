@@ -167,7 +167,6 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
 
     const getAStations = async () => {
         const response = await getStations();
-        console.log(response.data);
         if (response.success && response.data) {
             const stations = [];
             for (let i = 0; i < response.data.length; i++) {
@@ -182,7 +181,6 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                     });
                 }
             }
-            console.log(stations);
             setStation(stations); // Use setItems to update the state with the filtered stations
         }
         setLoading1(false);
@@ -505,7 +503,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                             <div>Uploaded</div>
                         )}
                     </div>
-                    <div className="field col-2 button-row">
+                    <div className=" button-row">
                         <Button label="Submit" type="submit" />
                     </div>
                 </form>

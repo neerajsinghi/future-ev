@@ -22,55 +22,55 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
     useEffect(() => {
         initFilters1();
 
-        return () => { };
+        return () => {};
     }, []);
     const statusBodyTemplate = (rowData: any) => {
         return <Tag value={rowData.status} />;
     };
     const initFilters1 = () => {
         const initialFilters: any = {};
-        columns.forEach(col => {
+        columns.forEach((col) => {
             const field = col.key;
             if (col.body == null) {
                 initialFilters[field] = {
-                    operator: field == "status" || field == "type" ? FilterOperator.OR : FilterOperator.AND,
+                    operator: field == 'status' || field == 'type' ? FilterOperator.OR : FilterOperator.AND,
                     constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
                 };
             }
         });
-        debugger
+        // debugger;
         setFilters1(initialFilters);
-        // setFilters1({
-        //     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        setFilters1({
+            global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 
-        //     name: {
-        //         operator: FilterOperator.AND,
-        //         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
-        //     },
-        //     'country.name': {
-        //         operator: FilterOperator.AND,
-        //         constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
-        //     },
-        //     representative: { value: null, matchMode: FilterMatchMode.IN },
-        //     date: {
-        //         operator: FilterOperator.AND,
-        //         constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }]
-        //     },
-        //     balance: {
-        //         operator: FilterOperator.AND,
-        //         constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }]
-        //     },
-        //     status: {
-        //         operator: FilterOperator.OR,
-        //         constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }]
-        //     },
-        //     type: {
-        //         operator: FilterOperator.OR,
-        //         constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }]
-        //     },
-        //     activity: { value: null, matchMode: FilterMatchMode.BETWEEN },
-        //     verified: { value: null, matchMode: FilterMatchMode.EQUALS }
-        // });
+            name: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
+            },
+            'country.name': {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
+            },
+            representative: { value: null, matchMode: FilterMatchMode.IN },
+            date: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }]
+            },
+            balance: {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }]
+            },
+            status: {
+                operator: FilterOperator.OR,
+                constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }]
+            },
+            type: {
+                operator: FilterOperator.OR,
+                constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS || FilterMatchMode.STARTS_WITH }]
+            },
+            activity: { value: null, matchMode: FilterMatchMode.BETWEEN },
+            verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+        });
         setGlobalFilterValue1('');
     };
     const clearFilter1 = () => {
@@ -78,6 +78,8 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
     };
     const onGlobalFilterChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
+        console.log(value);
+        console.log({ ...filters1 });
         let _filters1 = { ...filters1 };
         (_filters1['global'] as any).value = value;
 
@@ -126,7 +128,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                             sortable
                             filter
                             body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
-                        //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
+                            //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
                         />
                     ))}
                 </DataTable>
@@ -191,4 +193,3 @@ function isStatusOrTypeField(field: any) {
 function getMatchMode(field: any) {
     throw new Error('Function not implemented.');
 }
-

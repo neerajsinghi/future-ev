@@ -22,7 +22,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
     useEffect(() => {
         initFilters1();
 
-        return () => {};
+        return () => { };
     }, []);
     const statusBodyTemplate = (rowData: any) => {
         return <Tag value={rowData.status} />;
@@ -121,15 +121,15 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
             <div className="p-3" style={{ border: '2px solid white' }}>
                 <DataTable value={data.data}>
                     {columns2.map((col) => (
-                        <Column
+                        !col.hidden ? <Column
                             key={col.key}
                             field={col.key}
                             header={col.label}
                             sortable
                             filter
                             body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
-                            //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
-                        />
+                        //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
+                        /> : null
                     ))}
                 </DataTable>
             </div>
@@ -166,7 +166,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
             >
                 {columns.map((col, i) => {
                     return (
-                        <Column
+                        !col.hidden ? <Column
                             key={i}
                             field={col.key}
                             header={col.label}
@@ -176,7 +176,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                             filterElement={col.key === 'type' ? typeFilterTemplate : null}
                             editor={col.cellEditor ? (options) => col.cellEditor(options) : null}
                             onCellEditComplete={col.onCellEditComplete}
-                        />
+                        /> : null
                     );
                 })}
                 <Column expander={columns2.length > 0} style={{ width: '5rem' }} />

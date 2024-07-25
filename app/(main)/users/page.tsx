@@ -238,20 +238,21 @@ const Users = ({ searchParams }: { searchParams: any }) => {
         );
     };
     const columns = [
-        !isMobile && { key: 'id', label: 'Id', _props: { scope: 'col', className: 'column-id' } },
+        { key: 'id', label: 'Id', _props: { scope: 'col', className: 'column-id' } },
         { key: 'name', label: 'Name', _props: { scope: 'col', className: 'column-name' } },
         {
             key: 'totalBalance',
             label: 'Total Balance',
             _props: { scope: 'col', className: 'column-totalBalance' },
-            body: balanceTemplate
+            body: balanceTemplate,
+            hidden: isMobile
         },
-        { key: 'totalRides', label: 'Total Bookings', body: totalRidesTemplate, _props: { className: 'column-totalRides' } },
-        !isMobile && { key: 'status', label: 'Status', _props: { scope: 'col', className: 'column-status' } },
-        !isMobile && { key: 'phoneNumber', label: 'Phone Number', _props: { scope: 'col', className: 'column-phoneNumber' } },
-        !isMobile && { key: 'serviceType', label: 'Service', _props: { scope: 'col', className: 'column-serviceType' }, body: (rowData: any) => (rowData.serviceType ? rowData.serviceType : 'NA'), elementFilter: typeFilterTemplate },
-        !isMobile && { key: 'userBlocked', label: 'User Blocked', _props: { scope: 'col', className: 'column-userBlocked' }, body: blockedUserTemplate },
-        !isMobile && { key: 'referralCode', label: 'Referral Code', _props: { scope: 'col', className: 'column-referralCode' } },
+        { key: 'totalRides', label: 'Total Bookings', body: totalRidesTemplate, _props: { className: 'column-totalRides' }, hidden: isMobile },
+        { key: 'status', label: 'Status', _props: { scope: 'col', className: 'column-status' }, hidden: isMobile },
+        { key: 'phoneNumber', label: 'Phone Number', _props: { scope: 'col', className: 'column-phoneNumber' }, hidden: isMobile },
+        { key: 'serviceType', label: 'Service', _props: { scope: 'col', className: 'column-serviceType' }, body: (rowData: any) => (rowData.serviceType ? rowData.serviceType == "hourly" ? "Ride Now" : rowData.serviceType.charAt(0).toUpperCase() + rowData.serviceType.slice(1) : 'NA'), elementFilter: typeFilterTemplate, hidden: isMobile },
+        { key: 'userBlocked', label: 'User Blocked', _props: { scope: 'col', className: 'column-userBlocked' }, body: blockedUserTemplate },
+        { key: 'referralCode', label: 'Referral Code', _props: { scope: 'col', className: 'column-referralCode' }, hidden: isMobile },
         {
             key: 'idVerified',
             label: 'ID Verified',

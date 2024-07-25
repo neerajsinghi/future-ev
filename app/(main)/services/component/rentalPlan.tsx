@@ -17,6 +17,7 @@ interface ProductFormData {
     validity: number[];
     type: string;
     isActive: boolean;
+    deposit: number;
 }
 
 const RentalPlanForm = ({ city, vehicleType, setShowDialog, fetchData, type }: { city: any[], vehicleType: any[], setShowDialog: any, fetchData: any, type: string }) => {
@@ -32,6 +33,7 @@ const RentalPlanForm = ({ city, vehicleType, setShowDialog, fetchData, type }: {
         description: [""],
         price: [0],
         validity: [0],
+        deposit: 0,
     });
     const handleChange = (name: keyof ProductFormData, value: any) => {
         debugger
@@ -45,6 +47,8 @@ const RentalPlanForm = ({ city, vehicleType, setShowDialog, fetchData, type }: {
             formData.current.vehicleType = value.code;
             return
         }
+        formData.current[name] = value;
+        console.log(formData.current)
     }
     const handleNameChange = (e: any, index: number): void => {
         formData.current.name[index] = e
@@ -180,6 +184,10 @@ const RentalPlanForm = ({ city, vehicleType, setShowDialog, fetchData, type }: {
                         )
                     })}
                 </div >
+                <div className="col-3 align-item-center">
+                    <label htmlFor="validity">Refundable Deposit</label>
+                    <InputNumber value={formData.current.deposit} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('deposit', e.value)} mode="currency" currency="INR" locale="en-IN" />
+                </div>
                 <div className="field col-12"></div>
                 <div className="field col-2 button-row">
                     <Button label="Submit" type="submit" />

@@ -80,6 +80,8 @@ const Plan = () => {
         { key: 'description', label: 'Description', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'price', label: 'Price', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
         { key: 'validity', label: 'Validity', _props: { scope: 'col' } },
+        { key: "deposit", label: "Deposit", _props: { scope: "col" }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
+        { key: 'isActive', label: 'Active', _props: { scope: 'col' }, body: activeTemplate },
         { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
     ]
 

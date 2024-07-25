@@ -107,11 +107,23 @@ const Users = ({ searchParams }: { searchParams: any }) => {
         }
     };
     const changeStatusBlocked = async (status: boolean, id: string) => {
+        if (!status) {
+            const body: any = {
+                userBlocked: false,
+            };
+            const response = await updateUser(body, id);
+            if (response.success) {
+                fetchData();
+                setBlockedDialog(false);
+            } else {
+                console.log('Failed');
+            }
+            return
+        }
         setSelectedId(id);
         setBlockedDialog(true);
     };
     const onChangeStatusBlocked = async () => {
-        debugger;
         const body: any = {
             userBlocked: true,
             blockedBy: localUser.id,
@@ -166,7 +178,6 @@ const Users = ({ searchParams }: { searchParams: any }) => {
                 className={`customer-badge status-${rowData}`}
                 severity={rowData.userBlocked ? 'danger' : 'success'}
                 tooltip="Click to block/unblock user"
-                disabled={rowData.userBlocked}
                 onClick={() => changeStatusBlocked(!rowData.userBlocked, rowData.id)}
             >
                 {rowData && rowData.userBlocked ? 'Blocked' : 'Active '}

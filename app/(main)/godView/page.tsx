@@ -150,11 +150,11 @@ const MapComponent = () => {
     }, [cities]);
 
     return (
-        <div className='card'>
-            <div className='card-header m-3' >
-                <div className='card-title'>Map</div>
-                <div className='grid'>
-                    <div className='col-12 lg:col-10 '>                    </div>
+        <div className="card">
+            <div className="card-header m-3">
+                <div className="card-title">Map</div>
+                <div className="grid">
+                    <div className="col-12 lg:col-10 "> </div>
 
                     <Dropdown
                         placeholder="Select City"
@@ -163,11 +163,9 @@ const MapComponent = () => {
                         options={cities}
                         value={selectedCity}
                         onChange={(e) => {
-
                             setSelectedCity(e.value);
-                            const selectedCityObject = cities.find((place: { name: any; }) => place.name === e.value.name);
+                            const selectedCityObject = cities.find((place: { name: any }) => place.name === e.value.name);
                             if (selectedCityObject && selectedCityObject.locationPolygon.coordinates.length > 0) {
-                                debugger
                                 const coordinates = selectedCityObject.locationPolygon.coordinates[0];
                                 let centerCoordinates: any | undefined;
 
@@ -187,7 +185,7 @@ const MapComponent = () => {
                     />
                 </div>
             </div>
-            <div className='card-body'>
+            <div className="card-body">
                 {isLoaded ? (
                     <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
                         <Data
@@ -230,21 +228,22 @@ const MapComponent = () => {
                                 title={station.name}
                             />
                         ))}
-                        {bikes.map((bike) => (
-                            <Marker
-                                key={bike.deviceId}
-                                position={{
-                                    lat: parseFloat(bike.latitude),
-                                    lng: parseFloat(bike.longitude)
-                                }}
-                                title={bike.name}
-                                icon={{
-                                    url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-                                }}
-                            />
-                        ))}
+                        {bikes.map((bike) => {
+                            return (
+                                <Marker
+                                    key={bike.deviceId}
+                                    position={{
+                                        lat: parseFloat(bike.latitude),
+                                        lng: parseFloat(bike.longitude)
+                                    }}
+                                    title={bike.name}
+                                    icon={{
+                                        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                                    }}
+                                />
+                            );
+                        })}
                     </GoogleMap>
-
                 ) : (
                     <p style={{ color: 'white', textAlign: 'center' }}>Loading...</p>
                 )}

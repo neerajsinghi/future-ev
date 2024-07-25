@@ -40,7 +40,7 @@ const AppMenu = () => {
                                     icon: 'pi pi-fw pi-cloud',
                                     to: '/services/rental'
                                 },
-                                { label: 'Rental Bookings', icon: 'pi pi-fw pi-cloud', to: '/services/rentalbookings' }
+                                { label: 'Rental Transactions', icon: 'pi pi-fw pi-cloud', to: '/services/rentalTransactions' }
                             ]
                         },
                         {
@@ -75,7 +75,7 @@ const AppMenu = () => {
                 { label: 'FAQ', icon: 'pi pi-fw pi-wallet', to: '/faq' },
                 { label: 'Notification', icon: 'pi pi-fw pi-wallet', to: '/notification' },
                 { label: 'Feedback', icon: 'pi pi-fw pi-wallet', to: '/feedback' },
-                { label: 'Refer', icon: 'pi pi-fw pi-wallet', to: '/referrals' },
+                { label: 'Refer', icon: 'pi pi-fw pi-wallet', to: '/referrals' }
             ]
         },
 

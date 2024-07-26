@@ -58,100 +58,7 @@ const Dashboard = () => {
     }, []);
     const fetchData = async () => {
         const resp = await getStatistics(selectedTime.code);
-        /*
-        {
-    "data": [
-        [
-            {
-                "Key": "numberOfUsers",
-                "Value": 22
-            },
-            {
-                "Key": "idVerified",
-                "Value": 4
-            },
-            {
-                "Key": "dlVerified",
-                "Value": 7
-            },
-            {
-                "Key": "totalStations",
-                "Value": [
-                    6
-                ]
-            },
-            {
-                "Key": "totalPublicStations",
-                "Value": [
-                    4
-                ]
-            },
-            {
-                "Key": "totalActiveStation",
-                "Value": [
-                    6
-                ]
-            },
-            {
-                "Key": "totalCo2Emission",
-                "Value": [
-                    0
-                ]
-            },
-            {
-                "Key": "totalChargers",
-                "Value": 1
-            },
-            {
-                "Key": "totalRides",
-                "Value": [
-                    9
-                ]
-            },
-            {
-                "Key": "totalDistance",
-                "Value": [
-                    45865
-                ]
-            },
-            {
-                "Key": "totalCompletedRides",
-                "Value": [
-                    5
-                ]
-            },
-            {
-                "Key": "totalVehicles",
-                "Value": [
-                    62
-                ]
-            },
-            {
-                "Key": "totalActiveVeficles",
-                "Value": [
-                    28
-                ]
-            },
-            {
-                "Key": "totalVehicleOnRoad",
-                "Value": [
-                    9
-                ]
-            },
-            {
-                "Key": "totalEarning",
-                "Value": 13600
-            },
-            {
-                "Key": "totalValueInWallet",
-                "Value": 8350
-            }
-        ]
-    ],
-    "error": "",
-    "status": true
-}
-        */
+
         if (resp.success && resp.data) {
             setNumberOfUsers(resp.data[0][0]?.Value ? resp.data[0][0]?.Value : 0);
             setIdVerifiedUsers(resp.data[0][1]?.Value ? resp.data[0][1]?.Value : 0);
@@ -170,96 +77,7 @@ const Dashboard = () => {
             setTotalEarning(resp.data[0][14]?.Value ? resp.data[0][14]?.Value : 0);
             setTotalAmountInWallet(resp.data[0][15]?.Value ? resp.data[0][15]?.Value : 0);
         }
-        // if (resp.success && resp.data) {
-        //     setNumberOfUsers(resp.data.length)
-        //     let idVerified = 0
-        //     let dlVerified = 0
-        //     let unverifiedUsers = 0
-        //     for (let i = 0; i < resp.data.length; i++) {
-        //         if (resp.data[i]["dlVerified"] == true) {
-        //             idVerified++
-        //         } else if (resp.data[i]["idVerified"] == true) {
-        //             dlVerified++
-        //         } else {
-        //             unverifiedUsers++
-        //         }
-        //     }
-        //     setIdVerifiedUsers(idVerified)
-        //     setDlVerifiedUsers(dlVerified)
-        //     setUnVerifiedUsers(unverifiedUsers)
-        // }
-        // const respS = await getStations()
-        // if (respS.success && respS.data) {
-        //     setTotalStations(respS.data.length)
-        //     let publicS = 0
-        //     let statusA = 0
-        //     let carbonEmissionSaved = 0
-        //     for (let i = 0; i < respS.data.length; i++) {
-        //         if (respS.data[i]["public"]) {
-        //             publicS++
-        //         }
-        //         if (respS.data[i]["status"] == "available") {
-        //             statusA++
-        //         }
-        //         if (respS.data[i]["carbonSaved"]) {
-        //             carbonEmissionSaved += respS.data[i]["carbonSaved"]
-        //         }
-        //     }
-        //     setTotalActiveStation(statusA)
-        //     setTotalPublicStations(publicS)
-        //     setTotalCo2Emission(carbonEmissionSaved)
-        // }
-        // const respC = await getChargers()
-        // if (respC.success && respC.data) {
-        //     setTotalChargers(respC.data.length)
-        // }
-        // const respR = await getBookings()
-        // if (respR.success && respR.data) {
-        //     setTotalRides(respR.data.length)
-        //     let totalDistance = 0
-        //     let completedRides = 0
-        //     for (let i = 0; i < respR.data.length; i++) {
-        //         totalDistance += respR.data[i]["totalDistance"]
-        //         if (respR.data[i]["status"] === "completed") {
-        //             completedRides++
-        //         }
-        //     }
-        //     setTotalDistance(Math.round(totalDistance / 1000))
-        //     setTotalCompletedRides(completedRides)
-        // }
-        // const respB = await getBikes()
-        // if (respB.success && respB.data) {
-        //     setTotalVehicles(respB.data.length)
-        //     let active = 0
-        //     let onRoad = 0
 
-        //     for (let i = 0; i < respB.data.length; i++) {
-        //         if (respB.data[i]["ignition"] == "true") {
-        //             onRoad++
-        //         }
-        //         if (respB.data[i]["status"] === "online") {
-        //             active++
-        //         }
-
-        //     }
-        //     setTotalActiveVeficles(active)
-        //     setTotalVehicleOnRoad(onRoad)
-        // }
-        // const respW = await getWallet()
-        // let totalEarning = 0
-        // let totalValueInWallet = 0
-        // if (respW.success && respW.data) {
-        //     for (let i = 0; i < respW.data.length; i++) {
-
-        //         const wallets: any[] = respW.data[i]["Wallets"]
-        //         for (let j = 0; j < wallets.length; j++) {
-        //             totalEarning += respW.data[i]["Wallets"][j]["usedMoney"]
-        //             totalValueInWallet += respW.data[i]["Wallets"][j]["depositedMoney"]
-        //         }
-        //     }
-        //     setTotalEarning(totalEarning + totalValueInWallet)
-        //     setTotalAmountInWallet(totalValueInWallet)
-        // }
     };
 
     useEffect(() => {
@@ -306,7 +124,7 @@ const Dashboard = () => {
                         />
                     </div>
                     <div className='col-12 md:col-2  align-items-center'>
-                        <Dropdown
+                        {/* <Dropdown
                             placeholder="Select Service"
                             optionLabel="name"
                             optionValue="id"
@@ -315,7 +133,7 @@ const Dashboard = () => {
                             onChange={(e) => {
                                 setSelectedCity(e.value);
                             }}
-                        />
+                        /> */}
                     </div>
                     <div className='col-12 md:col-4' />
                     <div className='col-12 md:col-4'>

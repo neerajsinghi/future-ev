@@ -2,7 +2,7 @@
 
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import CustomTable from '../components/table';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -22,6 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 
 const Users = () => {
+    const [loadingRows, setLoadingRows] = useState<{ [key: string]: boolean }>({});
     const searchParams = useSearchParams();
     const router = useRouter();
     const [items, setItems] = useState<any>([]);
@@ -40,6 +41,8 @@ const Users = () => {
     const [blockedDialog, setBlockedDialog] = useState(false);
     const [walletData, setWalletData] = useState<any>([]);
     const [ridesData, setRidesData] = useState<any>([]);
+    const [isPending, startTransition] = useTransition();
+    const [isBlocking, blockTransition] = useTransition();
     const services = [
         { name: 'Ride Now', value: 'hourly' },
         { name: 'Rental', value: 'rental' },
@@ -121,35 +124,39 @@ const Users = () => {
         }
     };
     const changeStatusBlocked = async (status: boolean, id: string) => {
-        if (!status) {
+        setLoadingRows((prevState) => ({ ...prevState, [id]: true })); // Set loading state for the specific row
+        startTransition(async () => {
+            if (!status) {
+                const body = { userBlocked: false };
+                const response = await updateUser(body, id);
+                if (response.success) {
+                    fetchData();
+                    setBlockedDialog(false);
+                } else {
+                    console.log('Failed');
+                }
+            } else {
+                setSelectedId(id);
+                setBlockedDialog(true);
+            }
+            setLoadingRows((prevState) => ({ ...prevState, [id]: false })); // Unset loading state for the specific row
+        });
+    };
+    const onChangeStatusBlocked = async () => {
+        blockTransition(async () => {
             const body: any = {
-                userBlocked: false,
+                userBlocked: true,
+                blockedBy: localUser.id,
+                blockReason: BlockReason
             };
-            const response = await updateUser(body, id);
+            const response = await updateUser(body, selectedId);
             if (response.success) {
                 fetchData();
                 setBlockedDialog(false);
             } else {
                 console.log('Failed');
             }
-            return
-        }
-        setSelectedId(id);
-        setBlockedDialog(true);
-    };
-    const onChangeStatusBlocked = async () => {
-        const body: any = {
-            userBlocked: true,
-            blockedBy: localUser.id,
-            blockReason: BlockReason
-        };
-        const response = await updateUser(body, selectedId);
-        if (response.success) {
-            fetchData();
-            setBlockedDialog(false);
-        } else {
-            console.log('Failed');
-        }
+        });
     };
     const validateDl = async () => {
         const body: any = {
@@ -187,14 +194,16 @@ const Users = () => {
         );
     };
     const blockedUserTemplate = (rowData: any) => {
+        const isLoading = loadingRows[rowData.id]; // Check if the specific row is loading
         return (
             <Button
-                className={`customer-badge status-${rowData}`}
+                className={`customer-badge status-${rowData.userBlocked}`}
                 severity={rowData.userBlocked ? 'danger' : 'success'}
                 tooltip="Click to block/unblock user"
                 onClick={() => changeStatusBlocked(!rowData.userBlocked, rowData.id)}
+                disabled={isLoading} // Disable button when loading
             >
-                {rowData && rowData.userBlocked ? 'Blocked' : 'Active '}
+                {isLoading ? <span className="pi pi-spin pi-spinner"></span> : rowData.userBlocked ? 'Blocked' : 'Active'}
             </Button>
         );
     };
@@ -264,8 +273,20 @@ const Users = () => {
         { key: 'totalRides', label: 'Total Bookings', body: totalRidesTemplate, _props: { className: 'column-totalRides' }, hidden: isMobile },
         { key: 'status', label: 'Status', _props: { scope: 'col', className: 'column-status' }, hidden: isMobile },
         { key: 'phoneNumber', label: 'Phone Number', _props: { scope: 'col', className: 'column-phoneNumber' }, hidden: isMobile },
-        { key: 'serviceType', label: 'Service', _props: { scope: 'col', className: 'column-serviceType' }, body: (rowData: any) => (rowData.serviceType ? rowData.serviceType == "hourly" ? "Ride Now" : rowData.serviceType.charAt(0).toUpperCase() + rowData.serviceType.slice(1) : 'NA'), elementFilter: typeFilterTemplate, hidden: isMobile },
-        { key: 'userBlocked', label: 'User Blocked', _props: { scope: 'col', className: 'column-userBlocked' }, body: blockedUserTemplate },
+        {
+            key: 'serviceType',
+            label: 'Service',
+            _props: { scope: 'col', className: 'column-serviceType' },
+            body: (rowData: any) => (rowData.serviceType ? (rowData.serviceType == 'hourly' ? 'Ride Now' : rowData.serviceType.charAt(0).toUpperCase() + rowData.serviceType.slice(1)) : 'NA'),
+            elementFilter: typeFilterTemplate,
+            hidden: isMobile
+        },
+        {
+            key: 'userBlocked',
+            label: 'User Blocked',
+            _props: { scope: 'col', className: 'column-userBlocked' },
+            body: blockedUserTemplate
+        },
         { key: 'referralCode', label: 'Referral Code', _props: { scope: 'col', className: 'column-referralCode' }, hidden: isMobile },
         {
             key: 'idVerified',
@@ -275,7 +296,7 @@ const Users = () => {
                 rowData.idVerified ? (
                     <Button
                         // className="hidden lg:block"
-                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'red' }}
+                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? '#66DE93' : '#FF6464' }}
                         onClick={() => {
                             if (rowData.idFrontImage) {
                                 setIdFrontImage(rowData.idFrontImage);
@@ -296,7 +317,7 @@ const Users = () => {
                     </Button>
                 ) : (
                     <Button
-                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'red' }}
+                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? '#66DE93' : '#FF6464' }}
                         onClick={() => {
                             if (rowData.idFrontImage) {
                                 setIdFrontImage(rowData.idFrontImage);
@@ -323,7 +344,7 @@ const Users = () => {
             body: (rowData: any) =>
                 rowData.dlVerified ? (
                     <Button
-                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'red' }}
+                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? '#66DE93' : '#FF6464' }}
                         onClick={() => {
                             if (rowData.dlFrontImage) {
                                 setDlFrontImage(rowData.dlFrontImage);
@@ -344,7 +365,7 @@ const Users = () => {
                     </Button>
                 ) : (
                     <Button
-                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? 'green' : 'red' }}
+                        style={{ backgroundColor: rowData.idFrontImage && rowData.idBackImage ? '#66DE93' : '#FF6464' }}
                         onClick={() => {
                             if (rowData.dlFrontImage) {
                                 setDlFrontImage(rowData.dlFrontImage);
@@ -425,9 +446,7 @@ const Users = () => {
                     <div className="col-12">
                         <InputTextarea value={BlockReason} onChange={(e) => setBlockReason(e.target.value)} placeholder="Block Reason" style={{ width: '22vw' }} />
                     </div>
-                    <div className="col-12">
-                        <Button label="Block" onClick={onChangeStatusBlocked} />
-                    </div>
+                    <div className="col-12">{isBlocking ? <span className="pi pi-spin pi-spinner"></span> : <Button label="Block" onClick={onChangeStatusBlocked} />}</div>
                 </div>
             </Dialog>
         </>

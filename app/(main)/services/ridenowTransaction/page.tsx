@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import CustomTable from '../../components/table';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { useRouter } from 'next/navigation';
+import { Button } from 'primereact/button';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
     const router = useRouter();
@@ -46,6 +47,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         // { key: 'endingStation', label: 'EndingStation', _props: { scope: 'col' } },
         { key: 'couponCode', label: 'CouponCode', _props: { scope: 'col' } },
         { key: 'discount', label: 'Discount', _props: { scope: 'col' } }
+        // { key: 'invoice', label: 'Invoice', _props: { scope: 'col' }, body: InvoiceTemplate }
     ];
     const fetchData = async () => {
         // debugger;

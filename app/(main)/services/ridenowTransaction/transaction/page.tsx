@@ -1,11 +1,21 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { GoogleMap, useJsApiLoader, Data } from '@react-google-maps/api';
 import './plan.css';
 import { useSearchParams } from 'next/navigation';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import html2canvas from 'html2canvas';
+import Image from 'next/image';
+
 const containerStyle = {
     width: '100%',
     height: '75vh'
+};
+
+const previewMapContainer = {
+    width: '100%',
+    height: '250px'
 };
 
 const ViewAllBooking = () => {
@@ -17,8 +27,10 @@ const ViewAllBooking = () => {
         googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
     });
 
+    const [staticMapUrl, setStaticMapUrl] = useState('');
     const [geoJsonData, setGeoJsonData] = useState<any>([]);
     const [loading, setLoading] = useState(true);
+    const invoiceRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,8 +39,8 @@ const ViewAllBooking = () => {
                 const data = await response.json();
 
                 if (Array.isArray(data.data) && data.data.length > 0) {
-                    console.log(data.data);
                     setGeoJsonData(data.data);
+                    console.log(data.data);
                     setLoading(false);
                 } else {
                     console.error('No ongoing ride data found.');
@@ -39,7 +51,7 @@ const ViewAllBooking = () => {
         };
 
         fetchData();
-    }, []);
+    }, [profileId, userId]);
 
     if (!isLoaded) {
         return <div>Loading...</div>;
@@ -53,11 +65,9 @@ const ViewAllBooking = () => {
               }
             : { lat: 0, lng: 0 };
 
-    if (!defaultCenter) return;
-
     return (
         <div>
-            <h2>Ongoing Rides</h2>
+            {/* <div className="flex gap-3 my-2"></div> */}
             {loading ? (
                 <p>Loading map...</p>
             ) : (
@@ -69,9 +79,9 @@ const ViewAllBooking = () => {
                         gestureHandling: 'greedy'
                     }}
                 >
-                    {geoJsonData.map((booking: any, index: number) => {
-                        if (booking.booking.bikeWithDevice?.location) {
-                            return (
+                    {geoJsonData.map(
+                        (booking: any, index: number) =>
+                            booking.booking.bikeWithDevice?.location && (
                                 <Data
                                     key={index}
                                     options={{
@@ -112,13 +122,11 @@ const ViewAllBooking = () => {
                                                 ]
                                             });
                                         }
-
                                         console.log('Data Loaded:', data);
                                     }}
                                 />
-                            );
-                        }
-                    })}
+                            )
+                    )}
                 </GoogleMap>
             )}
         </div>

@@ -18,7 +18,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     }, []);
 
     const ViewStationOnMap = (rowData: any) => {
-        return rowData.status === 'completed' ? 'NA' : <i onClick={(e) => router.push(`/services/ridenowTransaction/${rowData.profileId + ' ' + rowData.id}/`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
+        return <i onClick={(e) => router.push(`/services/rentalTransactions/transaction?userId=${rowData.id}&profileId=${rowData.profileId}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
     };
 
     const columns: any[] = [

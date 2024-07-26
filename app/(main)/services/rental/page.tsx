@@ -1,20 +1,20 @@
 'use client';
-import { BreadCrumb } from "primereact/breadcrumb";
-import { ChangeEvent, createRef, MutableRefObject, Ref, RefObject, use, useEffect, useRef, useState } from "react";
-import CustomTable from "../../components/table";
-import { getPlans, getVehicleTypes, setPlan, updatePlan } from "@/app/api/iotBikes";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { InputNumber, InputNumberValueChangeEvent } from "primereact/inputnumber";
-import { Calendar } from "primereact/calendar";
-import { InputSwitch } from "primereact/inputswitch";
-import "./plan.css";
-import { ColumnEditorOptions, ColumnEvent } from "primereact/column";
-import { Dropdown } from "primereact/dropdown";
-import { getCity } from "@/app/api/services";
-import RentalPlanForm from "../component/rentalPlan";
+import { BreadCrumb } from 'primereact/breadcrumb';
+import { ChangeEvent, createRef, MutableRefObject, Ref, RefObject, use, useEffect, useRef, useState } from 'react';
+import CustomTable from '../../components/table';
+import { getPlans, getVehicleTypes, setPlan, updatePlan } from '@/app/api/iotBikes';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
+import { Calendar } from 'primereact/calendar';
+import { InputSwitch } from 'primereact/inputswitch';
+import './plan.css';
+import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
+import { Dropdown } from 'primereact/dropdown';
+import { getCity } from '@/app/api/services';
+import RentalPlanForm from '../component/rentalPlan';
 interface ProductFormData {
     city: string;
     vehicleType: string;
@@ -26,38 +26,64 @@ interface ProductFormData {
     isActive: boolean;
 }
 
-const Plan = () => {
+interface Plan {
+    id: string;
+    name: string;
+    city: string;
+    vehicleType: string;
+    chargerType: string;
+    type: string;
+    description: string;
+    startingMinutes: number;
+    endingMinutes: number;
+    everyXMinutes: number;
+    price: number;
+    deposit: number | null;
+    validity: string;
+    discount: number;
+    isActive: boolean;
+    status: string;
+    createdTime: string;
+}
 
-    const [items, setItems] = useState<any>([])
+interface ApiResponse {
+    success: boolean;
+    data: Plan[] | any;
+    message: string | undefined;
+}
+
+const Plan = () => {
+    const [items, setItems] = useState<Plan[]>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
     const [vehicleType, setVehicleType] = useState<any>([]);
     const [city, setCity] = useState<any>([]);
 
-
-
     const changePlanActive = async (id: string, status: boolean) => {
         const body: any = {
             isActive: status
-        }
-        const response = await updatePlan(body, id)
+        };
+        const response = await updatePlan(body, id);
         if (response.success) {
-            fetchData()
+            fetchData();
         }
-    }
+    };
 
     const activeTemplate = (rowData: any) => {
-        return <InputSwitch checked={rowData.isActive} onClick={() => {
-            changePlanActive(rowData.id, !rowData.isActive)
-        }
-        } />;
-    }
+        return (
+            <InputSwitch
+                checked={rowData.isActive}
+                onClick={() => {
+                    changePlanActive(rowData.id, !rowData.isActive);
+                }}
+            />
+        );
+    };
     const cellEditor = (options: ColumnEditorOptions) => {
         return textEditor(options);
     };
     const cellNumberEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} mode="currency" currency="INR" locale="en-IN" onKeyDown={(e) => e.stopPropagation()} />;
-
     };
     const textEditor = (options: ColumnEditorOptions) => {
         return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options?.editorCallback && options.editorCallback(e.target.value)} onKeyDown={(e) => e.stopPropagation()} />;
@@ -66,10 +92,10 @@ const Plan = () => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
             [field]: newValue
-        }
-        const response = await updatePlan(body, rowData.id)
+        };
+        const response = await updatePlan(body, rowData.id);
         if (response.success) {
-            fetchData()
+            fetchData();
         }
     };
 
@@ -79,56 +105,58 @@ const Plan = () => {
         { key: 'name', label: 'Name', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'description', label: 'Description', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'price', label: 'Price', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
-        { key: 'validity', label: 'Validity', _props: { scope: 'col' } },
-        { key: "deposit", label: "Deposit", _props: { scope: "col" }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
+        { key: 'validity', label: 'Plan Validity', _props: { scope: 'col' } },
+        { key: 'deposit', label: 'Deposit', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
         { key: 'isActive', label: 'Active', _props: { scope: 'col' }, body: activeTemplate },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
-    ]
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } }
+    ];
 
     useEffect(() => {
         fetchData();
         getCityD();
         getVehicleTypesD();
         return () => {
-            setItems([])
-        }
-    }, [])
+            setItems([]);
+        };
+    }, []);
     const getCityD = async () => {
-        let response = await getCity()
+        let response = await getCity();
         if (response.success) {
             if (response.data) {
-                const data: any[] = []
+                const data: any[] = [];
                 for (let i = 0; i < response.data.length; i++) {
-                    data.push({ name: response.data[i].name, code: response.data[i].name })
+                    data.push({ name: response.data[i].name, code: response.data[i].name });
                 }
-                setCity(() => data)
+                setCity(() => data);
             }
         }
-    }
+    };
     const getVehicleTypesD = async () => {
-        let response = await getVehicleTypes()
+        let response = await getVehicleTypes();
         if (response.success) {
             if (response.data) {
-                const data: any[] = []
+                const data: any[] = [];
                 for (let i = 0; i < response.data.length; i++) {
-                    data.push({ name: response.data[i].name, code: response.data[i].name })
+                    data.push({ name: response.data[i].name, code: response.data[i].name });
                 }
-                setVehicleType(() => data)
+                setVehicleType(() => data);
             }
         }
-    }
+    };
     // useEffect(() => {
     //     console.log(formData.current.name)
     // }, [formData.current.name])
     const fetchData = async () => {
-        let response = await getPlans("rental")
+        let response: ApiResponse = await getPlans('rental');
+        console.log(response);
         if (response.success) {
             if (response.data) {
-                setItems(() => response.data)
+                const sortedData = response.data?.sort((a: Plan, b: Plan) => (a.isActive === b.isActive ? 0 : a.isActive ? -1 : 1));
+                setItems(sortedData);
             }
         }
-        setLoading1(false)
-    }
+        setLoading1(false);
+    };
 
     return (
         <>
@@ -137,22 +165,21 @@ const Plan = () => {
                     <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
                 <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: "0px" }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: "0px" }} onClick={() => setShowDialog(true)} />
+                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                        <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
-
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={"cell"} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        <CustomTable editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
                     </div>
                 </div>
             </div>
             <Dialog header="Add Plan" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
-                <RentalPlanForm city={city} vehicleType={vehicleType} fetchData={fetchData} setShowDialog={setShowDialog} type={"rental"} />
-            </Dialog >
+                <RentalPlanForm city={city} vehicleType={vehicleType} fetchData={fetchData} setShowDialog={setShowDialog} type={'rental'} />
+            </Dialog>
         </>
-    )
-}
+    );
+};
 
 export default Plan;

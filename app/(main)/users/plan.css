@@ -5,6 +5,11 @@
 }
 
 
+.column-id {
+    display: none;
+    color: red;
+}
+
 
 
 /* @media (min-width: 768px) {
@@ -18,7 +23,18 @@
     }
 } */
 
+.text-hover-effect:hover {
+    color: rgb(82, 28, 191);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
 @media (min-width: 768px) {
+
+    .column-id {
+        display: none;
+        color: red;
+    }
 
     /* Adjust breakpoint as needed */
     .form-grid {

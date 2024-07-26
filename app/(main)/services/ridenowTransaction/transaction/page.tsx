@@ -1,18 +1,20 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { GoogleMap, useJsApiLoader, Data } from '@react-google-maps/api';
-
+import './plan.css';
+import { useSearchParams } from 'next/navigation';
 const containerStyle = {
     width: '100%',
-    height: '100vh'
+    height: '75vh'
 };
 
-const ViewAllBooking = ({ params }: { params: any }) => {
-    console.log(params);
-    const transactionId = params.transactionID.split('%20');
-    console.log(transactionId);
+const ViewAllBooking = () => {
+    const searchParams = useSearchParams();
+    const profileId = searchParams.get('profileId');
+    const userId = searchParams.get('userId');
+
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc' // Replace with your actual Google Maps API key
+        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
     });
 
     const [geoJsonData, setGeoJsonData] = useState<any>([]);
@@ -21,9 +23,8 @@ const ViewAllBooking = ({ params }: { params: any }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://15.207.88.89:1995/api/v1/rides/ongoing?userID=${transactionId[0]}&bookingId=${transactionId[1]}`);
+                const response = await fetch(`http://15.207.88.89:1995/api/v1/rides/ongoing?userID=${profileId}&bookingId=${userId}`);
                 const data = await response.json();
-                console.log(data.data);
 
                 if (Array.isArray(data.data) && data.data.length > 0) {
                     console.log(data.data);
@@ -47,18 +48,27 @@ const ViewAllBooking = ({ params }: { params: any }) => {
     const defaultCenter =
         geoJsonData.length > 0
             ? {
-                  lat: geoJsonData[0].booking.bikeWithDevice.location.coordinates[1],
-                  lng: geoJsonData[0].booking.bikeWithDevice.location.coordinates[0]
+                  lat: geoJsonData[0].booking?.bikeWithDevice?.location.coordinates[1],
+                  lng: geoJsonData[0].booking?.bikeWithDevice?.location.coordinates[0]
               }
             : { lat: 0, lng: 0 };
 
+    if (!defaultCenter) return;
+
     return (
         <div>
-            <h1>Ongoing Rides</h1>
+            <h2>Ongoing Rides</h2>
             {loading ? (
                 <p>Loading map...</p>
             ) : (
-                <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={15}>
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={defaultCenter}
+                    zoom={15}
+                    options={{
+                        gestureHandling: 'greedy'
+                    }}
+                >
                     {geoJsonData.map((booking: any, index: number) => {
                         if (booking.booking.bikeWithDevice?.location) {
                             return (

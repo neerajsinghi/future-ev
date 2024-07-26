@@ -18,9 +18,12 @@ import Link from 'next/link';
 import { flattenData } from '@/app/api/user';
 import { ColumnFilterElementTemplateOptions } from 'primereact/column';
 import useIsMobile from '@/app/api/hooks';
+import { useRouter, useSearchParams } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 
-const Users = ({ searchParams }: { searchParams: any }) => {
+const Users = () => {
+    const searchParams = useSearchParams();
+    const router = useRouter();
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -50,8 +53,8 @@ const Users = ({ searchParams }: { searchParams: any }) => {
         if (response.success && response.data) {
             const data = [];
             for (let i = 0; i < response.data.length; i++) {
-                if (searchParams.userId) {
-                    if (searchParams.userId === response.data[i].id) {
+                if (searchParams.get('userId')) {
+                    if (searchParams.get('userId') === response.data[i].id) {
                         data.push(flattenData(response.data[i]));
                     }
                 } else {
@@ -65,7 +68,7 @@ const Users = ({ searchParams }: { searchParams: any }) => {
     };
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [searchParams]);
 
     const fetchBookings = async (id: string) => {
         const response = await getMyBookings(id);
@@ -82,6 +85,17 @@ const Users = ({ searchParams }: { searchParams: any }) => {
     };
     const statusAddressTemplate = (rowData: any) => {
         return <div>{rowData.address.address}</div>;
+    };
+    const userIDTemplate = (rowData: any) => {
+        const handleClick = () => {
+            router.push(`/users?userId=${rowData.id}`);
+        };
+
+        return (
+            <div onClick={handleClick} className="text-hover-effect">
+                {rowData.id}
+            </div>
+        );
     };
     const statusCityTemplate = (rowData: any) => {
         return <div>{rowData.address.city}</div>;

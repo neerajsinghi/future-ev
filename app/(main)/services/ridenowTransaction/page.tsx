@@ -18,7 +18,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     }, []);
 
     const ViewStationOnMap = (rowData: any) => {
-        return rowData.status === 'completed' ? 'NA' : <i onClick={(e) => router.push(`/services/ridenowTransaction/${rowData.profileId + ' ' + rowData.id}/`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
+        return <i onClick={(e) => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
     };
 
     const columns: any[] = [
@@ -28,8 +28,8 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         { key: 'deviceId', label: 'DeviceId', _props: { scope: 'col' } },
         { key: 'startTime', label: 'StartTime', _props: { scope: 'col' } },
         { key: 'endTime', label: 'EndTime', _props: { scope: 'col' } },
-        { key: 'startKm', label: 'StartKm', _props: { scope: 'col' } },
-        { key: 'endKm', label: 'EndKm', _props: { scope: 'col' } },
+        // { key: 'startKm', label: 'StartKm', _props: { scope: 'col' } },
+        // { key: 'endKm', label: 'EndKm', _props: { scope: 'col' } },
         { key: 'totalDistance', label: 'TotalDistance', _props: { scope: 'col' } },
         // { key: 'return', label: 'Return', _props: { scope: 'col' } },
         { key: 'price', label: 'Price', _props: { scope: 'col' } },

@@ -122,7 +122,7 @@ export async function updateStation(id: string, data: any) {
     }
     return responseObj;
 }
-export async function getStations() { 
+export async function getStations() {
     let responseObj = { success: false, data: [] as any[], message: '' };
     try {
         let response = await webService.get(baseUrl + 'station');
@@ -368,8 +368,32 @@ export async function setStation(data: any) {
 
 export async function getStatistics(duration: number) {
     let responseObj = { success: false, data: [] as any[], message: '' };
+    //get startdate and enddate based on duration
+    let startDate = new Date();
+    let endDate = new Date();
+    switch (duration) {
+        case 1:
+            startDate.setDate(startDate.getDate() - 1);
+            break;
+        case 2:
+            endDate.setDate(endDate.getDate() - 1);
+            startDate.setDate(startDate.getDate() - 2);
+            break;
+        case 7:
+            startDate.setDate(startDate.getDate() - 7);
+            break;
+        case 30:
+            startDate.setDate(startDate.getDate() - 30);
+            break;
+        case 365:
+            startDate.setDate(startDate.getDate() - 365);
+            break;
+        default:
+            startDate.setDate(startDate.getDate() - 1);
+            break;
+    }
     try {
-        let response = await webService.get(baseUrl + 'statistics/' + duration.toString());
+        let response = await webService.get(baseUrl + 'statistics?startDate=' + startDate.toISOString() + '&endDate=' + endDate.toISOString());
         responseObj = getSuccessResponse(response, responseObj);
     } catch {
         responseObj = getErrorResponse(responseObj);

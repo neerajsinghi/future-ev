@@ -57,7 +57,6 @@ const Dashboard = () => {
         fetchData();
     }, []);
     const fetchData = async () => {
-        debugger;
         const resp = await getStatistics(selectedTime.code);
         /*
         {
@@ -154,22 +153,22 @@ const Dashboard = () => {
 }
         */
         if (resp.success && resp.data) {
-            setNumberOfUsers(resp.data[0][0].Value);
-            setIdVerifiedUsers(resp.data[0][1].Value);
-            setDlVerifiedUsers(resp.data[0][2].Value);
-            setTotalStations(resp.data[0][3].Value[0]);
-            setTotalPublicStations(resp.data[0][4].Value[0]);
-            setTotalActiveStation(resp.data[0][5].Value[0]);
-            setTotalCo2Emission(resp.data[0][6].Value[0]);
-            setTotalChargers(resp.data[0][7].Value);
-            setTotalRides(resp.data[0][8].Value[0]);
-            setTotalDistance(resp.data[0][9].Value[0]);
+            setNumberOfUsers(resp.data[0][0]?.Value ? resp.data[0][0]?.Value : 0);
+            setIdVerifiedUsers(resp.data[0][1]?.Value ? resp.data[0][1]?.Value : 0);
+            setDlVerifiedUsers(resp.data[0][2]?.Value ? resp.data[0][2]?.Value : 0);
+            setTotalStations(resp.data[0][3]?.Value[0] ? resp.data[0][3]?.Value[0] : 0);
+            setTotalPublicStations(resp.data[0][4]?.Value[0] ? resp.data[0][4].Value[0] : 0);
+            setTotalActiveStation(resp.data[0][5]?.Value[0] ? resp.data[0][5]?.Value[0] : 0);
+            setTotalCo2Emission(resp.data[0][6]?.Value[0] ? resp.data[0][6]?.Value[0] : 0);
+            setTotalChargers(resp.data[0][7]?.Value ? resp.data[0][7]?.Value : 0);
+            setTotalRides(resp.data[0][8]?.Value[0] ? resp.data[0][8]?.Value[0] : 0);
+            setTotalDistance(resp.data[0][9]?.Value[0] ? resp.data[0][9]?.Value[0] : 0);
             setTotalCompletedRides(resp.data[0][10]?.Value[0] ? resp.data[0][10]?.Value[0] : 0);
-            setTotalVehicles(resp.data[0][11].Value[0]);
-            setTotalActiveVeficles(resp.data[0][12].Value[0]);
-            setTotalVehicleOnRoad(resp.data[0][13].Value[0]);
-            setTotalEarning(resp.data[0][14].Value);
-            setTotalAmountInWallet(resp.data[0][15].Value);
+            setTotalVehicles(resp.data[0][11]?.Value[0] ? resp.data[0][11]?.Value[0] : 0);
+            setTotalActiveVeficles(resp.data[0][12]?.Value[0] ? resp.data[0][12]?.Value[0] : 0);
+            setTotalVehicleOnRoad(resp.data[0][13]?.Value[0] ? resp.data[0][13].Value[0] : 0);
+            setTotalEarning(resp.data[0][14]?.Value ? resp.data[0][14]?.Value : 0);
+            setTotalAmountInWallet(resp.data[0][15]?.Value ? resp.data[0][15]?.Value : 0);
         }
         // if (resp.success && resp.data) {
         //     setNumberOfUsers(resp.data.length)
@@ -277,10 +276,14 @@ const Dashboard = () => {
 
         fetchCities();
     }, []);
+    useEffect(() => {
+        debugger
+        fetchData();
+    }, [selectedTime]);
 
     return (
         <>
-            <div className="card">
+            <div className="">
                 <div className="grid">
                     <div className="col-12">
                         <h2>Dashboard</h2>
@@ -288,8 +291,9 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="card">
-                <div className="">
-                    <>
+                <div className="grid  align-items-center">
+                    <div className='col-12 md:col-1  align-items-center' style={{ marginRight: "30px" }}>
+
                         <Dropdown
                             placeholder="Select City"
                             optionLabel="name"
@@ -300,7 +304,8 @@ const Dashboard = () => {
                                 setSelectedCity(e.value);
                             }}
                         />
-                        &nbsp;
+                    </div>
+                    <div className='col-12 md:col-2  align-items-center'>
                         <Dropdown
                             placeholder="Select Service"
                             optionLabel="name"
@@ -311,26 +316,29 @@ const Dashboard = () => {
                                 setSelectedCity(e.value);
                             }}
                         />
-                    </>
-                    <SelectButton
-                        style={{ border: '2px solid white' }}
-                        width={30}
-                        className="flex"
-                        optionLabel="name"
-                        options={[
-                            { name: 'Yesterday', code: 7 },
-                            { name: 'Today', code: 7 },
-                            { name: 'Week', code: 7 },
-                            { name: '15 Days', code: 7 },
-                            { name: 'Month', code: 30 },
-                            { name: 'Year', code: 365 }
-                        ]}
-                        value={selectedTime}
-                        onChange={(e) => setSelectedTime(e.value)}
-                        multiple={false}
-                    />
+                    </div>
+                    <div className='col-12 md:col-4' />
+                    <div className='col-12 md:col-4'>
+                        <SelectButton
+                            style={{ border: '2px solid white' }}
+                            width={30}
+                            className="flex"
+                            optionLabel="name"
+                            options={[
+                                { name: 'Yesterday', code: 2 },
+                                { name: 'Today', code: 1 },
+                                { name: 'Week', code: 7 },
+                                { name: '15 Days', code: 7 },
+                                { name: 'Month', code: 30 },
+                                { name: 'Year', code: 365 }
+                            ]}
+                            value={selectedTime}
+                            onChange={(e) => setSelectedTime(e.value)}
+                            multiple={false}
+                        />
+                    </div>
                 </div>
-            </div>
+            </div >
             <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <FlippingCard

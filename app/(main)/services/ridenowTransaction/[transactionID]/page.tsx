@@ -21,7 +21,7 @@ const ViewAllBooking = ({ params }: { params: any }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://15.207.88.89:1995/api/v1/rides/ongoing?userID=${transactionId[0]}&bookingId=${transactionId[1]}`);
+                const response = await fetch(`https://futureev.trestx.com/api/v1/rides/ongoing?userID=${transactionId[0]}&bookingId=${transactionId[1]}`);
                 const data = await response.json();
                 console.log(data.data);
 
@@ -47,9 +47,9 @@ const ViewAllBooking = ({ params }: { params: any }) => {
     const defaultCenter =
         geoJsonData.length > 0
             ? {
-                  lat: geoJsonData[0].booking.bikeWithDevice.location.coordinates[1],
-                  lng: geoJsonData[0].booking.bikeWithDevice.location.coordinates[0]
-              }
+                lat: geoJsonData[0].booking.bikeWithDevice.location.coordinates[1],
+                lng: geoJsonData[0].booking.bikeWithDevice.location.coordinates[0]
+            }
             : { lat: 0, lng: 0 };
 
     return (

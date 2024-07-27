@@ -52,6 +52,7 @@ export const webService = {
     if (isLogin) {
       headersOb = {
         sessionId: `fghfw-32b2-9232d-0001`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       }
     }
     return axios.post(url, apidata).catch((e) => {
@@ -78,6 +79,7 @@ export const webService = {
     if (isLogin) {
       headersOb = {
         sessionId: `fghfw-32b2-9232d-0001`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       }
     }
     return axios
@@ -108,6 +110,7 @@ export const webService = {
     if (isLogin) {
       headersOb = {
         sessionId: `fghfw-32b2-9232d-0001`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       }
     }
     return axios
@@ -138,6 +141,7 @@ export const webService = {
     if (isLogin) {
       headersOb = {
         sessionId: `fghfw-32b2-9232d-0001`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       }
     }
     return axios

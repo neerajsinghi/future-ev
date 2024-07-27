@@ -63,7 +63,6 @@ const Plan = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        debugger;
         // Send formData to your backend for processing
         for (let i = 0; i < formData.price.length; i++) {
             const body = {
@@ -72,6 +71,22 @@ const Plan = () => {
                 price: formData.price[i],
                 startingMinutes: formData.startingMinutes[i],
                 endingMinutes: formData.endingMinutes[i],
+                type: formData.type,
+
+            };
+
+            const response = await setPlan(body);
+            if (response.success && response.data) {
+            } else {
+                console.log('Failed');
+            }
+        }
+        if (formData.everyXMinutes > 0) {
+            const body = {
+                city: formData.city,
+                vehicleType: formData.vehicleType,
+                price: formData.extensionPrice,
+                everyXMinutes: formData.everyXMinutes,
                 type: formData.type
             };
             const response = await setPlan(body);
@@ -80,17 +95,19 @@ const Plan = () => {
                 console.log('Failed');
             }
         }
-        const body = {
-            city: formData.city,
-            vehicleType: formData.vehicleType,
-            price: formData.extensionPrice,
-            everyXMinutes: formData.everyXMinutes,
-            type: formData.type
-        };
-        const response = await setPlan(body);
-        if (response.success && response.data) {
-        } else {
-            console.log('Failed');
+        if (formData.deposit > 0) {
+            debugger
+            const body = {
+                city: formData.city,
+                vehicleType: formData.vehicleType,
+                deposit: formData.deposit,
+                type: formData.type
+            };
+            const response = await setPlan(body);
+            if (response.success && response.data) {
+            } else {
+                console.log('Failed');
+            }
         }
         setShowDialog(false);
         fetchData();
@@ -130,7 +147,7 @@ const Plan = () => {
     const cellMinEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} suffix=" min" onKeyDown={(e) => e.stopPropagation()} />;
     };
-    const textEditor = (options: ColumnEditorOptions) => {};
+    const textEditor = (options: ColumnEditorOptions) => { };
     const onCellEditComplete = async (e: ColumnEvent) => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {

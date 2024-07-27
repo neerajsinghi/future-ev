@@ -25,7 +25,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
     useEffect(() => {
         initFilters1();
 
-        return () => {};
+        return () => { };
     }, []);
     const statusBodyTemplate = (rowData: any) => {
         return <Tag value={rowData.status} />;
@@ -132,7 +132,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                                 sortable
                                 filter
                                 body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
-                                //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
+                            //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
                             />
                         ) : null
                     )}
@@ -168,6 +168,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                 expandedRows={expandedRows}
                 onRowToggle={(e) => setExpandedRows(e.data)}
                 rowExpansionTemplate={rowExpansionTemplate}
+                reorderableColumns
             >
                 {columns.map((col, i) => {
                     return !col.hidden ? (

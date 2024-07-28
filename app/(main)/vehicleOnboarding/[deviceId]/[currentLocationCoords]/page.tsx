@@ -8,7 +8,7 @@ const containerStyle = {
     height: '75vh'
 };
 
-const BikeCurrentLocation = (params: Params) => {
+const BikeCurrentLocation = (params: any) => {
     const {
         params: { currentLocationCoords }
     } = params;

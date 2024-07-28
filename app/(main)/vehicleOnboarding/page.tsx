@@ -17,6 +17,8 @@ import { Calendar } from 'primereact/calendar';
 import { FileUpload } from 'primereact/fileupload';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '@/app/api/common';
+import { InputSwitch } from 'primereact/inputswitch';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,7 +105,27 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         return <div>{rowData?.deviceData?.valid}</div>;
     };
 
+    const ImmobiliseToggleTemplate = (rowData: any) => {
+        const immobolise = async () => {
+            let response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/immobilize/${rowData.deviceId}`);
+            return response;
+        };
+        return (
+            <InputSwitch
+                checked={rowData?.ismobolised || false}
+                onClick={() => {
+                    immobolise();
+                }}
+            />
+        );
+    };
+
+    const vehicleIdTemplate = (rowData: any) => {
+        return <Link href={`/vehicleOnboarding/${rowData.deviceId}`}>{rowData?.id}</Link>;
+    };
+
     const statusStationNameTemplate = (rowData: any) => {
+        console.log(rowData);
         return <div>{rowData?.station?.name}</div>;
     };
     const downloadQRCode = (qrRef: RefObject<any>, id: string) => async (e: any) => {
@@ -148,10 +170,11 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         ) : null;
     };
     const columns = [
-        { key: 'id', label: 'Id', _props: { scope: 'col' } },
+        { key: 'id', label: 'Id', _props: { scope: 'col' }, body: vehicleIdTemplate },
         { key: 'vehicleTypeId', label: 'Vehicle Type ID', _props: { scope: 'col' } },
         { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' }, body: statusVehicleNameTemplate },
         { key: 'deviceName', label: 'Device Name', _props: { scope: 'col' }, body: statusDeviceNameTemplate },
+        { key: 'deviceId', label: 'Immobolise Vehicle', _props: { scope: 'col' }, body: ImmobiliseToggleTemplate },
         { key: 'deviceBatteryLevel', label: 'Battery Level', _props: { scope: 'col' }, body: statusDeviceBatteryLevelTemplate },
         { key: 'deviceIgnition', label: 'Ignition', _props: { scope: 'col' }, body: statusDeviceIgnitionTemplate },
         { key: 'deviceSpeed', label: 'Speed', _props: { scope: 'col' }, body: statusDeviceSpeedTemplate },
@@ -181,6 +204,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                     });
                 }
             }
+            console.log(stations);
             setStation(stations); // Use setItems to update the state with the filtered stations
         }
         setLoading1(false);
@@ -202,11 +226,15 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         const response = await getCity();
         if (response.success && response.data) {
             for (let i = 0; i < response.data.length; i++) {
-                data.push({ name: response.data[i].name, code: response.data[i].name });
+                data.push({ name: response.data[i].name, code: response.data[i].name, vehicleType: response.data[i].vehicleType });
             }
             setCities(() => data);
         }
     };
+
+    useEffect(() => {
+        // console.log(cities.filter((item));
+    }, [selectedCity]);
 
     const fetchBikesCallback = useCallback(async () => {
         if (searchParams && searchParams.search) {
@@ -267,6 +295,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             }
             const response = await getBikes();
             if (response.success && response.data) {
+                console.log(response.data);
                 const devices = [];
                 for (let i = 0; i < response.data.length; i++) {
                     if (selectedBikes.includes(response.data[i]['deviceId'])) {
@@ -413,7 +442,17 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="VehicleTypeID">Vehicle Type ID</label>
-                        <Dropdown id="VehicleTypeID" value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleTypeID', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" filter filterBy="name" />
+                        <Dropdown
+                            id="VehicleTypeID"
+                            // defaultValue="Normal"
+                            // disabled
+                            value={selectedVehicleType}
+                            options={vehicleType}
+                            onChange={(e) => handleChange('vehicleTypeID', e.value)}
+                            optionLabel="name"
+                            placeholder="Select a Vehicle Type"
+                            filterBy="name"
+                        />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="StationID">Station ID</label>

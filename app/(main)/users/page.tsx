@@ -89,17 +89,7 @@ const Users = () => {
     const statusAddressTemplate = (rowData: any) => {
         return <div>{rowData.address.address}</div>;
     };
-    const userIDTemplate = (rowData: any) => {
-        const handleClick = () => {
-            router.push(`/users?userId=${rowData.id}`);
-        };
 
-        return (
-            <div onClick={handleClick} className="text-hover-effect">
-                {rowData.id}
-            </div>
-        );
-    };
     const statusCityTemplate = (rowData: any) => {
         return <div>{rowData.address.city}</div>;
     };
@@ -193,6 +183,11 @@ const Users = () => {
             )
         );
     };
+
+    const userIDTemplate = (rowData: any) => {
+        console.log(rowData.id);
+        return <Link href={`/users/${rowData?.id}`}>{rowData?.id}</Link>;
+    };
     const blockedUserTemplate = (rowData: any) => {
         const isLoading = loadingRows[rowData.id]; // Check if the specific row is loading
         return (
@@ -261,7 +256,7 @@ const Users = () => {
         );
     };
     const columns = [
-        { key: 'id', label: 'Id', _props: { scope: 'col', className: 'column-id' } },
+        { key: 'id', label: 'Id', _props: { scope: 'col', className: 'column-id' }, body: userIDTemplate },
         { key: 'name', label: 'Name', _props: { scope: 'col', className: 'column-name' } },
         {
             key: 'totalBalance',

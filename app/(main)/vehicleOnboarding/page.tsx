@@ -19,6 +19,8 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '@/app/api/common';
 import { InputSwitch } from 'primereact/inputswitch';
 import Link from 'next/link';
+import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
+import { useRouter } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,6 +51,7 @@ interface BikesStationedProps {
 }
 
 const BikesStationed = ({ searchParams }: { searchParams: any }) => {
+    const router = useRouter();
     const [items, setItems] = useState<any>([]);
     const [station, setStation] = useState<any[]>([]);
     const [devices, setDevices] = useState<{ name: string; code: string }[]>([]);
@@ -109,7 +112,12 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
     const ImmobiliseToggleTemplate = (rowData: any) => {
         const immobolise = async () => {
             let response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/immobilize/${rowData.deviceId}`);
-            return response;
+            let data = await response.json();
+            if (data.status) {
+                router.refresh();
+            }
+            console.log(data);
+            return data;
         };
         return (
             <InputSwitch
@@ -129,6 +137,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         console.log(rowData);
         return <div>{rowData?.station?.name}</div>;
     };
+
     const downloadQRCode = (qrRef: RefObject<any>, id: string) => async (e: any) => {
         const svgElement = qrRef?.current?.querySelector('svg');
 
@@ -156,6 +165,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         anchor.click();
         document.body.removeChild(anchor);
     };
+
     const qrCodeTemplate = (rowData: any) => {
         if (!qrcodeRefs.current[rowData?.deviceData?.deviceId]) {
             qrcodeRefs.current[rowData?.deviceData?.deviceId] = createRef();
@@ -170,18 +180,50 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             </div>
         ) : null;
     };
+
+    const updateStatus = async (id: string) => {};
+    const cellEditor = (options: ColumnEditorOptions) => {
+        return (
+            <Dropdown
+                options={[
+                    { name: 'Booked', code: 'booked' },
+                    { name: 'Available', code: 'available' },
+                    { name: 'Damaged', code: 'damaged' },
+                    { name: 'Under Maintenance', code: 'maintenance' },
+                    { name: 'Ready For Deployment', code: 'deployment' }
+                ]}
+                value={selectedStatus}
+                onChange={(e) => handleChange('status', e.value)}
+                optionLabel="name"
+                placeholder="Select a Status"
+            />
+        );
+    };
+
+    const onCellEditComplete = async (e: ColumnEvent) => {
+        let { rowData, newValue, field, originalEvent: event } = e;
+        const body = {
+            [field]: newValue
+        };
+        const response = await updateStatus(rowData.id);
+        if (response.success) {
+            router.refresh();
+            //  fetchData();
+        }
+    };
+
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' }, body: vehicleIdTemplate, filterField: 'id' },
         { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' }, body: statusVehicleNameTemplate, filterField: 'vehicleType.name' },
         { key: 'deviceName', label: 'Device Name', _props: { scope: 'col' }, body: statusDeviceNameTemplate, filterField: 'deviceData.name' },
-        { key: 'deviceId', label: 'Immobolise Vehicle', _props: { scope: 'col' }, body: ImmobiliseToggleTemplate, filterField: "immobilized" },
+        { key: 'deviceId', label: 'Immobolise Vehicle', _props: { scope: 'col' }, body: ImmobiliseToggleTemplate, filterField: 'immobilized' },
         { key: 'deviceBatteryLevel', label: 'Battery Level', _props: { scope: 'col' }, body: statusDeviceBatteryLevelTemplate, filterField: 'deviceData.batteryLevel' },
         { key: 'deviceSpeed', label: 'Speed', _props: { scope: 'col' }, body: statusDeviceSpeedTemplate },
         { key: 'deviceTotalDistance', label: 'Total Distance', _props: { scope: 'col' }, body: statusDeviceTotalDistanceTemplate, filterField: 'deviceData.totalDistance' },
         { key: 'deviceType', label: 'Type', _props: { scope: 'col' }, body: statusDeviceTypeTemplate, filterField: 'deviceData.type' },
         { key: 'deviceQR', label: 'Device QR', _props: { scope: 'col' }, body: qrCodeTemplate, filterField: 'deviceData.deviceId' },
         { key: 'stationName', label: 'Station Name', _props: { scope: 'col' }, body: statusStationNameTemplate, filterField: 'station.name' },
-        { key: 'status', label: 'Status', _props: { scope: 'col' }, filterField: 'status' }
+        { key: 'status', label: 'Status', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete }
     ];
 
     const getAStations = async () => {

@@ -1,33 +1,40 @@
 'use client';
+
 import { BreadCrumb } from 'primereact/breadcrumb';
 import React, { useEffect, useState } from 'react';
 import CustomTable from '../../components/table';
 import '../plan.css';
+
 const Page = (params: any) => {
     const {
         params: { userId }
     } = params;
 
-    console.log(userId);
-
-    const [userData, setUserData] = useState<any>([]);
-    const [loading1, setLoading1] = useState(false);
+    const [userData, setUserData] = useState<any>(null); // Initialize as null
+    const [loading1, setLoading1] = useState(true); // Start as true to show loading state
 
     const fetchUserDetails = async () => {
         setLoading1(true);
-        const response = await fetch(`https://futureev.trestx.com/api/v1/wallet/${userId}`);
-        const data = await response.json();
-        console.log(data);
-        setUserData(data.data);
-        setLoading1(false);
+        try {
+            const response = await fetch(`https://futureev.trestx.com/api/v1/wallet/${userId}`);
+            const data = await response.json();
+            setUserData(data.data);
+        } catch (error) {
+            console.error('Error fetching user details:', error);
+            setUserData(null); // Set to null on error
+        } finally {
+            setLoading1(false);
+        }
     };
 
     useEffect(() => {
         fetchUserDetails();
-    }, []);
+    }, [userId]); // Added dependency on userId to refetch data if userId changes
 
     // Extract the first wallet object that contains a booking with the profile details
-    const firstWalletWithProfile = userData.Wallets?.find((wallet: any) => wallet.booking?.profile) || {};
+    const firstWalletWithProfile = userData?.Wallets?.find((wallet: any) => wallet.booking?.profile) || {};
+
+    if (!userData) return <h1>No User Profile Data Available</h1>; // Handle no data case
 
     const idTemplate = (rowData: any) => <div>{rowData.id}</div>;
     const userIdTemplate = (rowData: any) => <div>{rowData.userId}</div>;
@@ -79,8 +86,8 @@ const Page = (params: any) => {
                 <div className="col-12">
                     <BreadCrumb model={[{ label: 'User Details' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
-                <h1>User Details</h1>
-                {firstWalletWithProfile.booking?.profile && (
+                {userData?.length > 0 && <h1>User Details</h1>}
+                {firstWalletWithProfile.booking?.profile ? (
                     <div className="col-12">
                         <div className="profile-details">
                             <p>
@@ -150,8 +157,10 @@ const Page = (params: any) => {
                             </div>
                         </div>
                     </div>
+                ) : (
+                    <h2>No Profile Details Available</h2>
                 )}
-                <h2>Wallet Details</h2>
+                {/* <h2>Wallet Details</h2> */}
                 <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={userData?.Wallets} loading1={loading1} />
             </div>
         </div>

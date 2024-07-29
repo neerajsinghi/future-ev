@@ -20,7 +20,7 @@ const Page = (params: any) => {
     const [userWalletData, setUserWalletData] = useState<any>(null); // Initialize as null
     const [userData, setUserData] = useState<any>(null); // Initialize as null
     const [bookings, setBookings] = useState<any>(null); // Initialize as null
-    const [loading1, setLoading1] = useState(true);// Start as true to show loading state
+    const [loading1, setLoading1] = useState(true); // Start as true to show loading state
     const [plans, setPlans] = useState<any>(null);
     const [bookingData, setBookingData] = useState<any>(null);
     const [planData, setPlanData] = useState<any>(null);
@@ -44,7 +44,7 @@ const Page = (params: any) => {
                 }
             }
             setPlans(plan);
-            debugger
+            debugger;
             setUserWalletData(nonPlan);
             const response2 = await fetch(`https://futureev.trestx.com/api/v1/users/${userId}`);
             const data2 = await response2.json();
@@ -66,18 +66,35 @@ const Page = (params: any) => {
 
     if (!userWalletData) return <h1>No User Profile Data Available</h1>; // Handle no data case
 
-    const idTemplate = (rowData: any) => <div onClick={() => {
-
-        setBookingData({ ...rowData });
-        setPreview(true);
-    }}>{rowData.id}</div>;
-    const idPlanTemplate = (rowData: any) => <div onClick={() => {
-
-        setPlanData({ ...rowData });
-        setPreviewPlan(true);
-    }}>{rowData.id}</div>;
+    const idTemplate = (rowData: any) => (
+        <div
+            style={{ color: '#3262EC' }}
+            onClick={() => {
+                setBookingData({ ...rowData });
+                setPreview(true);
+            }}
+        >
+            {rowData.id}
+        </div>
+    );
+    const idPlanTemplate = (rowData: any) => (
+        <div
+            style={{ color: '#3262EC' }}
+            onClick={() => {
+                setPlanData({ ...rowData });
+                setPreviewPlan(true);
+            }}
+        >
+            {rowData.id}
+        </div>
+    );
     const columns = [
-        { key: 'id', label: 'Id', _props: { scope: 'col' } },
+        {
+            key: 'id',
+            label: 'Id',
+            _props: { scope: 'col' },
+            body: (rowData: any) => <div style={{ color: '#3262EC' }}>{rowData.id}</div>
+        },
         { key: 'depositedMoney', label: 'Deposit', _props: { scope: 'col' } },
         { key: 'paymentId', label: 'Payment ID', _props: { scope: 'col' } },
         { key: 'usedMoney', label: 'Used', _props: { scope: 'col' } },
@@ -88,10 +105,10 @@ const Page = (params: any) => {
         { key: 'id', label: 'Id', _props: { scope: 'col' }, body: idPlanTemplate },
         { key: 'usedMoney', label: 'Used', _props: { scope: 'col' } },
         { key: 'planId', label: 'Plan ID', _props: { scope: 'col' } },
-        { key: "plan.name", label: "Rental Name", _props: { scope: 'col' } },
-        { key: "plan.city", label: "Rent City", _props: { scope: 'col' } },
-        { key: "plan.validity", label: "Rental Plan Validity", _props: { scope: 'col' } },
-        { key: "plan.price", label: "Rental Plan Price", _props: { scope: 'col' } },
+        { key: 'plan.name', label: 'Rental Name', _props: { scope: 'col' } },
+        { key: 'plan.city', label: 'Rent City', _props: { scope: 'col' } },
+        { key: 'plan.validity', label: 'Rental Plan Validity', _props: { scope: 'col' } },
+        { key: 'plan.price', label: 'Rental Plan Price', _props: { scope: 'col' } },
         { key: 'createdTime', label: 'Rental Started Time', _props: { scope: 'col' } }
     ];
     const ViewStationOnMap = (rowData: any) => {
@@ -193,59 +210,68 @@ const Page = (params: any) => {
                             </p>
                         </div>
                         <div className="profile-images">
-                            {userData.dlFrontImage && <div>
-                                <p>
-                                    <strong>DL Front Image:</strong>
-                                </p>
-                                <Image width='200' height='100' src={userData.dlFrontImage} alt="DL Front" />
-                            </div>}
-                            {userData.dlBackImage && <div>
-                                <p>
-                                    <strong>DL Back Image:</strong>
-                                </p>
-                                <Image width='200' height='100' src={userData.dlBackImage} alt="DL Back" />
-                            </div>}
-                            {userData.idFrontImage && <div>
-                                <p>
-                                    <strong>ID Front Image:</strong>
-                                </p>
-                                <Image width='200' height='100' src={userData.idFrontImage} alt="ID Front" />
-                            </div>}
-                            {userData.idBackImage && <div>
-                                <p>
-                                    <strong>ID Back Image:</strong>
-                                </p>
-                                <Image width='200' height='100' src={userData.idBackImage} alt="ID Back" />
-                            </div>}
+                            {userData.dlFrontImage && (
+                                <div>
+                                    <p>
+                                        <strong>DL Front Image:</strong>
+                                    </p>
+                                    <Image width="200" height="100" src={userData.dlFrontImage} alt="DL Front" />
+                                </div>
+                            )}
+                            {userData.dlBackImage && (
+                                <div>
+                                    <p>
+                                        <strong>DL Back Image:</strong>
+                                    </p>
+                                    <Image width="200" height="100" src={userData.dlBackImage} alt="DL Back" />
+                                </div>
+                            )}
+                            {userData.idFrontImage && (
+                                <div>
+                                    <p>
+                                        <strong>ID Front Image:</strong>
+                                    </p>
+                                    <Image width="200" height="100" src={userData.idFrontImage} alt="ID Front" />
+                                </div>
+                            )}
+                            {userData.idBackImage && (
+                                <div>
+                                    <p>
+                                        <strong>ID Back Image:</strong>
+                                    </p>
+                                    <Image width="200" height="100" src={userData.idBackImage} alt="ID Back" />
+                                </div>
+                            )}
                         </div>
                     </div>
                 ) : (
                     <h2>No Profile Details Available</h2>
                 )}
-                {userData?.plan && <div className="card">
-                    <h2>User Current Subscription</h2>
-                    <div className="profile-details">
-                        <p>
-                            <strong>Subscription Name:</strong> {userData.plan.name}
-                        </p>
-                        <p>
-                            <strong>Subscription Price:</strong> {userData.plan.price}
-                        </p>
-                        <p>
-                            <strong>Subscription City:</strong> {userData.plan.city}
-                        </p>
-                        <p>
-                            <strong>Subscription Validity:</strong> {userData.plan.validity}
-                        </p>
-                        <p>
-                            <strong>Subscription Start time:</strong> {formatTimestampToDate(userData.planStartTime)}
-                        </p>
-                        <p>
-                            <strong>Subscription End Time:</strong> {formatTimestampToDate(userData.planEndTime)}
-                        </p>
-
+                {userData?.plan && (
+                    <div className="card">
+                        <h2>User Current Subscription</h2>
+                        <div className="profile-details">
+                            <p>
+                                <strong>Subscription Name:</strong> {userData.plan.name}
+                            </p>
+                            <p>
+                                <strong>Subscription Price:</strong> {userData.plan.price}
+                            </p>
+                            <p>
+                                <strong>Subscription City:</strong> {userData.plan.city}
+                            </p>
+                            <p>
+                                <strong>Subscription Validity:</strong> {userData.plan.validity}
+                            </p>
+                            <p>
+                                <strong>Subscription Start time:</strong> {formatTimestampToDate(userData.planStartTime)}
+                            </p>
+                            <p>
+                                <strong>Subscription End Time:</strong> {formatTimestampToDate(userData.planEndTime)}
+                            </p>
+                        </div>
                     </div>
-                </div>}
+                )}
                 <div className="card">
                     <h2>User Plan Details</h2>
                     <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsPlan} items={plans} loading1={loading1} />
@@ -342,8 +368,6 @@ const Page = (params: any) => {
                         <label>Start Time</label>
                         <p>{planData?.createdTime}</p>
                     </div>
-
-
                 </div>
 
                 <div className="w-full">

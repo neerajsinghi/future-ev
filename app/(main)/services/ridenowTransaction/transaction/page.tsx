@@ -21,8 +21,9 @@ const ViewAllBooking = ({ params }: { params: any }) => {
     const searchParams = useSearchParams();
     const profileId = searchParams.get('profileId');
     const userId = searchParams.get('userId');
-    const invoiceRef = useRef<HTMLDivElement>(null);
     const [staticMapUrl, setStaticMapUrl] = useState('');
+
+    const invoiceRef = useRef<HTMLDivElement>(null);
     const [preview, setPreview] = useState(false);
 
     const { isLoaded } = useJsApiLoader({
@@ -222,6 +223,7 @@ const ViewAllBooking = ({ params }: { params: any }) => {
                     </Button>
                 </div>
             </Dialog>
+
         </div>
     );
 };

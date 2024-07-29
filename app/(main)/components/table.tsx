@@ -35,7 +35,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
         return () => { };
     }, []);
     const statusBodyTemplate = (rowData: any) => {
-        return <Tag value={rowData.status.charAt(0).toUpperCase() + rowData.status.slice(1)} />;
+        return <Tag value={rowData?.status ? rowData?.status == "booked" ? "ON TRIP" : rowData.status.toUpperCase() : ""} />;
     };
     const initFilters1 = () => {
         const initialFilters: any = {};
@@ -49,7 +49,6 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
             }
         });
         // debugger;
-        setFilters1(initialFilters);
         setFilters1({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 
@@ -79,7 +78,8 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                 constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS || FilterMatchMode.STARTS_WITH }]
             },
             activity: { value: null, matchMode: FilterMatchMode.BETWEEN },
-            verified: { value: null, matchMode: FilterMatchMode.EQUALS }
+            verified: { value: null, matchMode: FilterMatchMode.EQUALS },
+            ...initialFilters
         });
         setGlobalFilterValue1('');
     };

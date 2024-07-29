@@ -311,7 +311,7 @@ const Stations = () => {
     const statusTemplate = (rowData: any) => {
         return (
             <Button tooltip="Click to change status" severity={rowData.status === 'available' ? 'success' : 'danger'} onClick={() => changeStatus(rowData.status === 'available' ? 'unavailable' : 'available', rowData.id)}>
-                {rowData.status}
+                {rowData.status ? rowData.status.toUpperCase() : 'NA'}
             </Button>
         );
     };

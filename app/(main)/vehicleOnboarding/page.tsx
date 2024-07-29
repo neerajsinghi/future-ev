@@ -94,7 +94,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         return <div>{rowData?.deviceData?.ignition}</div>;
     };
     const statusDeviceSpeedTemplate = (rowData: any) => {
-        return <div>{rowData?.deviceData?.speed}</div>;
+        return <div>{rowData.deviceData.speed}</div>;
     };
     const statusDeviceStatusTemplate = (rowData: any) => {
         return <div>{rowData?.deviceData?.status}</div>;
@@ -211,16 +211,16 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
     };
 
     const columns = [
-        { key: 'id', label: 'Id', _props: { scope: 'col' }, body: vehicleIdTemplate, filterField: 'id' },
-        { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' }, body: statusVehicleNameTemplate, filterField: 'vehicleType.name' },
-        { key: 'deviceName', label: 'Device Name', _props: { scope: 'col' }, body: statusDeviceNameTemplate, filterField: 'deviceData.name' },
-        { key: 'deviceId', label: 'Immobolise Vehicle', _props: { scope: 'col' }, body: ImmobiliseToggleTemplate, filterField: 'immobilized' },
-        { key: 'deviceBatteryLevel', label: 'Battery Level', _props: { scope: 'col' }, body: statusDeviceBatteryLevelTemplate, filterField: 'deviceData.batteryLevel' },
-        { key: 'deviceSpeed', label: 'Speed', _props: { scope: 'col' }, body: statusDeviceSpeedTemplate },
-        { key: 'deviceTotalDistance', label: 'Total Distance', _props: { scope: 'col' }, body: statusDeviceTotalDistanceTemplate, filterField: 'deviceData.totalDistance' },
-        { key: 'deviceType', label: 'Type', _props: { scope: 'col' }, body: statusDeviceTypeTemplate, filterField: 'deviceData.type' },
+        { key: 'id', label: 'Id', _props: { scope: 'col' }, body: vehicleIdTemplate },
+        { key: 'vehicleType.name', label: 'Vehicle Type', _props: { scope: 'col' }, body: statusVehicleNameTemplate },
+        { key: 'deviceData.name', label: 'Device Name', _props: { scope: 'col' }, body: statusDeviceNameTemplate },
+        { key: 'deviceData.deviceId', label: 'Immobilise Vehicle', _props: { scope: 'col' }, body: ImmobiliseToggleTemplate, filterField: 'immobilized' },
+        { key: 'deviceData.batteryLevel', label: 'Battery Level', _props: { scope: 'col' }, body: statusDeviceBatteryLevelTemplate, filterField: 'deviceData.batteryLevel' },
+        { key: 'deviceData.speed', label: 'Speed', _props: { scope: 'col' }, body: statusDeviceSpeedTemplate },
+        { key: 'deviceData.totalDistance', label: 'Total Distance', _props: { scope: 'col' }, body: statusDeviceTotalDistanceTemplate, filterField: 'deviceData.totalDistance' },
+        { key: 'deviceData.type', label: 'Type', _props: { scope: 'col' }, body: statusDeviceTypeTemplate, filterField: 'deviceData.type' },
         { key: 'deviceQR', label: 'Device QR', _props: { scope: 'col' }, body: qrCodeTemplate, filterField: 'deviceData.deviceId' },
-        { key: 'stationName', label: 'Station Name', _props: { scope: 'col' }, body: statusStationNameTemplate, filterField: 'station.name' },
+        { key: 'station.name', label: 'Station Name', _props: { scope: 'col' }, body: statusStationNameTemplate, filterField: 'station.name' },
         { key: 'status', label: 'Status', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete }
     ];
 

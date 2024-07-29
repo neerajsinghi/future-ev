@@ -116,7 +116,6 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             if (data.status) {
                 router.refresh();
             }
-            console.log(data);
             return data;
         };
         return (
@@ -447,7 +446,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={"cell"} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
+                        <CustomTable editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
                     </div>
                 </div>
             </div>

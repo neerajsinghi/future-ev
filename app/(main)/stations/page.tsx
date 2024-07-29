@@ -219,6 +219,7 @@ const Stations = () => {
         getAvailableServiceTypes();
     }, []);
     const statusAddressTemplate = (rowData: any) => {
+        console.log(rowData);
         return <div>{rowData.address.address}</div>;
     };
     const statusCityTemplate = (rowData: any) => {
@@ -356,9 +357,9 @@ const Stations = () => {
             onCellEditComplete: onCellEditComplete
         },
         { key: 'address', label: 'Address', _props: { scope: 'col' }, body: statusAddressTemplate },
-        { key: 'city', label: 'City', _props: { scope: 'col' }, body: statusCityTemplate },
-        { key: 'long', label: 'Longitude', _props: { scope: 'col' }, body: statusLongTemplate },
-        { key: 'lat', label: 'Latitude', _props: { scope: 'col' }, body: statusLatTemplate },
+        { key: 'city', label: 'City', _props: { scope: 'col' }, body: statusCityTemplate, filterField: 'address.city' },
+        { key: 'long', label: 'Longitude', _props: { scope: 'col' }, body: statusLongTemplate, filterField: 'location.coordinates[0]' },
+        { key: 'lat', label: 'Latitude', _props: { scope: 'col' }, body: statusLatTemplate, filterField: 'location.coordinates[1]' },
         { key: 'group', label: 'Group', _props: { scope: 'col' } },
         { key: 'superVisorName', label: 'Supervisor Name', _props: { scope: 'col' } },
         { key: 'stock', label: 'Stock', _props: { scope: 'col' }, body: statusStockTemplate },

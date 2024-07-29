@@ -32,7 +32,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
             setVisibleCols(cols);
         }
 
-        return () => {};
+        return () => { };
     }, []);
     const statusBodyTemplate = (rowData: any) => {
         return <Tag value={rowData.status} />;
@@ -122,7 +122,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                         onChange={(e) => setVisibleCols(e.value)}
                         optionLabel="label"
                         optionValue="key"
-                        // filterMatchMode="contains"
+                    // filterMatchMode="contains"
                     />
                     <span style={{ position: 'relative' }}>
                         <i className="pi pi-search" style={{ position: 'absolute', left: '10px', top: '12px' }} />
@@ -162,7 +162,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                                 sortable
                                 filter
                                 body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
-                                //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
+                            //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
                             />
                         ) : null
                     )}
@@ -199,6 +199,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                 onRowToggle={(e) => setExpandedRows(e.data)}
                 rowExpansionTemplate={rowExpansionTemplate}
                 reorderableColumns
+
             >
                 {columns.map((col, i) => {
                     if (visibleCols?.includes(col.key)) {
@@ -213,6 +214,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                                 filterElement={col.key === 'type' ? typeFilterTemplate : null}
                                 editor={col.cellEditor ? (options) => col.cellEditor(options) : null}
                                 onCellEditComplete={col.onCellEditComplete}
+                                filterField={col.filterField}
                             />
                         ) : null;
                     }

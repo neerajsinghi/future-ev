@@ -175,6 +175,17 @@ export async function setBikeStand(data: any) {
     }
     return responseObj;
 }
+export async function updateBikeStand(data: any, id: string) {
+    let responseObj = { success: false, data: null, message: '' };
+
+    try {
+        let response = await webService.patch(baseUrl + 'bike/' + id, data);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
 export async function getBikeStand() {
     let responseObj = { success: false, data: [] as any[], message: '' };
     try {

@@ -1,6 +1,6 @@
 'use client';
 
-import { getBikeByStation, getBikeStand, getBikes, getBikesNearby, getStations, getStationsByID, getVehicleTypes, setBikeStand } from '@/app/api/iotBikes';
+import { getBikeByStation, getBikeStand, getBikes, getBikesNearby, getStations, getStationsByID, getVehicleTypes, setBikeStand, updateBikeStand } from '@/app/api/iotBikes';
 import { stat } from 'fs';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
@@ -181,7 +181,6 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         ) : null;
     };
 
-    const updateStatus = async (id: string) => {};
     const cellEditor = (options: ColumnEditorOptions) => {
         return (
             <Dropdown
@@ -192,8 +191,8 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                     { name: 'Under Maintenance', code: 'maintenance' },
                     { name: 'Ready For Deployment', code: 'deployment' }
                 ]}
-                value={selectedStatus}
-                onChange={(e) => handleChange('status', e.value)}
+                value={{ name: options.rowData.status.charAt(0).toUpperCase() + options.rowData.status.slice(1), code: options.rowData.status }}
+                onChange={(e) => options?.editorCallback && options.editorCallback(e.value.code)}
                 optionLabel="name"
                 placeholder="Select a Status"
             />
@@ -205,7 +204,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         const body = {
             [field]: newValue
         };
-        const response = await updateStatus(rowData.id);
+        const response = await updateBikeStand(body, rowData.id);
         if (response.success) {
             router.refresh();
             //  fetchData();
@@ -448,7 +447,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
+                        <CustomTable editMode={"cell"} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
                     </div>
                 </div>
             </div>

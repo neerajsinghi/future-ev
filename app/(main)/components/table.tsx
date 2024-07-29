@@ -35,7 +35,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
         return () => { };
     }, []);
     const statusBodyTemplate = (rowData: any) => {
-        return <Tag value={rowData.status} />;
+        return <Tag value={rowData.status.charAt(0).toUpperCase() + rowData.status.slice(1)} />;
     };
     const initFilters1 = () => {
         const initialFilters: any = {};
@@ -210,7 +210,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                                 header={col.label}
                                 sortable
                                 filter={col.body == null || col.key === 'status' || col.key === 'type'}
-                                body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
+                                body={col.body && col.cellEditor == null ? col.body : col.key === 'status' ? statusBodyTemplate : null}
                                 filterElement={col.key === 'type' ? typeFilterTemplate : null}
                                 editor={col.cellEditor ? (options) => col.cellEditor(options) : null}
                                 onCellEditComplete={col.onCellEditComplete}

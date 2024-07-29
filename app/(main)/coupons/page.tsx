@@ -98,12 +98,12 @@ const Coupon = () => {
 
     // Define your columns
     const columns = [
-        { key: 'code', label: 'Coupon Code', _props: { scope: 'col' }, body: discountTemplate },
-        { key: 'discount', label: 'Discount', _props: { scope: 'col' } },
-        { key: 'validFrom', label: 'Valid From', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validFrom') },
-        { key: 'validTill', label: 'Valid Till', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validTill') },
-        { key: 'couponType', label: 'Coupon Type', _props: { scope: 'col' } },
-        { key: 'description', label: 'Description', _props: { scope: 'col' } }
+        { key: 'code', label: 'Coupon Code', _props: { scope: 'col' }, body: discountTemplate, filterField: 'code' },
+        { key: 'discount', label: 'Discount', _props: { scope: 'col' }, filterField: 'discount' },
+        { key: 'validFrom', label: 'Valid From', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validFrom'), filterField: 'validFrom' },
+        { key: 'validTill', label: 'Valid Till', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validTill'), filterField: 'validTill' },
+        { key: 'couponType', label: 'Coupon Type', _props: { scope: 'col' }, filterField: 'couponType' },
+        { key: 'description', label: 'Description', _props: { scope: 'col' }, filterField: 'description' }
     ];
 
     // Filter items based on coupon code and validity

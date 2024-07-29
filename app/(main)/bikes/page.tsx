@@ -64,22 +64,22 @@ const Bikes = () => {
         </div>
     }
     const columns = [
-        { key: 'deviceId', label: 'ID', _props: { scope: 'col' } },
-        { key: 'deviceImei', label: 'Device Imei', _props: { scope: 'col' } },
-        { key: 'name', label: 'Name', _props: { scope: 'col' } },
-        { key: 'phone', label: 'Phone', _props: { scope: 'col' } },
-        { key: 'alarm', label: 'Alarm', _props: { scope: 'col' } },
-        { key: 'batteryLevel', label: 'Battery Level', _props: { scope: 'col' } },
-        { key: 'course', label: 'Course', _props: { scope: 'col' } },
-        { key: 'dealer', label: 'Dealer', _props: { scope: 'col' } },
-        { key: 'ignition', label: 'Ignition', _props: { scope: 'col' } },
-        { key: 'posId', label: 'Pos Id', _props: { scope: 'col' } },
-        { key: 'speed', label: 'Speed', _props: { scope: 'col' } },
-        { key: 'status', label: 'Status', _props: { scope: 'col' } },
-        { key: 'totalDistance', label: 'Total Distance', _props: { scope: 'col' } },
-        { key: 'type', label: 'Type', _props: { scope: 'col' } },
-        { key: 'valid', label: 'Valid', _props: { scope: 'col' } },
-        { key: 'qrCode', label: 'QR Code', _props: { scope: 'col' }, body: qrCodeTemplate }
+        { key: 'deviceId', label: 'ID', _props: { scope: 'col' }, filterField: "deviceId" },
+        { key: 'deviceImei', label: 'Device Imei', _props: { scope: 'col' }, filterField: "deviceImei" },
+        { key: 'name', label: 'Name', _props: { scope: 'col' }, filterField: "name" },
+        { key: 'phone', label: 'Phone', _props: { scope: 'col' }, filterField: "phone" },
+        { key: 'alarm', label: 'Alarm', _props: { scope: 'col' }, filterField: "alarm" },
+        { key: 'batteryLevel', label: 'Battery Level', _props: { scope: 'col' }, filterField: "batteryLevel" },
+        { key: 'course', label: 'Course', _props: { scope: 'col' }, filterField: "course" },
+        { key: 'dealer', label: 'Dealer', _props: { scope: 'col' }, filterField: "dealer" },
+        { key: 'ignition', label: 'Ignition', _props: { scope: 'col' }, filterField: "ignition" },
+        { key: 'posId', label: 'Pos Id', _props: { scope: 'col' }, filterField: "posId" },
+        { key: 'speed', label: 'Speed', _props: { scope: 'col' }, filterField: "speed" },
+        { key: 'status', label: 'Status', _props: { scope: 'col' }, filterField: "status" },
+        { key: 'totalDistance', label: 'Total Distance', _props: { scope: 'col' }, filterField: "totalDistance" },
+        { key: 'type', label: 'Type', _props: { scope: 'col' }, filterField: "type" },
+        { key: 'valid', label: 'Valid', _props: { scope: 'col' }, filterField: "valid" },
+        { key: 'qrCode', label: 'QR Code', _props: { scope: 'col' }, body: qrCodeTemplate, filterField: "qrCode" },
     ]
 
     useEffect(() => {

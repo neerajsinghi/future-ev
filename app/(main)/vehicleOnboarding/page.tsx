@@ -171,22 +171,17 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         ) : null;
     };
     const columns = [
-        { key: 'id', label: 'Id', _props: { scope: 'col' }, body: vehicleIdTemplate },
-        { key: 'vehicleTypeId', label: 'Vehicle Type ID', _props: { scope: 'col' } },
-        { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' }, body: statusVehicleNameTemplate },
-        { key: 'deviceName', label: 'Device Name', _props: { scope: 'col' }, body: statusDeviceNameTemplate },
-        { key: 'deviceId', label: 'Immobolise Vehicle', _props: { scope: 'col' }, body: ImmobiliseToggleTemplate },
-        { key: 'deviceBatteryLevel', label: 'Battery Level', _props: { scope: 'col' }, body: statusDeviceBatteryLevelTemplate },
-        { key: 'deviceIgnition', label: 'Ignition', _props: { scope: 'col' }, body: statusDeviceIgnitionTemplate },
+        { key: 'id', label: 'Id', _props: { scope: 'col' }, body: vehicleIdTemplate, filterField: 'id' },
+        { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' }, body: statusVehicleNameTemplate, filterField: 'vehicleType.name' },
+        { key: 'deviceName', label: 'Device Name', _props: { scope: 'col' }, body: statusDeviceNameTemplate, filterField: 'deviceData.name' },
+        { key: 'deviceId', label: 'Immobolise Vehicle', _props: { scope: 'col' }, body: ImmobiliseToggleTemplate, filterField: "immobilized" },
+        { key: 'deviceBatteryLevel', label: 'Battery Level', _props: { scope: 'col' }, body: statusDeviceBatteryLevelTemplate, filterField: 'deviceData.batteryLevel' },
         { key: 'deviceSpeed', label: 'Speed', _props: { scope: 'col' }, body: statusDeviceSpeedTemplate },
-        { key: 'deviceStatus', label: 'Status', _props: { scope: 'col' }, body: statusDeviceStatusTemplate },
-        { key: 'deviceTotalDistance', label: 'Total Distance', _props: { scope: 'col' }, body: statusDeviceTotalDistanceTemplate },
-        { key: 'deviceType', label: 'Type', _props: { scope: 'col' }, body: statusDeviceTypeTemplate },
-        { key: 'deviceValid', label: 'Valid', _props: { scope: 'col' }, body: statusDeviceValidTemplate },
-        { key: 'deviceQR', label: 'Device QR', _props: { scope: 'col' }, body: qrCodeTemplate },
-        { key: 'stationName', label: 'Station Name', _props: { scope: 'col' }, body: statusStationNameTemplate },
-        { key: 'stationId', label: 'Station ID', _props: { scope: 'col' } },
-        { key: 'status', label: 'Status', _props: { scope: 'col' } }
+        { key: 'deviceTotalDistance', label: 'Total Distance', _props: { scope: 'col' }, body: statusDeviceTotalDistanceTemplate, filterField: 'deviceData.totalDistance' },
+        { key: 'deviceType', label: 'Type', _props: { scope: 'col' }, body: statusDeviceTypeTemplate, filterField: 'deviceData.type' },
+        { key: 'deviceQR', label: 'Device QR', _props: { scope: 'col' }, body: qrCodeTemplate, filterField: 'deviceData.deviceId' },
+        { key: 'stationName', label: 'Station Name', _props: { scope: 'col' }, body: statusStationNameTemplate, filterField: 'station.name' },
+        { key: 'status', label: 'Status', _props: { scope: 'col' }, filterField: 'status' }
     ];
 
     const getAStations = async () => {

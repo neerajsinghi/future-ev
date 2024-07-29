@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { Tag } from 'primereact/tag';
 import { getCity } from '@/app/api/services';
 import { MultiSelect } from 'primereact/multiselect';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import { ColumnEditorOptions, ColumnEvent, ColumnFilterElementTemplateOptions } from 'primereact/column';
 
@@ -76,6 +76,8 @@ const Stations = () => {
         googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
     });
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const userId = searchParams.get('userId');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -198,10 +200,18 @@ const Stations = () => {
         }
         const response = await getStations();
         if (response.success && response.data) {
+            const data: any[] = [];
+
             for (let i = 0; i < response.data.length; i++) {
-                response.data[i].superVisorName = await response1.data.find((item: any) => item.id === response.data[i].supervisorID)?.name;
+                if (userId && userId == response.data[i].supervisorID) {
+                    response.data[i].superVisorName = await response1.data.find((item: any) => userId === response.data[i].supervisorID)?.name;
+                    data.push(response.data[i]);
+                } else if (!userId) {
+                    response.data[i].superVisorName = await response1.data.find((item: any) => item.id === response.data[i].supervisorID)?.name;
+                    data.push(response.data[i]);
+                }
             }
-            setItems(response.data);
+            setItems(data);
         }
 
         setLoading1(false);

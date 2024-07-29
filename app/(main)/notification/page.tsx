@@ -89,7 +89,6 @@ const Notification = () => {
         setLoading1(false);
 
         let response1 = await getUsers('user');
-        console.log(response1.data);
         if (response1.success) {
             if (response1.data) {
                 // Filter users based on the selected category and value

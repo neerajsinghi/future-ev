@@ -8,6 +8,7 @@ import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
+import { MultiSelect } from 'primereact/multiselect';
 import { Tag } from 'primereact/tag';
 import { useEffect, useRef, useState } from 'react';
 
@@ -16,6 +17,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
 
     const [filters1, setFilters1] = useState<DataTableFilterMeta>({});
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
+    const [visibleCols, setVisibleCols] = useState<any>(null);
     const [statuses] = useState<string[]>(['personal', 'bike', 'car']);
     const [expandedRows, setExpandedRows] = useState<any>(null);
     const dt = useRef<DataTable<any>>(null);
@@ -25,7 +27,12 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
     useEffect(() => {
         initFilters1();
 
-        return () => { };
+        if (columns) {
+            const cols = columns.map((col) => col.key);
+            setVisibleCols(cols);
+        }
+
+        return () => {};
     }, []);
     const statusBodyTemplate = (rowData: any) => {
         return <Tag value={rowData.status} />;
@@ -89,11 +96,34 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
         setFilters1(_filters1);
         setGlobalFilterValue1(value);
     };
+
+    const handleClick = (col: string) => {
+        let updatedSelection;
+        if (visibleCols.includes(col)) {
+            updatedSelection = visibleCols.filter((label: any) => label !== col);
+            console.log(updatedSelection);
+        } else {
+            updatedSelection = [...visibleCols, col];
+            console.log(updatedSelection);
+        }
+    };
     const renderHeader1 = () => {
         return (
             <div className="flex items-center gap-2 justify-content-between">
                 <Button type="button" icon="pi pi-filter-slash" label={isMobile ? '' : 'Clear'} outlined onClick={clearFilter1} className="px-3" />
-                <div className="flex item p-input-icon-left">
+                <div className="flex flex-wrap gap-2 item p-input-icon-left">
+                    <MultiSelect
+                        filter
+                        className="max-w-[200px truncate]"
+                        style={{ width: '200px' }}
+                        placeholder="Select columns"
+                        options={columns}
+                        value={visibleCols}
+                        onChange={(e) => setVisibleCols(e.value)}
+                        optionLabel="label"
+                        optionValue="key"
+                        // filterMatchMode="contains"
+                    />
                     <span style={{ position: 'relative' }}>
                         <i className="pi pi-search" style={{ position: 'absolute', left: '10px', top: '12px' }} />
                         <InputText value={globalFilterValue1} style={{ paddingLeft: '30px', width: '40vw', maxWidth: '250px' }} onChange={onGlobalFilterChange1} placeholder="Keyword Search" />
@@ -132,7 +162,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                                 sortable
                                 filter
                                 body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
-                            //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
+                                //  filterElement={col.key === 'type' ? typeFilterTemplate : null}
                             />
                         ) : null
                     )}
@@ -171,19 +201,21 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                 reorderableColumns
             >
                 {columns.map((col, i) => {
-                    return !col.hidden ? (
-                        <Column
-                            key={i}
-                            field={col.key}
-                            header={col.label}
-                            sortable
-                            filter={col.body == null || col.key === 'status' || col.key === 'type'}
-                            body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
-                            filterElement={col.key === 'type' ? typeFilterTemplate : null}
-                            editor={col.cellEditor ? (options) => col.cellEditor(options) : null}
-                            onCellEditComplete={col.onCellEditComplete}
-                        />
-                    ) : null;
+                    if (visibleCols?.includes(col.key)) {
+                        return !col.hidden ? (
+                            <Column
+                                key={i}
+                                field={col.key}
+                                header={col.label}
+                                sortable
+                                filter={col.body == null || col.key === 'status' || col.key === 'type'}
+                                body={col.body ? col.body : col.key === 'status' ? statusBodyTemplate : null}
+                                filterElement={col.key === 'type' ? typeFilterTemplate : null}
+                                editor={col.cellEditor ? (options) => col.cellEditor(options) : null}
+                                onCellEditComplete={col.onCellEditComplete}
+                            />
+                        ) : null;
+                    }
                 })}
             </DataTable>
         </>

@@ -16,6 +16,7 @@ const AppMenu = () => {
             label: 'Home',
             items: [
                 { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
+                { label: 'GodView', icon: 'pi pi-fw pi-eye', to: '/godView' },
                 { label: 'Vehicle Type', icon: 'pi pi-fw pi-car', to: '/vehicleType' },
 
                 {
@@ -65,7 +66,6 @@ const AppMenu = () => {
                 },
                 { label: 'Staff', icon: 'pi pi-spin pi-fw pi-circle', to: '/staff' },
                 { label: 'Stations', icon: 'pi pi-fw pi-map-marker', to: '/stations' },
-                { label: 'GodView', icon: 'pi pi-fw pi-eye', to: '/godView' },
 
                 // { label: 'Bikes', icon: 'pi pi-spin pi-fw pi-circle', to: '/bikes' },
                 // { label: 'Plan', icon: 'pi pi-fw pi-clipboard', to: '/plan' },

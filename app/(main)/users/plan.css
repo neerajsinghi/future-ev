@@ -29,6 +29,44 @@
     transition: all 0.3s ease;
 }
 
+.profile-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    /* Adjust gap as needed */
+}
+
+.profile-details p {
+    flex: 1 1 calc(33.333% - 1rem);
+    /* 3 items per row, minus the gap */
+    box-sizing: border-box;
+}
+
+.profile-images {
+    display: flex;
+    border-top: 2px solid white;
+    margin-top: 2em;
+    padding-top: 2em;
+    flex-wrap: nowrap;
+    /* Prevent wrapping */
+    gap: 1rem;
+    /* Adjust gap as needed */
+    overflow-x: auto;
+    /* Add horizontal scroll if needed */
+}
+
+.profile-images div {
+    flex: 1 1 auto;
+    /* Allow divs to adjust based on content */
+}
+
+.profile-images img {
+    max-width: 100%;
+    /* Ensure images do not overflow their container */
+    height: auto;
+    /* Maintain aspect ratio */
+}
+
 @media (min-width: 768px) {
 
     .column-id {

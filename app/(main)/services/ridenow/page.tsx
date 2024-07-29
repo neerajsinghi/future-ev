@@ -31,6 +31,7 @@ interface ProductFormData {
 const Plan = () => {
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
+    const [loadingRows, setLoadingRows] = useState<{ [key: string]: boolean }>({});
     const [showDialog, setShowDialog] = useState(false);
     const [vehicleType, setVehicleType] = useState<any>([]);
     const [city, setCity] = useState<any>([]);
@@ -71,8 +72,7 @@ const Plan = () => {
                 price: formData.price[i],
                 startingMinutes: formData.startingMinutes[i],
                 endingMinutes: formData.endingMinutes[i],
-                type: formData.type,
-
+                type: formData.type
             };
 
             const response = await setPlan(body);
@@ -96,7 +96,7 @@ const Plan = () => {
             }
         }
         if (formData.deposit > 0) {
-            debugger
+            debugger;
             const body = {
                 city: formData.city,
                 vehicleType: formData.vehicleType,
@@ -116,13 +116,18 @@ const Plan = () => {
         const body: any = {
             isActive: status
         };
+        setLoadingRows((prevState) => ({ ...prevState, [id]: true })); // Set loading state for the specific row
+
         const response = await updatePlan(body, id);
         if (response.success) {
             fetchData();
         }
+        setLoadingRows((prevState) => ({ ...prevState, [id]: false }));
     };
 
     const activeTemplate = (rowData: any) => {
+        const isLoading = loadingRows[rowData.id]; // Check if the specific row is loading
+        if (isLoading) return <span className="pi pi-spin pi-spinner"></span>;
         return (
             <InputSwitch
                 checked={rowData.isActive}
@@ -147,7 +152,7 @@ const Plan = () => {
     const cellMinEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} suffix=" min" onKeyDown={(e) => e.stopPropagation()} />;
     };
-    const textEditor = (options: ColumnEditorOptions) => { };
+    const textEditor = (options: ColumnEditorOptions) => {};
     const onCellEditComplete = async (e: ColumnEvent) => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {

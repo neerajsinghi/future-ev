@@ -57,7 +57,8 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
 
     const [selectedCity, setSelectedCity] = useState<any>(null);
     const [selectedStation, setSelectedStation] = useState<any>(null);
-    const [selectedVehicleType, setSelectedVehicleType] = useState<any>(null);
+    const [selectedVehicleType, setSelectedVehicleType] = useState<any>('Normal');
+    const [cityBasedVehicleType, setCityBasedVehicleType] = useState<any>(null);
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
     const [selectedStatus, setSelectedStatus] = useState<any>(null);
     const [loading1, setLoading1] = useState(true);
@@ -112,7 +113,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         };
         return (
             <InputSwitch
-                checked={rowData?.ismobolised || false}
+                checked={rowData?.immobilized || false}
                 onClick={() => {
                     immobolise();
                 }}
@@ -228,6 +229,7 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
             for (let i = 0; i < response.data.length; i++) {
                 data.push({ name: response.data[i].name, code: response.data[i].name, vehicleType: response.data[i].vehicleType });
             }
+
             setCities(() => data);
         }
     };
@@ -391,6 +393,11 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         // getAVehicleTypes();
         // getAStations();
     }, [formData.permitsRequired]);
+
+    useEffect(() => {
+        let res = cities?.filter((city) => city.name === selectedCity);
+        setCityBasedVehicleType(res);
+    }, [cities, selectedCity]);
     return (
         <>
             <div className="grid">
@@ -431,9 +438,9 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
                             // defaultValue="Normal"
                             // disabled
                             value={selectedVehicleType}
-                            options={vehicleType}
+                            options={selectedCity ? cityBasedVehicleType : vehicleType}
                             onChange={(e) => handleChange('vehicleTypeID', e.value)}
-                            optionLabel="name"
+                            optionLabel={selectedCity ? 'vehicleType' : 'name'}
                             placeholder="Select a Vehicle Type"
                             filterBy="name"
                         />

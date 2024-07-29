@@ -11,11 +11,12 @@ const VehicleData = (params: any) => {
     } = params;
     const [loading1, setLoading1] = useState(true);
     const [vehicleDetails, setVehicleDetails] = useState<any[]>([]);
+
     const fetchVehicleData = async () => {
         setLoading1(true);
         const response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/data/${deviceId}`);
         const data = await response.json();
-        console.log(data);
+        console.log(data.data);
         setVehicleDetails(data.data);
         setLoading1(false);
     };
@@ -70,12 +71,68 @@ const VehicleData = (params: any) => {
                 <div className="col-12">
                     <BreadCrumb model={[{ label: 'VehicleData' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
-                {vehicleDetails.length > 0 && <h1>Total Rides {vehicleDetails?.length}</h1>}
-                {/* <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Onboard Vehicle" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+
+                <div className="col-12">
+                    <div className="grid">
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Device ID: {vehicleDetails[0]?.DeviceId}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Booking ID: {vehicleDetails[0]?.booking.id}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Vehicle Type: {vehicleDetails[0]?.Type}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Name: {vehicleDetails[0]?.Name}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Total Distance: {vehicleDetails[0]?.TotalDistance}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Price: {vehicleDetails[0]?.Price}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Plan Type: {vehicleDetails[0]?.PlanType}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Battery Level: {vehicleDetails[0]?.BatteryLevel}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Distance Covered Per Booking: {vehicleDetails[0]?.booking.TotalDistance}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Booking Type: {vehicleDetails[0]?.booking.BookingType}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Carbon Emission Saved: {vehicleDetails[0]?.booking.CarbonEmissionSaved}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Starting Station: {vehicleDetails[0]?.booking.StartingStation.Name}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Ending Station: {vehicleDetails[0]?.booking.EndingStation.Name}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Coupon Code: {vehicleDetails[0]?.booking.CouponCode || 'NA'}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Green Points: {vehicleDetails[0]?.booking.GreenPoints}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Carbon Saved: {vehicleDetails[0]?.booking.CarbonSaved}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>Passenger Name: {vehicleDetails[0]?.Profile.Name}</p>
+                        </div>
+                        <div className="col-12 md:col-6 lg:col-4">
+                            <p>
+                                Current Location: <Link href={`/vehicleOnboarding/${deviceId}/${vehicleDetails[0]?.Location.Coordinates}`}>{vehicleDetails[0]?.Location.Coordinates?.join(' , ')}</Link>
+                            </p>
+                        </div>
                     </div>
-                </div> */}
+                </div>
+
                 <div className="col-12 m-10">
                     <div className="card">
                         <CustomTable editMode={undefined} columns2={[]} columns={columns} items={vehicleDetails} loading1={loading1} />{' '}
@@ -85,4 +142,5 @@ const VehicleData = (params: any) => {
         </div>
     );
 };
+
 export default VehicleData;

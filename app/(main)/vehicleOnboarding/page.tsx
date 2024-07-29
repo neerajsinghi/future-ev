@@ -20,7 +20,7 @@ import { storage } from '@/app/api/common';
 import { InputSwitch } from 'primereact/inputswitch';
 import Link from 'next/link';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,7 +50,9 @@ interface BikesStationedProps {
     permitsRequired: string[];
 }
 
-const BikesStationed = ({ searchParams }: { searchParams: any }) => {
+const BikesStationed = () => {
+    const searchParams = useSearchParams();
+    const search = searchParams.get('search');
     const router = useRouter();
     const [items, setItems] = useState<any>([]);
     const [station, setStation] = useState<any[]>([]);
@@ -274,8 +276,8 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
     }, [selectedCity]);
 
     const fetchBikesCallback = useCallback(async () => {
-        if (searchParams && searchParams.search) {
-            const response = await getBikeByStation(searchParams.search);
+        if (search) {
+            const response = await getBikeByStation(search);
             if (response.success && response.data) {
                 for (let i = 0; i < response.data.length; i++) {
                     if (response.data[i]['stationId']) {
@@ -368,8 +370,8 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         }
     };
     const fetchBikes = async () => {
-        if (searchParams && searchParams.search) {
-            const response = await getBikeByStation(searchParams.search);
+        if (searchParams && search) {
+            const response = await getBikeByStation(search);
             if (response.success && response.data) {
                 setItems([...response.data]);
             }

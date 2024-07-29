@@ -248,7 +248,7 @@ const Stations = () => {
                 {rowData.stock ? (
                     <Link
                         href={{
-                            pathname: '/bikesStationed',
+                            pathname: '/vehicleOnboarding',
                             query: {
                                 search: id
                             }

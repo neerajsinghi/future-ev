@@ -10,39 +10,51 @@ const VehicleData = (params: any) => {
         params: { deviceId }
     } = params;
     const [loading1, setLoading1] = useState(true);
-    const [vehicleDetails, setVehicleDetails] = useState<any[]>([]);
+    const [vehicleDetails, setVehicleDetails] = useState<any>(null); // Initialize as null
 
     const fetchVehicleData = async () => {
         setLoading1(true);
-        const response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/data/${deviceId}`);
-        const data = await response.json();
-        console.log(data.data);
-        setVehicleDetails(data.data);
-        setLoading1(false);
+        try {
+            const response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/data/${deviceId}`);
+            const data = await response.json();
+            if (data.data) {
+                setVehicleDetails(data.data);
+            } else {
+                setVehicleDetails([]); // Set to empty array if data.data is null
+            }
+        } catch (error) {
+            console.error('Error fetching vehicle data:', error);
+            setVehicleDetails([]); 
+        } finally {
+            setLoading1(false);
+        }
     };
 
     useEffect(() => {
         fetchVehicleData();
-    }, []);
+    }, [deviceId]); 
 
-    const bookingIdTemplate = (rowData: any) => <div>{rowData.booking.id}</div>;
-    const deviceIdTemplate = (rowData: any) => <div>{rowData.DeviceId}</div>;
-    const vehicleTypeIdTemplate = (rowData: any) => <div>{rowData.Type}</div>;
-    const nameTemplate = (rowData: any) => <div>{rowData.Name}</div>;
-    const totalDistanceTemplate = (rowData: any) => <div>{rowData.TotalDistance}</div>;
-    const priceTemplate = (rowData: any) => <div>{rowData.Price}</div>;
-    const PlanTypeTemplate = (rowData: any) => <div>{rowData.PlanType}</div>;
-    const batteryLevelTemplate = (rowData: any) => <div>{rowData.BatteryLevel}</div>;
-    const distanceCoverPerBookingTemplate = (rowData: any) => <div>{rowData.booking.TotalDistance}</div>;
-    const bookingTypeTemplate = (rowData: any) => <div>{rowData.booking.BookingType}</div>;
-    const carbonEmissionSavedTemplate = (rowData: any) => <div>{rowData.booking.CarbonEmissionSaved}</div>;
-    const startingStationTemplate = (rowData: any) => <div>{rowData.booking.StartingStation.Name}</div>;
-    const endingStationTemplate = (rowData: any) => <div>{rowData.booking.EndingStation.Name}</div>;
-    const couponCodeTemplate = (rowData: any) => <div>{rowData.booking.CouponCode || 'NA'}</div>;
-    const greenPointsTemplate = (rowData: any) => <div>{rowData.booking.GreenPoints}</div>;
-    const carbonSavedTemplate = (rowData: any) => <div>{rowData.booking.CarbonSaved}</div>;
-    const passengerNameTemplate = (rowData: any) => <div>{rowData.Profile.Name}</div>;
-    const currentLocationTemplate = (rowData: any) => <Link href={`/vehicleOnboarding/${deviceId}/${rowData.Location.Coordinates}`}>{rowData.Location.Coordinates?.join(' , ')}</Link>;
+    if (loading1) return <h1>Loading...</h1>; // Show loading message while fetching data
+    if (vehicleDetails?.length === 0) return <h1>No Vehicle Details Available</h1>; // Handle no data case
+
+    const bookingIdTemplate = (rowData: any) => <div>{rowData?.booking.id}</div>;
+    const deviceIdTemplate = (rowData: any) => <div>{rowData?.DeviceId}</div>;
+    const vehicleTypeIdTemplate = (rowData: any) => <div>{rowData?.Type}</div>;
+    const nameTemplate = (rowData: any) => <div>{rowData?.Name}</div>;
+    const totalDistanceTemplate = (rowData: any) => <div>{rowData?.TotalDistance}</div>;
+    const priceTemplate = (rowData: any) => <div>{rowData?.Price}</div>;
+    const PlanTypeTemplate = (rowData: any) => <div>{rowData?.PlanType}</div>;
+    const batteryLevelTemplate = (rowData: any) => <div>{rowData?.BatteryLevel}</div>;
+    const distanceCoverPerBookingTemplate = (rowData: any) => <div>{rowData?.booking.TotalDistance}</div>;
+    const bookingTypeTemplate = (rowData: any) => <div>{rowData?.booking.BookingType}</div>;
+    const carbonEmissionSavedTemplate = (rowData: any) => <div>{rowData?.booking.CarbonEmissionSaved}</div>;
+    const startingStationTemplate = (rowData: any) => <div>{rowData?.booking.StartingStation.Name}</div>;
+    const endingStationTemplate = (rowData: any) => <div>{rowData?.booking.EndingStation.Name}</div>;
+    const couponCodeTemplate = (rowData: any) => <div>{rowData?.booking.CouponCode || 'NA'}</div>;
+    const greenPointsTemplate = (rowData: any) => <div>{rowData?.booking.GreenPoints}</div>;
+    const carbonSavedTemplate = (rowData: any) => <div>{rowData?.booking.CarbonSaved}</div>;
+    const passengerNameTemplate = (rowData: any) => <div>{rowData?.Profile.Name}</div>;
+    const currentLocationTemplate = (rowData: any) => <Link href={`/vehicleOnboarding/${deviceId}/${rowData?.Location.Coordinates}`}>{rowData?.Location.Coordinates?.join(' , ')}</Link>;
 
     const columns = [
         { key: 'id', label: 'Booking Id', _props: { scope: 'col' }, body: bookingIdTemplate },
@@ -73,64 +85,68 @@ const VehicleData = (params: any) => {
                 </div>
 
                 <div className="col-12">
-                    <div className="grid">
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Device ID: {vehicleDetails[0]?.DeviceId}</p>
+                    {vehicleDetails && vehicleDetails.length > 0 ? (
+                        <div className="grid">
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Device ID: {vehicleDetails[0]?.DeviceId}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Booking ID: {vehicleDetails[0]?.booking.id}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Vehicle Type: {vehicleDetails[0]?.Type}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Name: {vehicleDetails[0]?.Name}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Total Distance: {vehicleDetails[0]?.TotalDistance}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Price: {vehicleDetails[0]?.Price}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Plan Type: {vehicleDetails[0]?.PlanType}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Battery Level: {vehicleDetails[0]?.BatteryLevel}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Distance Covered Per Booking: {vehicleDetails[0]?.booking.TotalDistance}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Booking Type: {vehicleDetails[0]?.booking.BookingType}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Carbon Emission Saved: {vehicleDetails[0]?.booking.CarbonEmissionSaved}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Starting Station: {vehicleDetails[0]?.booking.StartingStation.Name}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Ending Station: {vehicleDetails[0]?.booking.EndingStation.Name}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Coupon Code: {vehicleDetails[0]?.booking.CouponCode || 'NA'}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Green Points: {vehicleDetails[0]?.booking.GreenPoints}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Carbon Saved: {vehicleDetails[0]?.booking.CarbonSaved}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>Passenger Name: {vehicleDetails[0]?.Profile.Name}</p>
+                            </div>
+                            <div className="col-12 md:col-6 lg:col-4">
+                                <p>
+                                    Current Location: <Link href={`/vehicleOnboarding/${deviceId}/${vehicleDetails[0]?.Location.Coordinates}`}>{vehicleDetails[0]?.Location.Coordinates?.join(' , ')}</Link>
+                                </p>
+                            </div>
                         </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Booking ID: {vehicleDetails[0]?.booking.id}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Vehicle Type: {vehicleDetails[0]?.Type}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Name: {vehicleDetails[0]?.Name}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Total Distance: {vehicleDetails[0]?.TotalDistance}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Price: {vehicleDetails[0]?.Price}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Plan Type: {vehicleDetails[0]?.PlanType}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Battery Level: {vehicleDetails[0]?.BatteryLevel}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Distance Covered Per Booking: {vehicleDetails[0]?.booking.TotalDistance}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Booking Type: {vehicleDetails[0]?.booking.BookingType}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Carbon Emission Saved: {vehicleDetails[0]?.booking.CarbonEmissionSaved}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Starting Station: {vehicleDetails[0]?.booking.StartingStation.Name}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Ending Station: {vehicleDetails[0]?.booking.EndingStation.Name}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Coupon Code: {vehicleDetails[0]?.booking.CouponCode || 'NA'}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Green Points: {vehicleDetails[0]?.booking.GreenPoints}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Carbon Saved: {vehicleDetails[0]?.booking.CarbonSaved}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>Passenger Name: {vehicleDetails[0]?.Profile.Name}</p>
-                        </div>
-                        <div className="col-12 md:col-6 lg:col-4">
-                            <p>
-                                Current Location: <Link href={`/vehicleOnboarding/${deviceId}/${vehicleDetails[0]?.Location.Coordinates}`}>{vehicleDetails[0]?.Location.Coordinates?.join(' , ')}</Link>
-                            </p>
-                        </div>
-                    </div>
+                    ) : (
+                        <h1>No Vehicle Details Available</h1>
+                    )}
                 </div>
 
                 <div className="col-12 m-10">

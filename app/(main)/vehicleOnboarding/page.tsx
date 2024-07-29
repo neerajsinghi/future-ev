@@ -305,14 +305,6 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         if (searchParams && searchParams.search) {
             const response = await getBikeByStation(searchParams.search);
             if (response.success && response.data) {
-                for (let i = 0; i < response.data.length; i++) {
-                    if (response.data[i]['stationId']) {
-                        const resp = await getStationsByID(response.data[i]['stationId']);
-                        if (resp.success && resp.data) {
-                            response.data[i]['station'] = resp.data;
-                        }
-                    }
-                }
                 setItems([...response.data]);
             }
             setLoading1(false);
@@ -320,14 +312,6 @@ const BikesStationed = ({ searchParams }: { searchParams: any }) => {
         }
         const response = await getBikeStand();
         if (response.success && response.data) {
-            for (let i = 0; i < response.data.length; i++) {
-                if (response.data[i]['stationId']) {
-                    const resp = await getStationsByID(response.data[i]['stationId']);
-                    if (resp.success && resp.data) {
-                        response.data[i]['station'] = resp.data;
-                    }
-                }
-            }
             setItems([...response.data]);
         }
         setLoading1(false);

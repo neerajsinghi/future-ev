@@ -143,6 +143,16 @@ export async function getBikeByStation(id: string) {
     return responseObj;
 }
 
+export async function getBikeByDevice(id: string) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+    try {
+        let response = await webService.get(baseUrl + 'bike/device/' + id);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
 export async function getStationsByID(id: string) {
     let responseObj = { success: false, data: [], message: '' };
     try {

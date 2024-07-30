@@ -63,7 +63,7 @@ const BikesStationed = () => {
     const [selectedCity, setSelectedCity] = useState<any>(null);
     const [selectedStation, setSelectedStation] = useState<any>(null);
     const [selectedVehicleType, setSelectedVehicleType] = useState<any>('Normal');
-    const [cityBasedVehicleType, setCityBasedVehicleType] = useState<any>(null);
+    const [cityBasedVehicleType, setCityBasedVehicleType] = useState<any[]>([]);
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
     const [selectedStatus, setSelectedStatus] = useState<any>(null);
     const [loading1, setLoading1] = useState(true);
@@ -320,8 +320,9 @@ const BikesStationed = () => {
     const handleChange = async (name: keyof BikesStationedProps, value: any) => {
         let valueL = '';
         if (name === 'vehicleTypeID') {
+            debugger
             setSelectedVehicleType(value);
-            valueL = value.code;
+            valueL = value?.code;
         } else if (name === 'city') {
             setSelectedCity(value);
             valueL = value.code;
@@ -426,15 +427,29 @@ const BikesStationed = () => {
         }
     };
     useEffect(() => {
+        getAVehicleTypes();
         fetchCities();
-        // getAVehicleTypes();
         // getAStations();
     }, [formData.permitsRequired]);
 
     useEffect(() => {
+
         let res = cities?.filter((city) => city.name === selectedCity);
-        setCityBasedVehicleType(res);
-    }, [cities, selectedCity]);
+        let res1 = res[0]?.vehicleType;
+        const vTypes: any[] = []
+        for (let i = 0; i < vehicleType.length; i++) {
+            if (vehicleType[i].name === res1) {
+                debugger
+                vTypes.push(vehicleType[i])
+            }
+        }
+        handleChange('vehicleTypeID', vTypes[0]);
+        setCityBasedVehicleType(vTypes);
+    }, [cities, selectedCity, vehicleType]);
+    useEffect(() => {
+        console.log(cityBasedVehicleType);
+    }, [cityBasedVehicleType]
+    );
     return (
         <>
             <div className="grid">
@@ -475,7 +490,8 @@ const BikesStationed = () => {
                             // defaultValue="Normal"
                             // disabled
                             value={selectedVehicleType}
-                            options={selectedCity ? cityBasedVehicleType : vehicleType}
+                            disabled={cityBasedVehicleType.length > 0}
+                            options={vehicleType}
                             onChange={(e) => handleChange('vehicleTypeID', e.value)}
                             optionLabel={selectedCity ? 'vehicleType' : 'name'}
                             placeholder="Select a Vehicle Type"

@@ -493,7 +493,7 @@ const BikesStationed = () => {
                             disabled={cityBasedVehicleType.length > 0}
                             options={vehicleType}
                             onChange={(e) => handleChange('vehicleTypeID', e.value)}
-                            optionLabel={selectedCity ? 'vehicleType' : 'name'}
+                            optionLabel={'name'}
                             placeholder="Select a Vehicle Type"
                             filterBy="name"
                         />

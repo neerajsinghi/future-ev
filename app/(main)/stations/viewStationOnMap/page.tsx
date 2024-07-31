@@ -57,11 +57,19 @@ const ViewStations = () => {
         <div>
             <h1>Stations</h1>
             {isLoaded ? (
-                <GoogleMap mapContainerStyle={containerStyle} center={defaultCenter} zoom={12}>
+                <GoogleMap
+                    options={{
+                        gestureHandling: 'greedy'
+                    }}
+                    mapContainerStyle={containerStyle}
+                    center={defaultCenter}
+                    zoom={12}
+                >
                     <Data
                         options={{
                             controlPosition: window.google.maps.ControlPosition.TOP_LEFT,
                             map: new google.maps.Map(document.createElement('div')),
+
                             style: {
                                 fillColor: '#FF0000',
                                 strokeColor: '#FF0000',

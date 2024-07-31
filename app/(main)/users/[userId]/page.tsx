@@ -272,17 +272,23 @@ const Page = (params: any) => {
                         </div>
                     </div>
                 )}
-                <div className="card">
-                    <h2>User Plan Details</h2>
-                    <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsPlan} items={plans} loading1={loading1} />
+                <div className="col-12">
+                    <div className="card">
+                        <h2>User Plan Details</h2>
+                        <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsPlan} items={plans} loading1={loading1} />
+                    </div>
                 </div>
-                <div className="card">
-                    <h2>Wallet Details</h2>
-                    <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={userWalletData} loading1={loading1} />
+                <div className="col-12">
+                    <div className="card">
+                        <h2>Wallet Details</h2>
+                        <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={userWalletData} loading1={loading1} />
+                    </div>
                 </div>
-                <div className="card">
-                    <h2>Booking Details</h2>
-                    <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsBooking} items={bookings} loading1={loading1} />
+                <div className="col-12">
+                    <div className="card">
+                        <h2>Booking Details</h2>
+                        <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsBooking} items={bookings} loading1={loading1} />
+                    </div>
                 </div>
             </div>
             <Dialog header="Invoice" visible={preview} onHide={() => setPreview(false)} className="w-[50vw]" style={{ width: '50svw' }}>

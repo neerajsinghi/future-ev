@@ -41,6 +41,9 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     const ViewStationOnMap = (rowData: any) => {
         return <i onClick={(e) => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
     };
+    const idTemplate = (rowData: any) => {
+        return <i onClick={(e) => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} style={{ fontSize: '1.5em' }}>{rowData.id}</i>;
+    };
     function formatTimestampToDate(timestamp: number) {
         // Convert the timestamp from seconds to milliseconds
         const date = new Date(timestamp * 1000);
@@ -53,12 +56,9 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     }
     const columns: any[] = [
         {
-            key: 'id', label: 'Id', _props: { scope: 'col' }, body: (rowData: any) => <div onClick={() => {
-                setBookingData(rowData);
-                setPreview(true);
-            }}>{rowData.id}</div>,
+            key: 'id', label: 'Id', _props: { scope: 'col' }, body: (rowData: any) => <div onClick={() => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} >{rowData.id}</div>,
         },
-        { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap },
+        //  { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap },
         { key: 'profileId', label: 'ProfileId', _props: { scope: 'col' } },
         { key: 'deviceId', label: 'DeviceId', _props: { scope: 'col' } },
         { key: 'startTime', label: 'StartTime', _props: { scope: 'col' } },

@@ -122,10 +122,10 @@ export async function updateStation(id: string, data: any) {
     }
     return responseObj;
 }
-export async function getStations() {
+export async function getStations(userId = '', stationId = '') {
     let responseObj = { success: false, data: [] as any[], message: '' };
     try {
-        let response = await webService.get(baseUrl + 'station');
+        let response = await webService.get(baseUrl + 'station?userId=' + userId + '&stationId=' + stationId);
         responseObj = getSuccessResponse(response, responseObj);
     } catch {
         responseObj = getErrorResponse(responseObj);
@@ -351,7 +351,26 @@ export async function getBookings(bType = '') {
     }
     return responseObj;
 }
-
+export async function getBookingsWithPlanAndUser(planId: string, userId: string) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+    try {
+        let response = await webService.get(baseUrl + 'booking/plan/' + planId + '/user/' + userId);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+export async function getWalletPlan(plan = 'all') {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+    try {
+        let response = await webService.get(baseUrl + '/wallet/plan/' + plan);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
 export async function sendNotif(data: any) {
     let responseObj = { success: false, data: null, message: '' };
 

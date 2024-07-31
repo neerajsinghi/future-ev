@@ -4,6 +4,7 @@ import { GoogleMap, useJsApiLoader, Data, Marker } from '@react-google-maps/api'
 import { getCity } from '@/app/api/services';
 import { getBikes, getStations } from '@/app/api/iotBikes';
 import { Dropdown } from 'primereact/dropdown';
+import Link from 'next/link';
 
 const containerStyle = {
     width: '100%',
@@ -41,6 +42,11 @@ type stationType = {
     active: boolean;
     group: string;
     supervisorID: string;
+    supervisor: {
+        name: string;
+        phone: string;
+        email: string;
+    }
     stock: number;
     public: boolean;
     status: string;
@@ -232,7 +238,28 @@ const MapComponent = () => {
                                     lat: station.location.coordinates[1],
                                     lng: station.location.coordinates[0]
                                 }}
-                                title={station.name}
+                                onClick={() => {
+                                    // Optional: If you have any actions to perform before navigation
+                                    window.location.href = `/stations?stationId=${station.id}`;
+                                }}
+                                title={
+                                    'id: ' +
+                                    station.id +
+                                    '\nName: ' +
+                                    station.name +
+                                    '\nAddress: ' +
+                                    station.address.address +
+                                    '\nStock: ' +
+                                    station.stock +
+                                    '\nStatus: ' +
+                                    station.status +
+                                    '\nServices Available: ' +
+                                    station.servicesAvailable.join(', ') +
+                                    '\nSupervisor Name: ' +
+                                    station.supervisor.name
+
+
+                                }
                             />
                         ))}
                         {bikes.map((bike) => {
@@ -240,14 +267,22 @@ const MapComponent = () => {
                                 <Marker
                                     key={bike.deviceId}
                                     position={{
-                                        lat: parseFloat(bike.latitude),
-                                        lng: parseFloat(bike.longitude)
+                                        lat: bike.location.coordinates[1],
+                                        lng: bike.location.coordinates[0]
                                     }}
-                                    title={bike.name}
+                                    title={"id: " + bike.deviceId + "\nName: " + bike.name + "\nBattery: " + bike.batteryLevel + "\nSpeed: " + bike.speed + "\nTotal Distance: " + bike.totalDistance}
                                     icon={{
                                         url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
                                     }}
-                                />
+
+                                    onClick={() => {
+
+                                        // Optional: If you have any actions to perform before navigation
+                                        window.location.href = `/vehicleOnboarding/${bike.deviceId}`;
+
+                                    }}
+                                >
+                                </Marker>
                             );
                         })}
                     </GoogleMap>

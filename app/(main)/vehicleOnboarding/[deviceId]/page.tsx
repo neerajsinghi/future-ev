@@ -174,8 +174,8 @@ const VehicleData = (params: any) => {
                                 <p>
                                     Current Location:{' '}
                                     <Link
-                                        href={`/vehicleOnboarding/${deviceId}/${upperUserData[0]?.deviceData?.longitude},${upperUserData[0]?.deviceData?.latitude}`}
-                                    >{`${upperUserData[0]?.deviceData?.latitude},${upperUserData[0]?.deviceData?.longitude}`}</Link>
+                                        href={`/vehicleOnboarding/${deviceId}/${upperUserData[0]?.deviceData?.location.coordinates[0]},${upperUserData[0]?.deviceData?.location.coordinates[1]}`}
+                                    >{`${upperUserData[0]?.deviceData?.location.coordinates[1]},${upperUserData[0]?.deviceData?.location.coordinates[0]}`}</Link>
                                 </p>
                             </div>
                         </div>

@@ -106,9 +106,55 @@ const ViewAllBooking = ({ params }: { params: any }) => {
     }
     return (
         <div>
-            <Button className="font-bold mb-2" onClick={() => setPreview(!preview)}>
-                Preview Invoice
-            </Button>
+            <div className='card'>
+                <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
+                    <div className="field col-6">
+                        <label>Booking ID</label>
+                        <p>{geoJsonData[0]?.booking?.id}</p>
+                    </div>
+                    <div className="field col-6">
+                        <label>Start Time</label>
+                        <p>{formatTimestampToDate(geoJsonData[0]?.booking?.startTime)}</p>
+                    </div>
+                    <div className="field col-6">
+                        <label>End Time</label>
+                        <p>{geoJsonData[0]?.booking?.endTime}</p>
+                    </div>
+                    <div className="field col-6">
+                        <label>Start Station</label>
+                        <p>{geoJsonData[0]?.booking?.startingStation.name}</p>
+                    </div>
+                    <div className="field col-6">
+                        <label>End Point</label>
+                        <p>{geoJsonData[0]?.booking?.endingStation?.name || 'NA'}</p>
+                    </div>
+                    <div className="field col-6">
+                        <label>Total Distance</label>
+                        <p>{geoJsonData[0]?.booking?.totalDistance}</p>
+                    </div>
+                    <div className="field col-6">
+                        <label>Green Points</label>
+                        <p>{geoJsonData[0]?.booking?.greenPoints}</p>
+                    </div>
+                    <div className="field col-6">
+                        <label>Carbon Saved</label>
+                        <p>{geoJsonData[0]?.booking?.carbonSaved}</p>
+                    </div>
+                    <div className="col-6">
+                        <label>Start Address</label>
+                        <p>{geoJsonData[0]?.booking?.startingStation.address.address}</p>
+                    </div>
+                    <div className="col-6">
+                        <label>End Address</label>
+                        <p>{geoJsonData[0]?.booking?.endingStation?.address.address || 'NA'}</p>
+                    </div>
+                </div>
+                <div className="w-full">
+                    <Button className="font-bold mx-auto" onClick={downloadInvoice}>
+                        Download Invoice
+                    </Button>
+                </div>
+            </div>
             {loading ? (
                 <p>Loading map...</p>
             ) : (

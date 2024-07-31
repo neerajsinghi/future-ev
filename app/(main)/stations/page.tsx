@@ -2,7 +2,7 @@
 
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import CustomTable from '../components/table';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -78,6 +78,7 @@ const Stations = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const userId = searchParams.get('userId');
+    const stationId = searchParams.get('stationId');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -188,28 +189,15 @@ const Stations = () => {
 
     const fetchData = async () => {
         getCityD();
-        const response1 = await getUsers('admin');
-        if (response1.success && response1.data) {
-            const data = [];
-            for (let i = 0; i < response1.data.length; i++) {
-                if (response1.data[i].role === 'admin' || response1.data[i].role === 'staff') {
-                    data.push({ name: response1.data[i].name, code: response1.data[i].id });
-                }
-            }
-            setUsers(data);
-        }
-        const response = await getStations();
+        let userIdL = userId ? userId : '';
+        let stationIdL = stationId ? stationId : '';
+        const response = await getStations(userIdL, stationIdL);
         if (response.success && response.data) {
             const data: any[] = [];
 
             for (let i = 0; i < response.data.length; i++) {
-                if (userId && userId == response.data[i].supervisorID) {
-                    response.data[i].superVisorName = await response1.data.find((item: any) => userId === response.data[i].supervisorID)?.name;
-                    data.push(response.data[i]);
-                } else if (!userId) {
-                    response.data[i].superVisorName = await response1.data.find((item: any) => item.id === response.data[i].supervisorID)?.name;
-                    data.push(response.data[i]);
-                }
+                response.data[i].superVisorName = response.data[i].supervisor.name;
+                data.push(response.data[i]);
             }
             setItems(data);
         }

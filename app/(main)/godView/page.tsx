@@ -7,7 +7,7 @@ import { Dropdown } from 'primereact/dropdown';
 
 const containerStyle = {
     width: '100%',
-    height: '100vh'
+    height: '65vh'
 };
 
 type cityType = {
@@ -151,7 +151,7 @@ const MapComponent = () => {
 
     return (
         <div className="card">
-            <div className="card-header m-3">
+            <div className="card-header mb-3">
                 <div className="card-title">Map</div>
                 <div className="grid">
                     <div className="col-12 lg:col-10 "> </div>
@@ -187,7 +187,14 @@ const MapComponent = () => {
             </div>
             <div className="card-body">
                 {isLoaded ? (
-                    <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={zoom}>
+                    <GoogleMap
+                        options={{
+                            gestureHandling: 'greedy'
+                        }}
+                        mapContainerStyle={containerStyle}
+                        center={center}
+                        zoom={zoom}
+                    >
                         <Data
                             onLoad={(data) => {
                                 dataLayerRef.current = data;

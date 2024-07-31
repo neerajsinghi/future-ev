@@ -32,12 +32,12 @@
 .profile-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0rem;
     /* Adjust gap as needed */
 }
 
 .profile-details p {
-    flex: 1 1 calc(33.333% - 1rem);
+    flex: 1 1 calc(25% - 1rem);
     /* 3 items per row, minus the gap */
     box-sizing: border-box;
 }
@@ -45,8 +45,8 @@
 .profile-images {
     display: flex;
     border-top: 2px solid white;
-    margin-top: 2em;
-    padding-top: 2em;
+    margin-top: 1em;
+    padding-top: 1em;
     flex-wrap: nowrap;
     /* Prevent wrapping */
     gap: 1rem;

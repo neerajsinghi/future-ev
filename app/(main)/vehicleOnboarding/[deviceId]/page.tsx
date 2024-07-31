@@ -70,8 +70,6 @@ const VehicleData = (params: any) => {
 
     const columns = [
         { key: 'id', label: 'Booking Id', _props: { scope: 'col' }, body: bookingIdTemplate },
-        { key: 'deviceId', label: 'Device Id', _props: { scope: 'col' }, body: deviceIdTemplate },
-        { key: 'vehicleTypeId', label: 'Vehicle Type ID', _props: { scope: 'col' }, body: vehicleTypeIdTemplate },
         { key: 'currentLocation', label: 'Current Location', _props: { scope: 'col' }, body: currentLocationTemplate },
         { key: 'name', label: 'Name', _props: { scope: 'col' }, body: nameTemplate },
         { key: 'totalDistance', label: 'Total Distance', _props: { scope: 'col' }, body: totalDistanceTemplate },
@@ -86,7 +84,9 @@ const VehicleData = (params: any) => {
         { key: 'couponCode', label: 'Coupon Code', _props: { scope: 'col' }, body: couponCodeTemplate },
         { key: 'greenPoints', label: 'Green Points', _props: { scope: 'col' }, body: greenPointsTemplate },
         { key: 'carbonSaved', label: 'Carbon Saved', _props: { scope: 'col' }, body: carbonSavedTemplate },
-        { key: 'passengerName', label: 'Passenger Name', _props: { scope: 'col' }, body: passengerNameTemplate }
+        { key: 'passengerName', label: 'Passenger Name', _props: { scope: 'col' }, body: passengerNameTemplate },
+        { key: 'deviceId', label: 'Device Id', _props: { scope: 'col' }, body: deviceIdTemplate },
+        { key: 'vehicleTypeId', label: 'Vehicle Type ID', _props: { scope: 'col' }, body: vehicleTypeIdTemplate }
     ];
 
     return (

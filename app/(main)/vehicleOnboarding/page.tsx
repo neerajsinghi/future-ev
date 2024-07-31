@@ -444,7 +444,6 @@ const BikesStationed = () => {
             }
         }
         handleChange('vehicleTypeID', vTypes[0]);
-        setCityBasedVehicleType(vTypes);
     }, [cities, selectedCity, vehicleType]);
     useEffect(() => {
         console.log(cityBasedVehicleType);
@@ -490,7 +489,6 @@ const BikesStationed = () => {
                             // defaultValue="Normal"
                             // disabled
                             value={selectedVehicleType}
-                            disabled={cityBasedVehicleType.length > 0}
                             options={vehicleType}
                             onChange={(e) => handleChange('vehicleTypeID', e.value)}
                             optionLabel={'name'}

@@ -67,7 +67,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         </div>
     );
     const ViewBookings = (rowData: any) => {
-        return <i onClick={(e) => router.push(`/services/rentalTransactions/bookings?userId=${rowData.id}&planId=${rowData.planId}`)} className="" style={{ fontSize: '1.5em' }}>{rowData?.bookingCount}</i>;
+        return <i onClick={(e) => router.push(`/services/rentalTransactions/bookings?userId=${rowData.userId}&planId=${rowData.planId}`)} className="" style={{ fontSize: '1.5em' }}>{rowData?.bookingCount}</i>;
     };
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' }, body: idPlanTemplate },
@@ -79,7 +79,10 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         { key: 'plan.price', label: 'Rental Plan Price', _props: { scope: 'col' } },
         { key: 'userData.name', label: 'User Name', _props: { scope: 'col' } },
         { key: 'bookingCount', label: 'Bookings', _props: { scope: 'col' }, body: ViewBookings },
-        { key: 'createdTime', label: 'Rental Started Time', _props: { scope: 'col' } }
+        { key: 'createdTime', label: 'Rental Started Time', _props: { scope: 'col' } },
+        {
+            key: 'endTime', label: 'Rental Ended Time', _props: { scope: 'col' }
+        },
     ];
     const fetchData = async () => {
         let response = await getWalletPlan();

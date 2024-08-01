@@ -217,7 +217,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                 filterDisplay="menu"
                 loading={loading1}
                 responsiveLayout="scroll"
-                emptyMessage="No customers found."
+                emptyMessage={'No ' + tableName + ' found.'}
                 header={header1}
                 size={'normal'}
                 expandedRows={expandedRows}
@@ -244,16 +244,10 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                         ) : null;
                     }
                 })}
-            </DataTable>
+            </DataTable >
         </>
     );
 };
 
 export default CustomTable;
-function isStatusOrTypeField(field: any) {
-    throw new Error('Function not implemented.');
-}
 
-function getMatchMode(field: any) {
-    throw new Error('Function not implemented.');
-}

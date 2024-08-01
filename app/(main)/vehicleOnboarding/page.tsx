@@ -320,7 +320,7 @@ const BikesStationed = () => {
     const handleChange = async (name: keyof BikesStationedProps, value: any) => {
         let valueL = '';
         if (name === 'vehicleTypeID') {
-            debugger
+            debugger;
             setSelectedVehicleType(value);
             valueL = value?.code;
         } else if (name === 'city') {
@@ -433,22 +433,20 @@ const BikesStationed = () => {
     }, [formData.permitsRequired]);
 
     useEffect(() => {
-
         let res = cities?.filter((city) => city.name === selectedCity);
         let res1 = res[0]?.vehicleType;
-        const vTypes: any[] = []
+        const vTypes: any[] = [];
         for (let i = 0; i < vehicleType.length; i++) {
             if (vehicleType[i].name === res1) {
-                debugger
-                vTypes.push(vehicleType[i])
+                debugger;
+                vTypes.push(vehicleType[i]);
             }
         }
         handleChange('vehicleTypeID', vTypes[0]);
     }, [cities, selectedCity, vehicleType]);
     useEffect(() => {
         console.log(cityBasedVehicleType);
-    }, [cityBasedVehicleType]
-    );
+    }, [cityBasedVehicleType]);
     return (
         <>
             <div className="grid">
@@ -462,7 +460,7 @@ const BikesStationed = () => {
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
+                        <CustomTable tableName="Vehicles" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
                     </div>
                 </div>
             </div>

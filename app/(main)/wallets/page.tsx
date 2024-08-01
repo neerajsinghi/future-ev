@@ -61,7 +61,7 @@ const Wallet = ({ searchParams }: { searchParams: any }) => {
                     <h3>Total Amount: {totalAmountInWallet}</h3>
                 </div>
                 <div className="col-12">
-                    <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                    <CustomTable tableName="Wallet" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
                 </div>
             </div>
         </>

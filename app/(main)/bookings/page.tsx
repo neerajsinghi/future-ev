@@ -1,21 +1,21 @@
 'use client';
 
-import { getBookings } from "@/app/api/iotBikes";
-import { useEffect, useState } from "react";
-import CustomTable from "../components/table";
-import { BreadCrumb } from "primereact/breadcrumb";
+import { getBookings } from '@/app/api/iotBikes';
+import { useEffect, useState } from 'react';
+import CustomTable from '../components/table';
+import { BreadCrumb } from 'primereact/breadcrumb';
 
 export const dynamic = 'force-dynamic';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
-    const [items, setItems] = useState<any>([])
+    const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     useEffect(() => {
         fetchData();
         return () => {
-            setItems([])
-        }
-    }, [])
+            setItems([]);
+        };
+    }, []);
 
     const columns: any[] = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
@@ -39,53 +39,45 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         // { key: 'startingStation', label: 'StartingStation', _props: { scope: 'col' } },
         // { key: 'endingStation', label: 'EndingStation', _props: { scope: 'col' } },
         { key: 'couponCode', label: 'CouponCode', _props: { scope: 'col' } },
-        { key: 'discount', label: 'Discount', _props: { scope: 'col' } },
-    ]
+        { key: 'discount', label: 'Discount', _props: { scope: 'col' } }
+    ];
     const fetchData = async () => {
-        debugger
-        let response = await getBookings()
+        debugger;
+        let response = await getBookings();
         if (response.success && response.data) {
-            const data = []
+            const data = [];
 
             if (searchParams) {
                 for (let i = 0; i < response.data.length; i++) {
-
                     if (searchParams.userId) {
                         if (response.data[i].profileId === searchParams.userId) {
-                            data.push(response.data[i])
+                            data.push(response.data[i]);
                         }
                     } else if (searchParams.device) {
                         if (response.data[i].deviceId === searchParams.device) {
-                            data.push(response.data[i])
+                            data.push(response.data[i]);
                         }
                     } else {
-                        data.push(response.data[i])
+                        data.push(response.data[i]);
                     }
                 }
             } else {
-                data.push(...response.data)
+                data.push(...response.data);
             }
 
-            setItems(data)
+            setItems(data);
         }
-        setLoading1(false)
-    }
+        setLoading1(false);
+    };
     return (
         <div className="grid">
             <div className="col-12">
-                <BreadCrumb model={[
-                    { label: 'Bookings' },
-                ]} home={{ icon: 'pi pi-home', url: '/' }} />
+                <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
             </div>
             <div className="col-12">
-                <CustomTable editMode={undefined}
-                    columns2={[]}
-                    columns={columns}
-                    items={items}
-                    loading1={loading1}
-                />
+                <CustomTable tableName="allBookings" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
             </div>
         </div>
-    )
-}
+    );
+};
 export default Booking;

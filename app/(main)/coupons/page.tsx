@@ -184,7 +184,7 @@ const Coupon = () => {
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
+                        <CustomTable tableName="coupons" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
                     </div>
                 </div>
             </div>

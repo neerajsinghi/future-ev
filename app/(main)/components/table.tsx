@@ -1,6 +1,7 @@
 'use client';
 
 import useIsMobile from '@/app/api/hooks';
+import { getColumns, getUserID, setColumns } from '@/app/api/services';
 import { usePathname, useRouter } from 'next/navigation';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Button } from 'primereact/button';
@@ -10,9 +11,9 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { MultiSelect } from 'primereact/multiselect';
 import { Tag } from 'primereact/tag';
-import { useEffect, useRef, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 
-const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNavigatePath }: { columns: any[]; columns2: any[]; items: any[]; loading1: any; editMode: string | undefined; mapNavigatePath?: string }) => {
+const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNavigatePath, tableName }: { columns: any[]; columns2: any[]; items: any[]; loading1: any; editMode: string | undefined; mapNavigatePath?: string, tableName: string }) => {
     const isMobile = useIsMobile();
 
     const [filters1, setFilters1] = useState<DataTableFilterMeta>({});
@@ -26,14 +27,30 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
 
     useEffect(() => {
         initFilters1();
-
         if (columns) {
             const cols = columns.map((col) => col.key);
-            setVisibleCols(cols);
+            selectCol(cols);
         }
 
         return () => { };
     }, []);
+    const selectCol = async (cols: any) => {
+        const userId = await getUserID();
+        let columnsAvailable = false
+        const response = await getColumns(userId, tableName)
+        if (response.success) {
+            const data = response.data;
+            if (data && data.columnsSelected) {
+                const cols = data.columnsSelected;
+                setVisibleCols(cols);
+                columnsAvailable = true
+            }
+        }
+        if (!columnsAvailable) {
+            setVisibleCols(cols);
+        }
+    }
+
     const statusBodyTemplate = (rowData: any) => {
         return <Tag value={rowData?.status ? rowData?.status == "booked" ? "ON TRIP" : rowData.status.toUpperCase() : ""} />;
     };
@@ -119,7 +136,15 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                         placeholder="Select columns"
                         options={columns}
                         value={visibleCols}
-                        onChange={(e) => setVisibleCols(e.value)}
+                        onChange={(e) => {
+                            setVisibleCols(e.value)
+                            const userId = getUserID();
+                            setColumns({
+                                "userId": userId ? userId : "",
+                                "tableName": tableName,
+                                "columnsSelected": e.value,
+                            })
+                        }}
                         optionLabel="label"
                         optionValue="key"
                     // filterMatchMode="contains"

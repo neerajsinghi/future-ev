@@ -48,3 +48,34 @@ export async function updateStation(id: string, data: any) {
     }
     return responseObj;
 }
+
+export async function getColumns(userId: string, tableName: string) {
+    let responseObj = { success: false, data: {} as any, message: '' };
+
+    try {
+        let response = await webService.get(baseUrl + 'selectedColumn/' + userId + '/' + tableName);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+export async function setColumns(data: any) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.post(baseUrl + 'selectedColumn', data);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+
+export function getUserID() {
+    let userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (!userData || !userData?.id) {
+        return '';
+    }
+    return userData.id;
+}

@@ -112,7 +112,7 @@ const Bikes = () => {
             </div>
             <div className="col-12">
                 <div className="card">
-                    <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                    <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} tableName="bike" />
                 </div>
             </div>
         </div>

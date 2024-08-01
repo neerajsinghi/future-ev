@@ -42,7 +42,11 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         return <i onClick={(e) => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
     };
     const idTemplate = (rowData: any) => {
-        return <i onClick={(e) => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} style={{ fontSize: '1.5em' }}>{rowData.id}</i>;
+        return (
+            <i onClick={(e) => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} style={{ fontSize: '1.5em' }}>
+                {rowData.id}
+            </i>
+        );
     };
     function formatTimestampToDate(timestamp: number) {
         // Convert the timestamp from seconds to milliseconds
@@ -56,7 +60,10 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     }
     const columns: any[] = [
         {
-            key: 'id', label: 'Id', _props: { scope: 'col' }, body: (rowData: any) => <div onClick={() => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} >{rowData.id}</div>,
+            key: 'id',
+            label: 'Id',
+            _props: { scope: 'col' },
+            body: (rowData: any) => <div onClick={() => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)}>{rowData.id}</div>
         },
         //  { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap },
         { key: 'profileId', label: 'ProfileId', _props: { scope: 'col' } },
@@ -115,7 +122,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
                 <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
             </div>
             <div className="col-12">
-                <CustomTable tableName='rides' mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                <CustomTable tableName="rides" mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
             </div>
             <Dialog header="Invoice" visible={preview} onHide={() => setPreview(false)} className="w-[50vw]" style={{ width: '50svw' }}>
                 <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>

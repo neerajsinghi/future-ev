@@ -2,7 +2,7 @@
 
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
-import { use, useEffect, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import CustomTable from '../components/table';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -13,6 +13,9 @@ import { InputNumber } from 'primereact/inputnumber';
 import { setStation, getStations, getUsers, updateStation, getServices } from '@/app/api/iotBikes';
 import Link from 'next/link';
 import { Tag } from 'primereact/tag';
+
+import { Toast } from 'primereact/toast';
+
 import { getCity } from '@/app/api/services';
 import { MultiSelect } from 'primereact/multiselect';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -117,6 +120,12 @@ const Stations = () => {
         servicesAvailable: []
     });
 
+    const toast = useRef<any>(null);
+
+    const showToast = (info: string, severity: 'info' | 'danger' | 'warning') => {
+        toast?.current?.show({ severity: 'danger', summary: info, detail: '' });
+    };
+
     const handleChange = (name: string, value: any) => {
         if (name.startsWith('address.')) {
             setFormData({
@@ -174,6 +183,7 @@ const Stations = () => {
             // router.refresh();
         } else {
             console.log('Failed');
+            showToast(response.message, 'danger');
         }
     };
 
@@ -190,7 +200,7 @@ const Stations = () => {
         }
     };
     const getUserD = async () => {
-        let response = await getUsers("admin");
+        let response = await getUsers('admin');
         if (response.success) {
             if (response.data) {
                 const data: any[] = [];
@@ -386,19 +396,19 @@ const Stations = () => {
             lng: event.latLng.lng()
         });
         const form = { ...formData };
-        console.log({ markers });
         form.location.coordinates = [event.latLng.lng(), event.latLng.lat()];
         setFormData(form);
     };
 
     useEffect(() => {
-        console.log(selectedServices);
+        console.log(items);
     }, [selectedServices]);
     return (
         <>
             {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
             {(isAccessible === 'Edit' || isAccessible === 'View') && (
                 <div className="grid">
+                    <Toast ref={toast} />
                     <div className="col-12">
                         <BreadCrumb model={[{ label: 'Station' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                     </div>
@@ -493,7 +503,10 @@ const Stations = () => {
                         {selectedCity && (
                             <>
                                 <div className="col-12">
-                                    <h4>Location</h4>
+                                    <h4 className="col-12">Location</h4>
+                                    <div className="col-6">
+                                        <InputText />
+                                    </div>
                                 </div>
                                 {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
                                 <div className="field col-12 md:col-12">

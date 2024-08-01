@@ -41,6 +41,7 @@ const Bikes = () => {
         anchor.click();
         document.body.removeChild(anchor);
     };
+
     const qrCodeTemplate = (rowData: any) => {
         if (!qrcodeRefs.current[rowData.deviceId]) {
             qrcodeRefs.current[rowData.deviceId] = createRef();
@@ -57,6 +58,7 @@ const Bikes = () => {
             </div>
         );
     };
+
     const columns = [
         { key: 'deviceId', label: 'ID', _props: { scope: 'col' }, filterField: 'deviceId' },
         { key: 'deviceImei', label: 'Device Imei', _props: { scope: 'col' }, filterField: 'deviceImei' },

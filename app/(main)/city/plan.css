@@ -1,0 +1,18 @@
+.input-container {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      gap: 2em;
+      margin-top: 1em;
+}
+
+.input-container .input {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+}
+
+.map-container {
+      margin-top: 1em;
+}

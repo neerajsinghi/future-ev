@@ -142,7 +142,14 @@ const Plan = () => {
             return <Dropdown filter value={{ name: options.value, code: options.value }} options={city} onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)} optionLabel="name" placeholder="Select a City" />;
         } else if (options.field === 'vehicleType') {
             return (
-                <Dropdown filter value={{ name: options.value, code: options.value }} options={vehicleType} onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)} optionLabel="name" placeholder="Select a Vehicle Type" />
+                <Dropdown
+                    filter
+                    value={{ name: options.value, code: options.value }}
+                    options={vehicleType}
+                    onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)}
+                    optionLabel="name"
+                    placeholder="Select a Vehicle Type"
+                />
             );
         }
     };
@@ -152,7 +159,7 @@ const Plan = () => {
     const cellMinEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} suffix=" min" onKeyDown={(e) => e.stopPropagation()} />;
     };
-    const textEditor = (options: ColumnEditorOptions) => { };
+    const textEditor = (options: ColumnEditorOptions) => {};
     const onCellEditComplete = async (e: ColumnEvent) => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
@@ -232,7 +239,7 @@ const Plan = () => {
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable tableName='' editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        <CustomTable tableName="" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
                     </div>
                 </div>
             </div>

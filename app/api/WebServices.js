@@ -7,12 +7,16 @@ export function getSuccessResponse(response, responseObj) {
     obj.data = response.data.result || response.data.data || response.data.profile
   }
   obj.message = response.data.message || response.data.token
+  if (!response.data.status) {
+    obj.success = false
+    obj.message = response.data.error
+  }
   return obj
 }
 export function getErrorResponse(responseObj) {
   let obj = { ...responseObj }
   obj.success = false
-  obj.message = 'Server error. Please try again later.'
+  obj.message = obj.error || 'Something went wrong'
   return obj
 }
 

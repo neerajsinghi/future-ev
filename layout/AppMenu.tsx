@@ -11,6 +11,8 @@ const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
     const access = localStorage.getItem('access') ? JSON.parse(localStorage.getItem('access') as string) : [];
 
+    console.log(access);
+
     const model: AppMenuItem[] = [
         {
             label: 'Home',

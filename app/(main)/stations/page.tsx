@@ -80,6 +80,7 @@ const Stations = () => {
         googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
     });
     const router = useRouter();
+    const [searchStation, setSearchStation] = useState('');
     const searchParams = useSearchParams();
     const userId = searchParams.get('userId');
     const stationId = searchParams.get('stationId');
@@ -225,6 +226,7 @@ const Stations = () => {
                 response.data[i].superVisorName = response.data[i].supervisor.name;
                 data.push(response.data[i]);
             }
+            console.log(data);
             setItems(data);
         }
 
@@ -504,9 +506,7 @@ const Stations = () => {
                             <>
                                 <div className="col-12">
                                     <h4 className="col-12">Location</h4>
-                                    <div className="col-6">
-                                        <InputText />
-                                    </div>
+                                    <InputText onChange={(e) => setSearchStation(e.target.value)} className="col-12" placeholder="Search Station" id="Search" />
                                 </div>
                                 {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
                                 <div className="field col-12 md:col-12">

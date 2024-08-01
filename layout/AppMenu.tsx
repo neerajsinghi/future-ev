@@ -11,6 +11,8 @@ const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
     const access = localStorage.getItem('access') ? JSON.parse(localStorage.getItem('access') as string) : [];
 
+    console.log(access);
+
     const model: AppMenuItem[] = [
         {
             label: 'Home',
@@ -64,7 +66,8 @@ const AppMenu = () => {
                         }
                     ]
                 },
-                { label: 'Staff', icon: 'pi pi-spin pi-fw pi-circle', to: '/staff' },
+                { label: 'Staff', icon: 'pi pi-spin pi-fw pi-users', to: '/staff' },
+                { label: 'City', icon: 'pi pi-spin pi-fw pi-map', to: '/city' },
                 { label: 'Stations', icon: 'pi pi-fw pi-map-marker', to: '/stations' },
 
                 // { label: 'Bikes', icon: 'pi pi-spin pi-fw pi-circle', to: '/bikes' },

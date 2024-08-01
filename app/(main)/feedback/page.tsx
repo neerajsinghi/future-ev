@@ -12,8 +12,10 @@ import './plan.css';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { getFeedback } from '@/app/api/services';
 import { flattenData } from '@/app/api/user';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 const FeedBack = () => {
+    const isAccessible = useIsAccessible('feedback');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
 
@@ -49,6 +51,8 @@ const FeedBack = () => {
 
     return (
         <>
+            {/* {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>} */}
+            {/* {(isAccessible === 'Edit' || isAccessible === 'View') && ( */}
             <div className="grid">
                 <div className="col-12">
                     <BreadCrumb model={[{ label: 'Feedback' }]} home={{ icon: 'pi pi-home', url: '/' }} />
@@ -60,6 +64,7 @@ const FeedBack = () => {
                     </div>
                 </div>
             </div>
+            {/* )} */}
         </>
     );
 };

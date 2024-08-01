@@ -10,6 +10,7 @@ import CustomTable from '../components/table';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber } from 'primereact/inputnumber';
 import { Checkbox } from 'primereact/checkbox';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 // id
 // name
@@ -38,6 +39,7 @@ active
 discount
 status
     */
+    const isAccessible = useIsAccessible('service');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -97,84 +99,90 @@ status
     };
     return (
         <>
-            <div className="grid">
-                <div className="col-12 md:col-12">
-                    <BreadCrumb model={[{ label: 'Service' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                <div className="col-12 md:col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Service" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12 md:col-12">
+                        <BreadCrumb model={[{ label: 'Service' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    <div className="col-12 md:col-12">
+                        <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                            <Button type="button" icon="pi pi-plus-circle" label="Service" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+                        </div>
+                    </div>
+                    <div className="col-12 md:col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="services" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
+                        </div>
                     </div>
                 </div>
-                <div className="col-12 md:col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="services" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />{' '}
-                    </div>
-                </div>
-            </div>
+            )}
+            {isAccessible === 'Edit' && (
+                <Dialog
+                    header="Bikes Stationed"
+                    visible={showDialog}
+                    style={{ width: '50vw' }}
+                    modal
+                    onHide={() => {
+                        setShowDialog(false);
+                    }}
+                >
+                    <form onSubmit={handleSave} className="p-fluid grid">
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="name">Name</label>
+                            <InputText type="text" id="name" name="name" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="description">Description</label>
+                            <InputText type="text" id="description" name="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="price">Price</label>
+                            <InputNumber type="text" id="price" name="price" value={formData.price} onChange={(e) => handleChange('price', e.value)} mode="decimal" minFractionDigits={2} />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="discount">Discount</label>
+                            <InputNumber type="text" id="discount" name="discount" value={formData.discount} onChange={(e) => handleChange('discount', e.value)} mode="decimal" minFractionDigits={2} />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="status">Status</label>
+                            <Dropdown
+                                filter
+                                id="Status"
+                                options={[
+                                    { name: 'Active', code: 'Active' },
+                                    { name: 'Inactive', code: 'Inactive' }
+                                ]}
+                                value={selectedStatus}
+                                onChange={(e) => handleChange('status', e.value)}
+                                optionLabel="name"
+                                placeholder="Select a Status"
+                            />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="type">Type</label>
+                            <Dropdown
+                                filter
+                                id="type"
+                                options={[
+                                    { name: 'eCar', code: 'eCar' },
+                                    { name: 'charging', code: 'charging' },
+                                    { name: 'plan', code: 'plan' },
+                                    { name: 'hourly', code: 'hourly' }
+                                ]}
+                                value={selectedType}
+                                onChange={(e) => handleChange('type', e.value)}
+                                optionLabel="name"
+                                placeholder="Select a Type"
+                            />
+                        </div>
 
-            <Dialog
-                header="Bikes Stationed"
-                visible={showDialog}
-                style={{ width: '50vw' }}
-                modal
-                onHide={() => {
-                    setShowDialog(false);
-                }}
-            >
-                <form onSubmit={handleSave} className="p-fluid grid">
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="name">Name</label>
-                        <InputText type="text" id="name" name="name" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="description">Description</label>
-                        <InputText type="text" id="description" name="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="price">Price</label>
-                        <InputNumber type="text" id="price" name="price" value={formData.price} onChange={(e) => handleChange('price', e.value)} mode="decimal" minFractionDigits={2} />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="discount">Discount</label>
-                        <InputNumber type="text" id="discount" name="discount" value={formData.discount} onChange={(e) => handleChange('discount', e.value)} mode="decimal" minFractionDigits={2} />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="status">Status</label>
-                        <Dropdown filter
-                            id="Status"
-                            options={[
-                                { name: 'Active', code: 'Active' },
-                                { name: 'Inactive', code: 'Inactive' }
-                            ]}
-                            value={selectedStatus}
-                            onChange={(e) => handleChange('status', e.value)}
-                            optionLabel="name"
-                            placeholder="Select a Status"
-                        />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="type">Type</label>
-                        <Dropdown filter
-                            id="type"
-                            options={[
-                                { name: 'eCar', code: 'eCar' },
-                                { name: 'charging', code: 'charging' },
-                                { name: 'plan', code: 'plan' },
-                                { name: 'hourly', code: 'hourly' }
-                            ]}
-                            value={selectedType}
-                            onChange={(e) => handleChange('type', e.value)}
-                            optionLabel="name"
-                            placeholder="Select a Type"
-                        />
-                    </div>
-
-                    <div className="field col-2 button-row">
-                        <Button label="Submit" type="submit" />
-                    </div>
-                </form>
-            </Dialog>
+                        <div className="field col-2 button-row">
+                            <Button label="Submit" type="submit" />
+                        </div>
+                    </form>
+                </Dialog>
+            )}
         </>
     );
 };

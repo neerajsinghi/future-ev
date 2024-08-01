@@ -4,10 +4,12 @@ import { getBookings } from '@/app/api/iotBikes';
 import { useEffect, useState } from 'react';
 import CustomTable from '../components/table';
 import { BreadCrumb } from 'primereact/breadcrumb';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 export const dynamic = 'force-dynamic';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
+    const isAccessible = useIsAccessible('booking');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     useEffect(() => {
@@ -71,12 +73,17 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     };
     return (
         <div className="grid">
-            <div className="col-12">
-                <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-            </div>
-            <div className="col-12">
-                <CustomTable tableName="allBookings" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
-            </div>
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="col-12">
+                    <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                </div>
+            )}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="col-12">
+                    <CustomTable tableName="allBookings" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                </div>
+            )}
         </div>
     );
 };

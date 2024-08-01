@@ -1,4 +1,5 @@
 import { setPlan } from '@/app/api/iotBikes';
+import useIsAccessible from '@/app/hooks/isAccessible';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
@@ -19,6 +20,7 @@ interface ProductFormData {
 }
 
 const RentalPlanForm = ({ city, vehicleType, setShowDialog, fetchData, type }: { city: any[]; vehicleType: any[]; setShowDialog: any; fetchData: any; type: string }) => {
+    const isAccessible = useIsAccessible('service');
     const [selectedCity, setSelectedCity] = useState<any>({});
     const [selectedVehicleType, setSelectedVehicleType] = useState<any>({});
     const [changed, setChanged] = useState(false);

@@ -15,6 +15,7 @@ import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { getCity } from '@/app/api/services';
 import RentalPlanForm from '../component/rentalPlan';
+import useIsAccessible from '@/app/hooks/isAccessible';
 interface ProductFormData {
     city: string;
     vehicleType: string;
@@ -58,6 +59,7 @@ const Plan = () => {
     const [showDialog, setShowDialog] = useState(false);
     const [vehicleType, setVehicleType] = useState<any>([]);
     const [city, setCity] = useState<any>([]);
+    const isAccessible = useIsAccessible('service');
 
     const changePlanActive = async (id: string, status: boolean) => {
         const body: any = {
@@ -160,24 +162,29 @@ const Plan = () => {
 
     return (
         <>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    <div className="col-12">
+                        <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                            <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+                        </div>
+                    </div>
+                    <div className="col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="rental" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        </div>
                     </div>
                 </div>
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="rental" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
-                    </div>
-                </div>
-            </div>
-            <Dialog header="Add Plan" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
-                <RentalPlanForm city={city} vehicleType={vehicleType} fetchData={fetchData} setShowDialog={setShowDialog} type={'rental'} />
-            </Dialog>
+            )}
+            {isAccessible === 'Edit' && (
+                <Dialog header="Add Plan" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
+                    <RentalPlanForm city={city} vehicleType={vehicleType} fetchData={fetchData} setShowDialog={setShowDialog} type={'rental'} />
+                </Dialog>
+            )}
         </>
     );
 };

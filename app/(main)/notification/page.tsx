@@ -234,7 +234,7 @@ const Notification = () => {
                         )}
                         <div className={!formData.category ? 'field field-full' : 'field'}>
                             <label htmlFor="Users">Users</label>
-                            <MultiSelect filter style={{ width: '100%' }} id="Users" value={selectedUser} options={users} onChange={(e) => setSelectedUser(e.value)} optionLabel="name" filter placeholder="Select Users" />
+                            <MultiSelect filter style={{ width: '100%' }} id="Users" value={selectedUser} options={users} onChange={(e) => setSelectedUser(e.value)} optionLabel="name" placeholder="Select Users" />
                         </div>
                         <div className="field field-full">
                             <label htmlFor="body">Body</label>

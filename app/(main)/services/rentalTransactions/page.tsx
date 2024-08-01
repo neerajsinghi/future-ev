@@ -67,7 +67,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         </div>
     );
     const ViewBookings = (rowData: any) => {
-        return <i onClick={(e) => router.push(`/services/rentalTransactions/bookings?userId=${rowData.id}&planId=${rowData.planId}`)} className="" style={{ fontSize: '1.5em' }}>Click Here</i>;
+        return <i onClick={(e) => router.push(`/services/rentalTransactions/bookings?userId=${rowData.id}&planId=${rowData.planId}`)} className="" style={{ fontSize: '1.5em' }}>{rowData?.bookingCount}</i>;
     };
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' }, body: idPlanTemplate },
@@ -78,7 +78,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         { key: 'plan.validity', label: 'Rental Plan Validity', _props: { scope: 'col' } },
         { key: 'plan.price', label: 'Rental Plan Price', _props: { scope: 'col' } },
         { key: 'userData.name', label: 'User Name', _props: { scope: 'col' } },
-        { key: 'booking', label: 'Bookings', _props: { scope: 'col' }, body: ViewBookings },
+        { key: 'bookingCount', label: 'Bookings', _props: { scope: 'col' }, body: ViewBookings },
         { key: 'createdTime', label: 'Rental Started Time', _props: { scope: 'col' } }
     ];
     const fetchData = async () => {
@@ -99,7 +99,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
                 <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
             </div>
             <div className="col-12">
-                <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} tableName='plans' />
             </div>
             <Dialog header="Invoice" visible={previewPlan} onHide={() => setPreviewPlan(false)} className="w-[50vw]" style={{ width: '50svw' }}>
                 <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>

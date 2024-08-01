@@ -91,7 +91,7 @@ const MapComponent = () => {
     const [stations, setStations] = useState<stationType[]>([]);
     const [bikes, setBikes] = useState<bikeType[]>([]);
     const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 28.6139, lng: 77.209 });
-    const [zoom, setZoom] = useState<number>(6);
+    const [zoom, setZoom] = useState<number>(11);
     const dataLayerRef = useRef<any>(null);
 
     useEffect(() => {
@@ -240,6 +240,10 @@ const MapComponent = () => {
                                     lat: station.location.coordinates[1],
                                     lng: station.location.coordinates[0]
                                 }}
+                                icon={{
+                                    scaledSize: new window.google.maps.Size(25, 25),
+                                    url: 'https://www.svgrepo.com/download/218900/gas-station-petrol.svg'
+                                }}
                                 onClick={() => {
                                     // Optional: If you have any actions to perform before navigation
                                     window.location.href = `/stations?stationId=${station.id}`;
@@ -260,10 +264,6 @@ const MapComponent = () => {
                                     '\nSupervisor Name: ' +
                                     station.supervisor.name
                                 }
-                                // icon={{
-                                //     scaledSize: new window.google.maps.Size(25, 25),
-                                //     url: 'https://www.svgrepo.com/download/218900/gas-station-petrol.svg'
-                                // }}
                             />
                         ))}
                         {bikes.map((bike) => {
@@ -271,15 +271,13 @@ const MapComponent = () => {
                                 <Marker
                                     key={bike.deviceId}
                                     position={{
-                                        lat: bike.location.coordinates[1],
-                                        lng: bike.location.coordinates[0]
+                                        lat: bike.location.coordinates[1], // Adjust the offset range as needed
+                                        lng: bike.location.coordinates[0] // Adjust the offset range as needed
                                     }}
                                     title={'id: ' + bike.deviceId + '\nName: ' + bike.name + '\nBattery: ' + bike.batteryLevel + '\nSpeed: ' + bike.speed + '\nTotal Distance: ' + bike.totalDistance}
                                     icon={{
                                         scaledSize: new window.google.maps.Size(25, 25),
-                                        url: 'https://www.svgrepo.com/show/481000/bike.svg'
-                                        // iconAnchor: new GPoint(5, 34),
-                                        // infoWindowAnchor: new GPoint(5, 2)
+                                        url: 'https://futev.s3.ap-south-1.amazonaws.com/car-front-svgrepo-com+(1).svg'
                                     }}
                                     onClick={() => {
                                         // Optional: If you have any actions to perform before navigation

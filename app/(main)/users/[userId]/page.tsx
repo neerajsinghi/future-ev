@@ -95,9 +95,11 @@ const Page = (params: any) => {
             _props: { scope: 'col' },
             body: (rowData: any) => <div style={{ color: '#3262EC' }}>{rowData.id}</div>
         },
-        { key: 'depositedMoney', label: 'Deposit', _props: { scope: 'col' } },
         { key: 'paymentId', label: 'Payment ID', _props: { scope: 'col' } },
+        { key: 'depositedMoney', label: 'Deposit', _props: { scope: 'col' } },
         { key: 'usedMoney', label: 'Used', _props: { scope: 'col' } },
+        {key: 'refundableMoney', label: "Refundable", _props: { scope: 'col' } },
+        {key: 'refundedMoney', label: "Refunded", _props: { scope: 'col' } },
         { key: 'bookingId', label: 'Booking ID', _props: { scope: 'col' } },
         { key: 'createdTime', label: 'Created Time', _props: { scope: 'col' } }
     ];

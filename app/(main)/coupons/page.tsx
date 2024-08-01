@@ -200,53 +200,58 @@ const Coupon = () => {
             >
                 <form onSubmit={handleSubmit} className="p-fluid grid">
                     <div className="field col-12 lg:col-6">
+                        <label htmlFor="couponType">Coupon Type</label>
+                        <Dropdown filter value={formData.couponType} options={['discount', 'freeRide', "referral"]} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
+                    </div>
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="serviceType">Service Type</label>
                         <MultiSelect filter id="serviceType" value={formData.serviceType} placeholder="Select a Service Type" options={serviceType?.map((service: serviceTypes) => service.name)} onChange={(e) => handleChange('serviceType', e.value)} />
-                    </div>
+                    </div>}
 
-                    <div className="field col-12 lg:col-6">
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="city">City</label>
                         <MultiSelect filter id="city" value={formData.city} options={cities.map((city) => city.name)} onChange={(e) => handleChange('city', e.value)} placeholder="Select a City" />
-                    </div>
+                    </div>}
 
-                    <div className="field col-12 lg:col-6">
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="vehicleType">Vehicle Type</label>
                         <MultiSelect filter id="vehicleType" value={formData.vehicleType} options={vehicleTypes?.map((vehicle) => vehicle.name)} onChange={(e) => handleChange('vehicleType', e.value)} placeholder="Select a Vehicle Type" />
-                    </div>
+                    </div>}
 
-                    <div className="field col-12 lg:col-6">
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="code">Coupon Code</label>
                         <InputText id="code" placeholder="Enter Code Name" value={formData.code} onChange={(e) => handleChange('code', e.target.value)} />
-                    </div>
+                    </div>}
 
-                    <div className="field col-12 lg:col-6">
-                        <label htmlFor="couponType">Coupon Type</label>
-                        <Dropdown filter value={formData.couponType} options={['discount', 'freeRide']} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
-                    </div>
-                    <div className="field col-12 lg:col-6">
+
+                    {(formData.couponType != "" && formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="minValue">Min Value</label>
                         <InputNumber id="minValue" value={formData.minValue} onValueChange={(e) => handleChange('minValue', e.value)} />
-                    </div>
-                    <div className="field col-12 lg:col-6">
+                    </div>}
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="maxValue">Max Value</label>
                         <InputNumber id="maxValue" value={formData.maxValue} onValueChange={(e) => handleChange('maxValue', e.value)} />
-                    </div>
-                    <div className="field col-12 lg:col-6">
+                    </div>}
+                    {formData.couponType === "referral" && <div className="field col-12 lg:col-6">
+                        <label htmlFor="maxValue">Referral Bonus</label>
+                        <InputNumber id="maxValue" value={formData.maxValue} onValueChange={(e) => handleChange('maxValue', e.value)} />
+                    </div>}
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="maxUsageByUser">Max Usage By User</label>
                         <InputNumber id="maxUsageByUser" value={formData.maxUsageByUser} onValueChange={(e) => handleChange('maxUsageByUser', e.value)} />
-                    </div>
-                    <div className="field col-12 lg:col-6">
+                    </div>}
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="discount">Discount</label>
                         <InputNumber suffix=" %" id="discount" value={formData.discount} onValueChange={(e) => handleChange('discount', e.value)} />
-                    </div>
-                    <div className="field col-12 lg:col-6">
+                    </div>}
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="validityFrom">Validity From</label>
                         <Calendar id="validityFrom" value={formData.validityFrom} onChange={(e) => handleChange('validityFrom', e.value)} />
-                    </div>
-                    <div className="field col-12 lg:col-6">
+                    </div>}
+                    {(formData.couponType == "" || formData.couponType != "referral") && <div className="field col-12 lg:col-6">
                         <label htmlFor="validTill">Valid Till</label>
                         <Calendar id="validTill" value={formData.validTill} onChange={(e) => handleChange('validTill', e.value)} />
-                    </div>
+                    </div>}
                     <div className="field col-12">
                         <label htmlFor="description">Description</label>
                         <InputTextarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />

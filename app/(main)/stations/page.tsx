@@ -187,7 +187,7 @@ const Stations = () => {
         }
     };
     const getUserD = async () => {
-        let response = await getUsers("admin@");
+        let response = await getUsers("admin");
         if (response.success) {
             if (response.data) {
                 const data: any[] = [];

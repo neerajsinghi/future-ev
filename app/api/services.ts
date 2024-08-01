@@ -73,7 +73,7 @@ export async function setColumns(data: any) {
 }
 
 export function getUserID() {
-    let userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    let userData = JSON.parse(localStorage.getItem('user') || '{}');
     if (!userData || !userData?.id) {
         return '';
     }

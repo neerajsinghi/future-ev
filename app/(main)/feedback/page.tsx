@@ -12,8 +12,10 @@ import './plan.css';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { getFeedback } from '@/app/api/services';
 import { flattenData } from '@/app/api/user';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 const FeedBack = () => {
+    const isAccessible = useIsAccessible('feedback');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
 
@@ -49,17 +51,20 @@ const FeedBack = () => {
 
     return (
         <>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Feedback' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'Feedback' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
 
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="Feedbacks" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                    <div className="col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="Feedbacks" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </>
     );
 };

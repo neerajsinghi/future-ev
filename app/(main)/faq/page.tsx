@@ -10,12 +10,14 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import './plan.css';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
+import useIsAccessible from '@/app/hooks/isAccessible';
 interface ProductFormData {
     question: string;
     answer: string;
 }
 
 const FAQ = () => {
+    const isAccessible = useIsAccessible('faq');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -96,6 +98,9 @@ const FAQ = () => {
 
     return (
         <>
+            {/* {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>} */}
+
+            {/* {(isAccessible === 'Edit' || isAccessible === 'View') && ( */}
             <div className="grid">
                 <div className="col-12">
                     <BreadCrumb model={[{ label: 'Faq' }]} home={{ icon: 'pi pi-home', url: '/' }} />
@@ -111,6 +116,8 @@ const FAQ = () => {
                     </div>
                 </div>
             </div>
+            {/* )} */}
+            {/* {isAccessible === 'Edit' && ( */}
             <Dialog header="Add Faq" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
                 <div className="p-8">
                     <form onSubmit={handleSubmit} className="p-fluid grid">
@@ -129,6 +136,7 @@ const FAQ = () => {
                     </form>
                 </div>
             </Dialog>
+            {/* )} */}
         </>
     );
 };

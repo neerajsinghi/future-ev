@@ -12,8 +12,10 @@ import { InputNumber } from 'primereact/inputnumber';
 import { setStation, getStations, getUsers, updateStation } from '@/app/api/iotBikes';
 import Link from 'next/link';
 import { Tag } from 'primereact/tag';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 const Stand = () => {
+    const isAccessible = useIsAccessible('reports');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
 
@@ -62,17 +64,20 @@ const Stand = () => {
 
     return (
         <>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Station' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'Station' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
 
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="stands" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                    <div className="col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="stands" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </>
     );
 };

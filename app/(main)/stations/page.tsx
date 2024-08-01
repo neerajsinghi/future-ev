@@ -18,6 +18,7 @@ import { MultiSelect } from 'primereact/multiselect';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import { ColumnEditorOptions, ColumnEvent, ColumnFilterElementTemplateOptions } from 'primereact/column';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 /*
 Name
@@ -91,6 +92,7 @@ const Stations = () => {
     const [markers, setMarkers] = useState<any>();
     const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 28.6139, lng: 77.209 });
     const [zoom, setZoom] = useState<number>(12);
+    const isAccessible = useIsAccessible('stations');
     const [formData, setFormData] = useState<StationFormData>({
         name: '',
         description: '',
@@ -114,6 +116,7 @@ const Stations = () => {
         status: 'available',
         servicesAvailable: []
     });
+
     const handleChange = (name: string, value: any) => {
         if (name.startsWith('address.')) {
             setFormData({
@@ -378,136 +381,140 @@ const Stations = () => {
     useEffect(() => {
         console.log(selectedServices);
     }, [selectedServices]);
-
     return (
         <>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Station' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Station" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'Station' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    <div className="col-12">
+                        <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                            <Button type="button" icon="pi pi-plus-circle" label="Station" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+                        </div>
+                    </div>
+                    <div className="col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="stations" mapNavigatePath="/stations/viewStationOnMap" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        </div>
                     </div>
                 </div>
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName='stations' mapNavigatePath="/stations/viewStationOnMap" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
-                    </div>
-                </div>
-            </div>
+            )}
 
             {/* // * Dialog to add Stations */}
+            {isAccessible === 'Edit' && (
+                <Dialog header="Add Station" visible={showDialog} style={{ width: '50vw', color: 'white' }} onHide={() => setShowDialog(false)}>
+                    <form onSubmit={handleSubmit} className="p-fluid grid">
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="name">Name</label>
+                            <InputText id="name" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="shortName">Short Name</label>
+                            <InputText id="shortName" value={formData.shortName} onChange={(e) => handleChange('shortName', e.target.value)} />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="description">Description</label>
+                            <InputTextarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
+                        </div>
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="service">Services Available</label>
+                            <MultiSelect
+                                value={selectedServices}
+                                options={[
+                                    { name: 'ride now', code: 'hourly' },
+                                    { name: 'rental', code: 'rental' },
+                                    { name: 'charging', code: 'charging' },
+                                    { name: 'eCar', code: 'eCar' }
+                                ]}
+                                onChange={(e) => handleChange('servicesAvailable', e.value)}
+                                optionLabel="name"
+                                optionValue="code"
+                            />
+                        </div>
+                        {/* Address Fields */}
+                        <div className="col-12">
+                            <h4>Address</h4>
+                        </div>
 
-            <Dialog header="Add Station" visible={showDialog} style={{ width: '50vw', color: 'white' }} onHide={() => setShowDialog(false)}>
-                <form onSubmit={handleSubmit} className="p-fluid grid">
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="name">Name</label>
-                        <InputText id="name" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="shortName">Short Name</label>
-                        <InputText id="shortName" value={formData.shortName} onChange={(e) => handleChange('shortName', e.target.value)} />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="description">Description</label>
-                        <InputTextarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} />
-                    </div>
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="service">Services Available</label>
-                        <MultiSelect
-                            value={selectedServices}
-                            options={[
-                                { name: 'ride now', code: 'hourly' },
-                                { name: 'rental', code: 'rental' },
-                                { name: 'charging', code: 'charging' },
-                                { name: 'eCar', code: 'eCar' }
-                            ]}
-                            onChange={(e) => handleChange('servicesAvailable', e.value)}
-                            optionLabel="name"
-                            optionValue="code"
-                        />
-                    </div>
-                    {/* Address Fields */}
-                    <div className="col-12">
-                        <h4>Address</h4>
-                    </div>
+                        {/* ... (other address fields - country, pin, city, state) */}
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="address.country">Country</label>
+                            <InputText id="address.country" value={formData.address.country} onChange={(e) => handleChange('address.country', e.target.value)} />
+                        </div>
+                        {/* ... (other address fields - pin, city, state) */}
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="address.pin">Pin</label>
+                            <InputText id="address.pin" value={formData.address.pin} onChange={(e) => handleChange('address.pin', e.target.value)} />
+                        </div>
+                        {/* ... (other address fields - city, state) */}
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="address.city">City</label>
+                            <Dropdown
+                                filter
+                                id="address.city"
+                                value={selectedCity}
+                                options={city}
+                                onChange={(e) => {
+                                    setSelectedCity(e.value);
+                                    changeCenter(e.value.code);
+                                    handleChange('address.city', e.value.code);
+                                }}
+                                optionLabel="name"
+                                placeholder="Select a City"
+                            />
+                        </div>
 
-                    {/* ... (other address fields - country, pin, city, state) */}
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="address.country">Country</label>
-                        <InputText id="address.country" value={formData.address.country} onChange={(e) => handleChange('address.country', e.target.value)} />
-                    </div>
-                    {/* ... (other address fields - pin, city, state) */}
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="address.pin">Pin</label>
-                        <InputText id="address.pin" value={formData.address.pin} onChange={(e) => handleChange('address.pin', e.target.value)} />
-                    </div>
-                    {/* ... (other address fields - city, state) */}
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="address.city">City</label>
-                        <Dropdown filter
-                            id="address.city"
-                            value={selectedCity}
-                            options={city}
-                            onChange={(e) => {
-                                setSelectedCity(e.value);
-                                changeCenter(e.value.code);
-                                handleChange('address.city', e.value.code);
-                            }}
-                            optionLabel="name"
-                            placeholder="Select a City"
-                        />
-                    </div>
+                        {/* ... (other address fields - state) */}
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="address.state">State</label>
+                            <InputText id="address.state" value={formData.address.state} onChange={(e) => handleChange('address.state', e.target.value)} />
+                        </div>
 
-                    {/* ... (other address fields - state) */}
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="address.state">State</label>
-                        <InputText id="address.state" value={formData.address.state} onChange={(e) => handleChange('address.state', e.target.value)} />
-                    </div>
+                        <div className="field col-12">
+                            <label htmlFor="address.address">Address Line</label>
+                            <InputTextarea id="address.address" value={formData.address.address} onChange={(e) => handleChange('address.address', e.target.value)} />
+                        </div>
+                        {/* Location Fields */}
+                        {selectedCity && (
+                            <>
+                                <div className="col-12">
+                                    <h4>Location</h4>
+                                </div>
+                                {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
+                                <div className="field col-12 md:col-12">
+                                    {isLoaded && (
+                                        <GoogleMap
+                                            mapContainerStyle={{ width: '100%', height: '400px' }}
+                                            center={center} // Initial map center (adjust)
+                                            zoom={zoom}
+                                            onClick={onMapClick}
+                                        >
+                                            <MarkerF position={markers} />
+                                        </GoogleMap>
+                                    )}
+                                </div>
+                            </>
+                        )}
 
-                    <div className="field col-12">
-                        <label htmlFor="address.address">Address Line</label>
-                        <InputTextarea id="address.address" value={formData.address.address} onChange={(e) => handleChange('address.address', e.target.value)} />
-                    </div>
-                    {/* Location Fields */}
-                    {selectedCity && (
-                        <>
-                            <div className="col-12">
-                                <h4>Location</h4>
-                            </div>
-                            {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
-                            <div className="field col-12 md:col-12">
-                                {isLoaded && (
-                                    <GoogleMap
-                                        mapContainerStyle={{ width: '100%', height: '400px' }}
-                                        center={center} // Initial map center (adjust)
-                                        zoom={zoom}
-                                        onClick={onMapClick}
-                                    >
-                                        <MarkerF position={markers} />
-                                    </GoogleMap>
-                                )}
-                            </div>
-                        </>
-                    )}
-
-                    {/* ... (fields for group, supervisorID, stock, public, status) */}
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="group">Group</label>
-                        <InputText id="group" value={formData.group} onChange={(e) => handleChange('group', e.target.value)} />
-                    </div>
-                    {/* ... (fields for supervisorID, stock, public, status) */}
-                    <div className="field col-12 md:col-6">
-                        <label htmlFor="supervisorID">Supervisor ID</label>
-                        <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" placeholder="Select a Supervisor" />
-                    </div>
-                    {/* ... (submit button) */}
-                    <div className="field col-12 button-row w-full">
-                        <Button label="Submit" type="submit" className="px-5 py-2 w-full" />
-                    </div>
-                </form>
-            </Dialog>
+                        {/* ... (fields for group, supervisorID, stock, public, status) */}
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="group">Group</label>
+                            <InputText id="group" value={formData.group} onChange={(e) => handleChange('group', e.target.value)} />
+                        </div>
+                        {/* ... (fields for supervisorID, stock, public, status) */}
+                        <div className="field col-12 md:col-6">
+                            <label htmlFor="supervisorID">Supervisor ID</label>
+                            <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" placeholder="Select a Supervisor" />
+                        </div>
+                        {/* ... (submit button) */}
+                        <div className="field col-12 button-row w-full">
+                            <Button label="Submit" type="submit" className="px-5 py-2 w-full" />
+                        </div>
+                    </form>
+                </Dialog>
+            )}
         </>
     );
 };

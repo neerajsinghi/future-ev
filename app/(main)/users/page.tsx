@@ -19,9 +19,11 @@ import { flattenData } from '@/app/api/user';
 import { ColumnFilterElementTemplateOptions } from 'primereact/column';
 import useIsMobile from '@/app/api/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
+import useIsAccessible from '@/app/hooks/isAccessible';
 export const dynamic = 'force-dynamic';
 
 const Users = () => {
+    const isAccessible = useIsAccessible('users');
     const [loadingRows, setLoadingRows] = useState<{ [key: string]: boolean }>({});
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -252,7 +254,16 @@ const Users = () => {
     };
     const typeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
         return (
-            <Dropdown filter value={options.value} options={services} onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear />
+            <Dropdown
+                filter
+                value={options.value}
+                options={services}
+                onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)}
+                itemTemplate={statusItemTemplate}
+                placeholder="Select One"
+                className="p-column-filter"
+                showClear
+            />
         );
     };
     const columns = [
@@ -384,66 +395,74 @@ const Users = () => {
 
     return (
         <>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'User' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                {/* <div className="col-12">
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'User' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    {/* <div className="col-12">
                     <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
                         <Button type="button" icon="pi pi-plus-circle" label="User" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
                 </div> */}
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName='users' mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                    <div className="col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="users" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <Dialog header="Image Validation" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
-                {dlFrontImage && <h4>DL Verification Images</h4>}
-                <div className="grid">
-                    {dlFrontImage && (
-                        <div className="col-12 md:col-6">
-                            <Image src={dlFrontImage} alt="dlFrontImage" width="200" height="200" />
-                        </div>
-                    )}
-                    {dlBackImage && (
-                        <div className="col-12 md:col-6">
-                            <Image src={dlBackImage} alt="dlFrontImage" width="200" height="200" />
-                        </div>
-                    )}
-                    {dlFrontImage && dlBackImage && !dlVerified && (
-                        <div className="col-12 md:col-6">
-                            <Button label="Validate DL" onClick={validateDl} />
-                        </div>
-                    )}
-                    {<div className="col-12">{idFrontImage && <h4>ID Verification Images</h4>}</div>}
-                    {idFrontImage && (
-                        <div className="col-12 md:col-6">
-                            <Image src={idFrontImage} alt="idFrontImage" width="200" height="200" />
-                        </div>
-                    )}
-                    {idBackImage && (
-                        <div className="col-12 md:col-6">
-                            <Image src={idBackImage} alt="idFrontImage" width="200" height="200" />
-                        </div>
-                    )}
+            )}
+            {isAccessible === 'Edit' && (
+                <>
+                    <Dialog header="Image Validation" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
+                        {dlFrontImage && <h4>DL Verification Images</h4>}
+                        <div className="grid">
+                            {dlFrontImage && (
+                                <div className="col-12 md:col-6">
+                                    <Image src={dlFrontImage} alt="dlFrontImage" width="200" height="200" />
+                                </div>
+                            )}
+                            {dlBackImage && (
+                                <div className="col-12 md:col-6">
+                                    <Image src={dlBackImage} alt="dlFrontImage" width="200" height="200" />
+                                </div>
+                            )}
+                            {dlFrontImage && dlBackImage && !dlVerified && (
+                                <div className="col-12 md:col-6">
+                                    <Button label="Validate DL" onClick={validateDl} />
+                                </div>
+                            )}
+                            {<div className="col-12">{idFrontImage && <h4>ID Verification Images</h4>}</div>}
+                            {idFrontImage && (
+                                <div className="col-12 md:col-6">
+                                    <Image src={idFrontImage} alt="idFrontImage" width="200" height="200" />
+                                </div>
+                            )}
+                            {idBackImage && (
+                                <div className="col-12 md:col-6">
+                                    <Image src={idBackImage} alt="idFrontImage" width="200" height="200" />
+                                </div>
+                            )}
 
-                    {idFrontImage && idBackImage && !idVerified && (
-                        <div className="col-12 md:col-6">
-                            <Button label="Validate ID" onClick={validateId} />
+                            {idFrontImage && idBackImage && !idVerified && (
+                                <div className="col-12 md:col-6">
+                                    <Button label="Validate ID" onClick={validateId} />
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
-            </Dialog>
-            <Dialog header="Block User" visible={blockedDialog} style={{ width: '25vw' }} onHide={() => setBlockedDialog(false)}>
-                <div className="grid">
-                    <div className="col-12">
-                        <InputTextarea value={BlockReason} onChange={(e) => setBlockReason(e.target.value)} placeholder="Block Reason" style={{ width: '22vw' }} />
-                    </div>
-                    <div className="col-12">{isBlocking ? <span className="pi pi-spin pi-spinner"></span> : <Button label="Block" onClick={onChangeStatusBlocked} />}</div>
-                </div>
-            </Dialog>
+                    </Dialog>
+                    <Dialog header="Block User" visible={blockedDialog} style={{ width: '25vw' }} onHide={() => setBlockedDialog(false)}>
+                        <div className="grid">
+                            <div className="col-12">
+                                <InputTextarea value={BlockReason} onChange={(e) => setBlockReason(e.target.value)} placeholder="Block Reason" style={{ width: '22vw' }} />
+                            </div>
+                            <div className="col-12">{isBlocking ? <span className="pi pi-spin pi-spinner"></span> : <Button label="Block" onClick={onChangeStatusBlocked} />}</div>
+                        </div>
+                    </Dialog>
+                </>
+            )}
         </>
     );
 };

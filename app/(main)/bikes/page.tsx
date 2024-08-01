@@ -6,11 +6,13 @@ import { createRef, RefObject, useEffect, useRef, useState } from 'react';
 import CustomTable from '../components/table';
 import QRCode from 'react-qr-code';
 import { Button } from 'primereact/button';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 const Bikes = () => {
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const qrcodeRefs = useRef<{ [key: string]: RefObject<any> }>({});
+    const isAccessible = useIsAccessible('bikes');
 
     const downloadQRCode = (qrRef: RefObject<any>, id: string) => async (e: any) => {
         const svgElement = qrRef.current.querySelector('svg');
@@ -98,14 +100,19 @@ const Bikes = () => {
 
     return (
         <div className="grid">
-            <div className="col-12">
-                <BreadCrumb model={[{ label: 'Bikes' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-            </div>
-            <div className="col-12">
-                <div className="card">
-                    <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} tableName="bike" />
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="col-12">
+                    <BreadCrumb model={[{ label: 'Bikes' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
-            </div>
+            )}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="col-12">
+                    <div className="card">
+                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} tableName="bike" />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

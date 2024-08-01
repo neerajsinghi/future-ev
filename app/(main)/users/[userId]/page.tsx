@@ -11,6 +11,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
 import Link from 'next/link';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 const Page = (params: any) => {
     const {
@@ -24,7 +25,7 @@ const Page = (params: any) => {
     const [plans, setPlans] = useState<any>(null);
     const [bookingData, setBookingData] = useState<any>(null);
     const [planData, setPlanData] = useState<any>(null);
-
+    const isAccessible = useIsAccessible('users');
     const router = useRouter();
     const invoiceRef = useRef<HTMLDivElement>(null);
     const [preview, setPreview] = useState(false);
@@ -98,8 +99,8 @@ const Page = (params: any) => {
         { key: 'paymentId', label: 'Payment ID', _props: { scope: 'col' } },
         { key: 'depositedMoney', label: 'Deposit', _props: { scope: 'col' } },
         { key: 'usedMoney', label: 'Used', _props: { scope: 'col' } },
-        {key: 'refundableMoney', label: "Refundable", _props: { scope: 'col' } },
-        {key: 'refundedMoney', label: "Refunded", _props: { scope: 'col' } },
+        { key: 'refundableMoney', label: 'Refundable', _props: { scope: 'col' } },
+        { key: 'refundedMoney', label: 'Refunded', _props: { scope: 'col' } },
         { key: 'bookingId', label: 'Booking ID', _props: { scope: 'col' } },
         { key: 'createdTime', label: 'Created Time', _props: { scope: 'col' } }
     ];
@@ -164,227 +165,235 @@ const Page = (params: any) => {
     }
     return (
         <div>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'User Details' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                {userWalletData?.length > 0 && <h1>User Details</h1>}
-                {userData ? (
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
                     <div className="col-12">
-                        <div className="profile-details">
-                            <p>
-                                <strong>User Name:</strong> {userData.name}
-                            </p>
-                            <p>
-                                <strong>Date of Birth:</strong> {userData.dob}
-                            </p>
-                            <p>
-                                <strong>Gender:</strong> {userData.gender}
-                            </p>
-                            <p>
-                                <strong>Phone Number:</strong> {userData.phoneNumber}
-                            </p>
-                            <p>
-                                <strong>Role:</strong> {userData.role}
-                            </p>
-                            <p>
-                                <strong>Country Code:</strong> {userData.countryCode}
-                            </p>
-                            <p>
-                                <strong>DL Verified:</strong> {userData.dlVerified ? <span style={{ color: 'green' }}>Yes</span> : <span style={{ color: 'red' }}>No</span>}
-                            </p>
-                            <p>
-                                <strong>ID Verified:</strong> {userData.idVerified ? <span style={{ color: 'green' }}>Yes</span> : <span style={{ color: 'red' }}>No</span>}
-                            </p>
-                            <p>
-                                <strong>Referral Code:</strong> {userData.referralCode}
-                            </p>
-                            <p>
-                                <strong>Green Points:</strong> {userData.greenPoints}
-                            </p>
-                            <p>
-                                <strong>Carbon Saved:</strong> {userData.carbonSaved}
-                            </p>
-                            <p>
-                                <strong>Total Balance:</strong> {userWalletData?.TotalBalance}
-                            </p>
-                            <p>
-                                <strong>Refundable Money:</strong> {userWalletData?.RefundableMoney}
-                            </p>
+                        <BreadCrumb model={[{ label: 'User Details' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    {userWalletData?.length > 0 && <h1>User Details</h1>}
+                    {userData ? (
+                        <div className="col-12">
+                            <div className="profile-details">
+                                <p>
+                                    <strong>User Name:</strong> {userData.name}
+                                </p>
+                                <p>
+                                    <strong>Date of Birth:</strong> {userData.dob}
+                                </p>
+                                <p>
+                                    <strong>Gender:</strong> {userData.gender}
+                                </p>
+                                <p>
+                                    <strong>Phone Number:</strong> {userData.phoneNumber}
+                                </p>
+                                <p>
+                                    <strong>Role:</strong> {userData.role}
+                                </p>
+                                <p>
+                                    <strong>Country Code:</strong> {userData.countryCode}
+                                </p>
+                                <p>
+                                    <strong>DL Verified:</strong> {userData.dlVerified ? <span style={{ color: 'green' }}>Yes</span> : <span style={{ color: 'red' }}>No</span>}
+                                </p>
+                                <p>
+                                    <strong>ID Verified:</strong> {userData.idVerified ? <span style={{ color: 'green' }}>Yes</span> : <span style={{ color: 'red' }}>No</span>}
+                                </p>
+                                <p>
+                                    <strong>Referral Code:</strong> {userData.referralCode}
+                                </p>
+                                <p>
+                                    <strong>Green Points:</strong> {userData.greenPoints}
+                                </p>
+                                <p>
+                                    <strong>Carbon Saved:</strong> {userData.carbonSaved}
+                                </p>
+                                <p>
+                                    <strong>Total Balance:</strong> {userWalletData?.TotalBalance}
+                                </p>
+                                <p>
+                                    <strong>Refundable Money:</strong> {userWalletData?.RefundableMoney}
+                                </p>
+                            </div>
+                            <div className="profile-images">
+                                {userData.dlFrontImage && (
+                                    <div>
+                                        <p>
+                                            <strong>DL Front Image:</strong>
+                                        </p>
+                                        <Image width="200" height="100" src={userData.dlFrontImage} alt="DL Front" />
+                                    </div>
+                                )}
+                                {userData.dlBackImage && (
+                                    <div>
+                                        <p>
+                                            <strong>DL Back Image:</strong>
+                                        </p>
+                                        <Image width="200" height="100" src={userData.dlBackImage} alt="DL Back" />
+                                    </div>
+                                )}
+                                {userData.idFrontImage && (
+                                    <div>
+                                        <p>
+                                            <strong>ID Front Image:</strong>
+                                        </p>
+                                        <Image width="200" height="100" src={userData.idFrontImage} alt="ID Front" />
+                                    </div>
+                                )}
+                                {userData.idBackImage && (
+                                    <div>
+                                        <p>
+                                            <strong>ID Back Image:</strong>
+                                        </p>
+                                        <Image width="200" height="100" src={userData.idBackImage} alt="ID Back" />
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div className="profile-images">
-                            {userData.dlFrontImage && (
-                                <div>
-                                    <p>
-                                        <strong>DL Front Image:</strong>
-                                    </p>
-                                    <Image width="200" height="100" src={userData.dlFrontImage} alt="DL Front" />
-                                </div>
-                            )}
-                            {userData.dlBackImage && (
-                                <div>
-                                    <p>
-                                        <strong>DL Back Image:</strong>
-                                    </p>
-                                    <Image width="200" height="100" src={userData.dlBackImage} alt="DL Back" />
-                                </div>
-                            )}
-                            {userData.idFrontImage && (
-                                <div>
-                                    <p>
-                                        <strong>ID Front Image:</strong>
-                                    </p>
-                                    <Image width="200" height="100" src={userData.idFrontImage} alt="ID Front" />
-                                </div>
-                            )}
-                            {userData.idBackImage && (
-                                <div>
-                                    <p>
-                                        <strong>ID Back Image:</strong>
-                                    </p>
-                                    <Image width="200" height="100" src={userData.idBackImage} alt="ID Back" />
-                                </div>
-                            )}
+                    ) : (
+                        <h2>No Profile Details Available</h2>
+                    )}
+                    {userData?.plan && (
+                        <div className="card">
+                            <h2>User Current Subscription</h2>
+                            <div className="profile-details">
+                                <p>
+                                    <strong>Subscription Name:</strong> {userData.plan.name}
+                                </p>
+                                <p>
+                                    <strong>Subscription Price:</strong> {userData.plan.price}
+                                </p>
+                                <p>
+                                    <strong>Subscription City:</strong> {userData.plan.city}
+                                </p>
+                                <p>
+                                    <strong>Subscription Validity:</strong> {userData.plan.validity}
+                                </p>
+                                <p>
+                                    <strong>Subscription Start time:</strong> {formatTimestampToDate(userData.planStartTime)}
+                                </p>
+                                <p>
+                                    <strong>Subscription End Time:</strong> {formatTimestampToDate(userData.planEndTime)}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                    <div className="col-12">
+                        <div className="card">
+                            <h2>User Plan Details</h2>
+                            <CustomTable tableName="userPlan" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsPlan} items={plans} loading1={loading1} />
                         </div>
                     </div>
-                ) : (
-                    <h2>No Profile Details Available</h2>
-                )}
-                {userData?.plan && (
-                    <div className="card">
-                        <h2>User Current Subscription</h2>
-                        <div className="profile-details">
-                            <p>
-                                <strong>Subscription Name:</strong> {userData.plan.name}
-                            </p>
-                            <p>
-                                <strong>Subscription Price:</strong> {userData.plan.price}
-                            </p>
-                            <p>
-                                <strong>Subscription City:</strong> {userData.plan.city}
-                            </p>
-                            <p>
-                                <strong>Subscription Validity:</strong> {userData.plan.validity}
-                            </p>
-                            <p>
-                                <strong>Subscription Start time:</strong> {formatTimestampToDate(userData.planStartTime)}
-                            </p>
-                            <p>
-                                <strong>Subscription End Time:</strong> {formatTimestampToDate(userData.planEndTime)}
-                            </p>
+                    <div className="col-12">
+                        <div className="card">
+                            <h2>Wallet Details</h2>
+                            <CustomTable tableName="Wallet" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={userWalletData} loading1={loading1} />
                         </div>
                     </div>
-                )}
-                <div className="col-12">
-                    <div className="card">
-                        <h2>User Plan Details</h2>
-                        <CustomTable tableName="userPlan" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsPlan} items={plans} loading1={loading1} />
+                    <div className="col-12">
+                        <div className="card">
+                            <h2>Booking Details</h2>
+                            <CustomTable tableName="Booking" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsBooking} items={bookings} loading1={loading1} />
+                        </div>
                     </div>
                 </div>
-                <div className="col-12">
-                    <div className="card">
-                        <h2>Wallet Details</h2>
-                        <CustomTable tableName="Wallet" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={userWalletData} loading1={loading1} />
-                    </div>
-                </div>
-                <div className="col-12">
-                    <div className="card">
-                        <h2>Booking Details</h2>
-                        <CustomTable tableName="Booking" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsBooking} items={bookings} loading1={loading1} />
-                    </div>
-                </div>
-            </div>
-            <Dialog header="Invoice" visible={preview} onHide={() => setPreview(false)} className="w-[50vw]" style={{ width: '50svw' }}>
-                <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
-                    <div className="field col-6">
-                        <label>Booking ID</label>
-                        <p>{bookingData?.id}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Name</label>
-                        <p>{bookingData?.profile?.name}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Start Time</label>
-                        <p>{formatTimestampToDate(bookingData?.startTime)}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>End Time</label>
-                        <p>{bookingData?.endTime ? formatTimestampToDate(bookingData?.endTime) : 0}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Start Station</label>
-                        <p>{bookingData?.startingStation.name}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>End Point</label>
-                        <p>{bookingData?.endingStation?.name || 'NA'}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Total Distance</label>
-                        <p>{bookingData?.totalDistance}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Green Points</label>
-                        <p>{bookingData?.greenPoints}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Carbon Saved</label>
-                        <p>{bookingData?.carbonSaved}</p>
-                    </div>
-                    <div className="col-6">
-                        <label>Start Address</label>
-                        <p>{bookingData?.startingStation.address.address}</p>
-                    </div>
-                    <div className="col-6">
-                        <label>End Address</label>
-                        <p>{bookingData?.endingStation?.address.address || 'NA'}</p>
-                    </div>
-                    <div className="col-6">
-                        <label>Price</label>
-                        <p>{bookingData?.price}</p>
-                    </div>
-                </div>
-                <div className="w-full">
-                    <Button className="font-bold mx-auto" onClick={downloadInvoice}>
-                        Download Invoice
-                    </Button>
-                </div>
-            </Dialog>
-            <Dialog header="Invoice" visible={previewPlan} onHide={() => setPreviewPlan(false)} className="w-[50vw]" style={{ width: '50svw' }}>
-                <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
-                    <div className="field col-6">
-                        <label>Subscription Name</label>
-                        <p>{planData?.plan?.name}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Name</label>
-                        <p>{userData?.name}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Subscription City</label>
-                        <p>{planData?.plan?.city}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Subscription Validity</label>
-                        <p>{planData?.plan?.validity}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Subscription Price</label>
-                        <p>{planData?.plan?.price}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Start Time</label>
-                        <p>{planData?.createdTime}</p>
-                    </div>
-                </div>
+            )}
 
-                <div className="w-full">
-                    <Button className="font-bold mx-auto" onClick={downloadInvoice}>
-                        Download Invoice
-                    </Button>
-                </div>
-            </Dialog>
+            {isAccessible === 'Edit' && (
+                <>
+                    <Dialog header="Invoice" visible={preview} onHide={() => setPreview(false)} className="w-[50vw]" style={{ width: '50svw' }}>
+                        <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
+                            <div className="field col-6">
+                                <label>Booking ID</label>
+                                <p>{bookingData?.id}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Name</label>
+                                <p>{bookingData?.profile?.name}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Start Time</label>
+                                <p>{formatTimestampToDate(bookingData?.startTime)}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>End Time</label>
+                                <p>{bookingData?.endTime ? formatTimestampToDate(bookingData?.endTime) : 0}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Start Station</label>
+                                <p>{bookingData?.startingStation.name}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>End Point</label>
+                                <p>{bookingData?.endingStation?.name || 'NA'}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Total Distance</label>
+                                <p>{bookingData?.totalDistance}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Green Points</label>
+                                <p>{bookingData?.greenPoints}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Carbon Saved</label>
+                                <p>{bookingData?.carbonSaved}</p>
+                            </div>
+                            <div className="col-6">
+                                <label>Start Address</label>
+                                <p>{bookingData?.startingStation.address.address}</p>
+                            </div>
+                            <div className="col-6">
+                                <label>End Address</label>
+                                <p>{bookingData?.endingStation?.address.address || 'NA'}</p>
+                            </div>
+                            <div className="col-6">
+                                <label>Price</label>
+                                <p>{bookingData?.price}</p>
+                            </div>
+                        </div>
+                        <div className="w-full">
+                            <Button className="font-bold mx-auto" onClick={downloadInvoice}>
+                                Download Invoice
+                            </Button>
+                        </div>
+                    </Dialog>
+                    <Dialog header="Invoice" visible={previewPlan} onHide={() => setPreviewPlan(false)} className="w-[50vw]" style={{ width: '50svw' }}>
+                        <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
+                            <div className="field col-6">
+                                <label>Subscription Name</label>
+                                <p>{planData?.plan?.name}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Name</label>
+                                <p>{userData?.name}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Subscription City</label>
+                                <p>{planData?.plan?.city}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Subscription Validity</label>
+                                <p>{planData?.plan?.validity}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Subscription Price</label>
+                                <p>{planData?.plan?.price}</p>
+                            </div>
+                            <div className="field col-6">
+                                <label>Start Time</label>
+                                <p>{planData?.createdTime}</p>
+                            </div>
+                        </div>
+
+                        <div className="w-full">
+                            <Button className="font-bold mx-auto" onClick={downloadInvoice}>
+                                Download Invoice
+                            </Button>
+                        </div>
+                    </Dialog>
+                </>
+            )}
         </div>
     );
 };

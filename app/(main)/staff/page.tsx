@@ -12,7 +12,7 @@ import { SelectButton } from 'primereact/selectbutton';
 import './plan.css';
 import { Calendar } from 'primereact/calendar';
 import { FileUpload } from 'primereact/fileupload';
-import { getCity } from '@/app/api/services';
+import { getCity, getUserID } from '@/app/api/services';
 import { storage } from '@/app/api/common';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { Image } from 'primereact/image';
@@ -106,6 +106,7 @@ const Staff = () => {
         staffShiftStartTime: new Date(),
         staffShiftEndTime: new Date()
     });
+    const userId = getUserID();
 
     const handleChange = (name: keyof UserFormData, value: any) => {
         console.log(name, value);
@@ -187,11 +188,13 @@ const Staff = () => {
         );
     };
     const accessTemplate = (rowData: any) => {
+        debugger
         return (
             <>
                 {rowData.access && (
                     <Button
                         className="p-button-text"
+                        disabled={rowData.id === userId}
                         onClick={() => {
                             setSelectedId(rowData.id);
                             const access: AccessOptions = {

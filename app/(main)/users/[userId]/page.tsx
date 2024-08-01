@@ -101,6 +101,7 @@ const Page = (params: any) => {
         { key: 'bookingId', label: 'Booking ID', _props: { scope: 'col' } },
         { key: 'createdTime', label: 'Created Time', _props: { scope: 'col' } }
     ];
+
     const columnsPlan = [
         { key: 'id', label: 'Id', _props: { scope: 'col' }, body: idPlanTemplate },
         { key: 'usedMoney', label: 'Used', _props: { scope: 'col' } },
@@ -275,19 +276,19 @@ const Page = (params: any) => {
                 <div className="col-12">
                     <div className="card">
                         <h2>User Plan Details</h2>
-                        <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsPlan} items={plans} loading1={loading1} />
+                        <CustomTable tableName="userPlan" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsPlan} items={plans} loading1={loading1} />
                     </div>
                 </div>
                 <div className="col-12">
                     <div className="card">
                         <h2>Wallet Details</h2>
-                        <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={userWalletData} loading1={loading1} />
+                        <CustomTable tableName="Wallet" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columns} items={userWalletData} loading1={loading1} />
                     </div>
                 </div>
                 <div className="col-12">
                     <div className="card">
                         <h2>Booking Details</h2>
-                        <CustomTable mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsBooking} items={bookings} loading1={loading1} />
+                        <CustomTable tableName="Booking" mapNavigatePath="/users" editMode={undefined} columns2={[]} columns={columnsBooking} items={bookings} loading1={loading1} />
                     </div>
                 </div>
             </div>

@@ -1,19 +1,19 @@
 'use client';
-import { BreadCrumb } from "primereact/breadcrumb";
-import { useEffect, useState } from "react";
-import CustomTable from "../../components/table";
-import { getPlans, getVehicleTypes, setPlan, updatePlan } from "@/app/api/iotBikes";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { InputTextarea } from "primereact/inputtextarea";
-import { InputNumber, InputNumberValueChangeEvent } from "primereact/inputnumber";
-import { Calendar } from "primereact/calendar";
-import { InputSwitch } from "primereact/inputswitch";
-import "./plan.css";
-import { ColumnEditorOptions, ColumnEvent } from "primereact/column";
-import { Dropdown } from "primereact/dropdown";
-import { getCity } from "@/app/api/services";
+import { BreadCrumb } from 'primereact/breadcrumb';
+import { useEffect, useState } from 'react';
+import CustomTable from '../../components/table';
+import { getPlans, getVehicleTypes, setPlan, updatePlan } from '@/app/api/iotBikes';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
+import { Calendar } from 'primereact/calendar';
+import { InputSwitch } from 'primereact/inputswitch';
+import './plan.css';
+import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
+import { Dropdown } from 'primereact/dropdown';
+import { getCity } from '@/app/api/services';
 interface ProductFormData {
     city: string;
     chargerType: string;
@@ -24,8 +24,7 @@ interface ProductFormData {
 }
 
 const Plan = () => {
-
-    const [items, setItems] = useState<any>([])
+    const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
     const [vehicleType, setVehicleType] = useState<any>([]);
@@ -37,20 +36,20 @@ const Plan = () => {
         city: '',
         chargerType: '',
         vehicleType: '',
-        type: "charging",
+        type: 'charging',
         price: 0,
-        isActive: true,
+        isActive: true
     });
 
     const handleChange = (name: keyof ProductFormData, value: any) => {
-        debugger
+        debugger;
         if (name === 'city') {
-            setSelectedCity(value)
-            value = value.code
+            setSelectedCity(value);
+            value = value.code;
         }
         if (name === 'vehicleType') {
-            setSelectedVehicleType(value)
-            value = value.code
+            setSelectedVehicleType(value);
+            value = value.code;
         }
         setFormData({ ...formData, [name]: value });
     };
@@ -59,36 +58,39 @@ const Plan = () => {
         e.preventDefault();
         // Send formData to your backend for processing
         console.log(formData);
-        const response = await setPlan(formData)
+        const response = await setPlan(formData);
         if (response.success && response.data) {
-            setShowDialog(false)
-            fetchData()
+            setShowDialog(false);
+            fetchData();
         } else {
-            console.log('Failed')
+            console.log('Failed');
         }
     };
     const changePlanActive = async (id: string, status: boolean) => {
         const body: any = {
             isActive: status
-        }
-        const response = await updatePlan(body, id)
+        };
+        const response = await updatePlan(body, id);
         if (response.success) {
-            fetchData()
+            fetchData();
         }
-    }
+    };
 
     const activeTemplate = (rowData: any) => {
-        return <InputSwitch checked={rowData.isActive} onClick={() => {
-            changePlanActive(rowData.id, !rowData.isActive)
-        }
-        } />;
-    }
+        return (
+            <InputSwitch
+                checked={rowData.isActive}
+                onClick={() => {
+                    changePlanActive(rowData.id, !rowData.isActive);
+                }}
+            />
+        );
+    };
     const cellEditor = (options: ColumnEditorOptions) => {
         return textEditor(options);
     };
     const cellNumberEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} mode="currency" currency="INR" locale="en-IN" onKeyDown={(e) => e.stopPropagation()} />;
-
     };
     const textEditor = (options: ColumnEditorOptions) => {
         return <InputText type="text" value={options.value} onChange={(e: React.ChangeEvent<HTMLInputElement>) => options?.editorCallback && options.editorCallback(e.target.value)} onKeyDown={(e) => e.stopPropagation()} />;
@@ -97,64 +99,63 @@ const Plan = () => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
             [field]: newValue
-        }
-        const response = await updatePlan(body, rowData.id)
+        };
+        const response = await updatePlan(body, rowData.id);
         if (response.success) {
-            fetchData()
+            fetchData();
         }
     };
 
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
         { key: 'city', label: 'City', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
-        { key: "chargerType", label: "Charger Type", _props: { scope: "col" } },
+        { key: 'chargerType', label: 'Charger Type', _props: { scope: 'col' } },
         { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'price', label: 'Price', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
-    ]
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } }
+    ];
 
     useEffect(() => {
-
         fetchData();
         getCityD();
         getVehicleTypesD();
         return () => {
-            setItems([])
-        }
-    }, [])
+            setItems([]);
+        };
+    }, []);
     const getCityD = async () => {
-        let response = await getCity()
+        let response = await getCity();
         if (response.success) {
             if (response.data) {
-                const data: any[] = []
+                const data: any[] = [];
                 for (let i = 0; i < response.data.length; i++) {
-                    data.push({ name: response.data[i].name, code: response.data[i].name })
+                    data.push({ name: response.data[i].name, code: response.data[i].name });
                 }
-                setCity(() => data)
+                setCity(() => data);
             }
         }
-    }
+    };
     const getVehicleTypesD = async () => {
-        let response = await getVehicleTypes()
+        let response = await getVehicleTypes();
         if (response.success) {
             if (response.data) {
-                const data: any[] = []
+                const data: any[] = [];
                 for (let i = 0; i < response.data.length; i++) {
-                    data.push({ name: response.data[i].name, code: response.data[i].name })
+                    data.push({ name: response.data[i].name, code: response.data[i].name });
                 }
-                setVehicleType(() => data)
+                setVehicleType(() => data);
             }
         }
-    }
+    };
     const fetchData = async () => {
-        let response = await getPlans("charging")
+        let response = await getPlans('charging');
         if (response.success) {
             if (response.data) {
-                setItems(() => response.data)
+                setItems(() => response.data);
             }
         }
-        setLoading1(false)
-    }
+        setLoading1(false);
+    };
 
     return (
         <>
@@ -163,21 +164,19 @@ const Plan = () => {
                     <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
                 <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: "0px" }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: "0px" }} onClick={() => setShowDialog(true)} />
+                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                        <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
-
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={"cell"} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        <CustomTable tableName="chargings" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
                     </div>
                 </div>
             </div>
             <Dialog header="Add Plan" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
                 <div className="p-8">
                     <form onSubmit={handleSubmit} className="p-fluid grid">
-
                         <div className="field col-12 lg:col-6">
                             <label htmlFor="name">City</label>
                             <Dropdown value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
@@ -204,7 +203,7 @@ const Plan = () => {
                 </div>
             </Dialog>
         </>
-    )
-}
+    );
+};
 
 export default Plan;

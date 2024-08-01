@@ -5,6 +5,8 @@ import { getCity } from '@/app/api/services';
 import { getBikes, getStations } from '@/app/api/iotBikes';
 import { Dropdown } from 'primereact/dropdown';
 import Link from 'next/link';
+import bike from '@/public/demo/images/avatar/bike.png';
+import station from '@/public/demo/images/avatar/station.svg';
 
 const containerStyle = {
     width: '100%',
@@ -46,7 +48,7 @@ type stationType = {
         name: string;
         phone: string;
         email: string;
-    }
+    };
     stock: number;
     public: boolean;
     status: string;
@@ -257,9 +259,11 @@ const MapComponent = () => {
                                     station.servicesAvailable.join(', ') +
                                     '\nSupervisor Name: ' +
                                     station.supervisor.name
-
-
                                 }
+                                // icon={{
+                                //     scaledSize: new window.google.maps.Size(25, 25),
+                                //     url: 'https://www.svgrepo.com/download/218900/gas-station-petrol.svg'
+                                // }}
                             />
                         ))}
                         {bikes.map((bike) => {
@@ -270,19 +274,18 @@ const MapComponent = () => {
                                         lat: bike.location.coordinates[1],
                                         lng: bike.location.coordinates[0]
                                     }}
-                                    title={"id: " + bike.deviceId + "\nName: " + bike.name + "\nBattery: " + bike.batteryLevel + "\nSpeed: " + bike.speed + "\nTotal Distance: " + bike.totalDistance}
+                                    title={'id: ' + bike.deviceId + '\nName: ' + bike.name + '\nBattery: ' + bike.batteryLevel + '\nSpeed: ' + bike.speed + '\nTotal Distance: ' + bike.totalDistance}
                                     icon={{
-                                        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                                        scaledSize: new window.google.maps.Size(25, 25),
+                                        url: 'https://www.svgrepo.com/show/481000/bike.svg'
+                                        // iconAnchor: new GPoint(5, 34),
+                                        // infoWindowAnchor: new GPoint(5, 2)
                                     }}
-
                                     onClick={() => {
-
                                         // Optional: If you have any actions to perform before navigation
                                         window.location.href = `/vehicleOnboarding/${bike.deviceId}`;
-
                                     }}
-                                >
-                                </Marker>
+                                ></Marker>
                             );
                         })}
                     </GoogleMap>

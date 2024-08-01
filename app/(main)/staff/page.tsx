@@ -368,7 +368,7 @@ const Staff = () => {
                     <Button label="Add Staff" onClick={() => setShowDialog(true)} />
                 </div>
                 <div className="col-12">
-                    <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                    <CustomTable tableName="Staff" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
                 </div>
             </div>
             <Dialog header="Add Staff" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>

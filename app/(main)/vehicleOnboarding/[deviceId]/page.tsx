@@ -19,7 +19,9 @@ const VehicleData = (params: any) => {
         setLoading1(true);
         try {
             const response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/data/${deviceId}`);
+            // debugger;
             const data = await response.json();
+            console.log(data);
             if (data.data) {
                 setVehicleDetails(data.data);
             } else {
@@ -186,7 +188,7 @@ const VehicleData = (params: any) => {
 
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={vehicleDetails} loading1={loading1} />{' '}
+                        <CustomTable tableName='Bikes' editMode={undefined} columns2={[]} columns={columns} items={vehicleDetails} loading1={loading1} />{' '}
                     </div>
                 </div>
             </div>

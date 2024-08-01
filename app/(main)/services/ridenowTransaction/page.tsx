@@ -115,7 +115,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
                 <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
             </div>
             <div className="col-12">
-                <CustomTable mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                <CustomTable tableName='rides' mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
             </div>
             <Dialog header="Invoice" visible={preview} onHide={() => setPreview(false)} className="w-[50vw]" style={{ width: '50svw' }}>
                 <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>

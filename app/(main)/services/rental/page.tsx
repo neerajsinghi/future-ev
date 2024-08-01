@@ -171,7 +171,7 @@ const Plan = () => {
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        <CustomTable tableName="rental" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
                     </div>
                 </div>
             </div>

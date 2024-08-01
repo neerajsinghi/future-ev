@@ -76,7 +76,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
                 ]} home={{ icon: 'pi pi-home', url: '/' }} />
             </div>
             <div className="col-12">
-                <CustomTable editMode={undefined}
+                <CustomTable tableName="eCarBooking" editMode={undefined}
                     columns2={[]}
                     columns={columns}
                     items={items}

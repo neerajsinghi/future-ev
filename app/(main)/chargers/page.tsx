@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { BreadCrumb } from "primereact/breadcrumb";
-import { Button } from "primereact/button";
-import { useEffect, useState } from "react";
-import CustomTable from "../components/table";
-import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
-import "./plan.css";
-import { InputTextarea } from "primereact/inputtextarea";
-import { InputNumber } from "primereact/inputnumber";
-import { getChargers } from "@/app/api/iotBikes";
+import { BreadCrumb } from 'primereact/breadcrumb';
+import { Button } from 'primereact/button';
+import { useEffect, useState } from 'react';
+import CustomTable from '../components/table';
+import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import './plan.css';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { InputNumber } from 'primereact/inputnumber';
+import { getChargers } from '@/app/api/iotBikes';
 
 interface ChargerFormData {
     name: string;
@@ -34,10 +34,10 @@ interface Address {
 }
 interface Location {
     type: string;
-    coordinates: number[];  // [longitude, latitude]
+    coordinates: number[]; // [longitude, latitude]
 }
 const Chargers = () => {
-    const [items, setItems] = useState<any>([])
+    const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
     const [formData, setFormData] = useState<ChargerFormData>({
@@ -67,12 +67,12 @@ const Chargers = () => {
         if (name.startsWith('address.')) {
             setFormData({
                 ...formData,
-                address: { ...formData.address, [name.substring(8)]: value },
+                address: { ...formData.address, [name.substring(8)]: value }
             });
         } else if (name.startsWith('location.')) {
             setFormData({
                 ...formData,
-                location: { ...formData.location, [name.substring(9)]: value },
+                location: { ...formData.location, [name.substring(9)]: value }
             });
         } else {
             setFormData({ ...formData, [name]: value });
@@ -92,32 +92,30 @@ const Chargers = () => {
         // }
     };
     const fetchData = async () => {
-        const response = await getChargers()
+        const response = await getChargers();
         if (response.success && response.data) {
-            setItems(response.data)
+            setItems(response.data);
         }
-        setLoading1(false)
-    }
+        setLoading1(false);
+    };
     useEffect(() => {
-        fetchData()
-    }, [])
+        fetchData();
+    }, []);
     const statusAddressTemplate = (rowData: any) => {
-
         return <div>{rowData.address.address}</div>;
-    }
+    };
     const statusCityTemplate = (rowData: any) => {
-
         return <div>{rowData.address.city}</div>;
-    }
+    };
     const statusLongTemplate = (rowData: any) => {
         return <div>{rowData.location.coordinates[0]}</div>;
-    }
+    };
     const statusLatTemplate = (rowData: any) => {
         return <div>{rowData.location.coordinates[1]}</div>;
-    }
+    };
     const statusStockTemplate = (rowData: any) => {
         return <div>{rowData.stock ? rowData.stock : 0}</div>;
-    }
+    };
     const columns = [
         { key: 'name', label: 'Name', _props: { scope: 'col' } },
         { key: 'shortName', label: 'Short Name', _props: { scope: 'col' } },
@@ -130,8 +128,8 @@ const Chargers = () => {
         { key: 'supervisorID', label: 'Supervisor ID', _props: { scope: 'col' } },
         { key: 'stock', label: 'Stock', _props: { scope: 'col' }, body: statusStockTemplate },
         { key: 'public', label: 'Public', _props: { scope: 'col' } },
-        { key: 'status', label: 'Status', _props: { scope: 'col' } },
-    ]
+        { key: 'status', label: 'Status', _props: { scope: 'col' } }
+    ];
 
     return (
         <>
@@ -140,15 +138,13 @@ const Chargers = () => {
                     <BreadCrumb model={[{ label: 'Charger' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
                 <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: "0px" }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Charger" style={{ marginBottom: "0px" }} onClick={() => setShowDialog(true)} />
+                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                        <Button type="button" icon="pi pi-plus-circle" label="Charger" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                     </div>
-
                 </div>
                 <div className="col-12 m-10">
                     <div className="card">
-                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
-
+                        <CustomTable tableName="chargers" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
                     </div>
                 </div>
             </div>
@@ -169,7 +165,9 @@ const Chargers = () => {
 
                     {/* Address Fields */}
                     <div className="field col-12"></div>
-                    <div className="field col-12"><h4>Address</h4></div>
+                    <div className="field col-12">
+                        <h4>Address</h4>
+                    </div>
                     <div className="field col-12"></div>
                     <div className="field col-12 md:col-6">
                         <label htmlFor="address.address">Address Line</label>
@@ -199,7 +197,9 @@ const Chargers = () => {
                     {/* Location Fields */}
                     <div className="field col-12"></div>
 
-                    <div className="field col-12"><h4>Location</h4></div>
+                    <div className="field col-12">
+                        <h4>Location</h4>
+                    </div>
                     <div className="field col-12"></div>
 
                     <div className="field col-12 md:col-6">
@@ -240,6 +240,6 @@ const Chargers = () => {
             </Dialog>
         </>
     );
-}
+};
 
 export default Chargers;

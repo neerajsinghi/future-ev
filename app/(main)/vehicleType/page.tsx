@@ -77,7 +77,7 @@ const VehicleTypePage = () => {
                     </div>
                 </div>
                 <div className="p-col-12">
-                    <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                    <CustomTable tableName="vehicleType" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
                 </div>
             </div>
             <Dialog header="Add Vehicle Type" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>

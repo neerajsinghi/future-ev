@@ -56,7 +56,10 @@ const Booking = () => {
     }
     const columns: any[] = [
         {
-            key: 'id', label: 'Id', _props: { scope: 'col' }, body: (rowData: any) => <div onClick={() => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)} >{rowData.id}</div>,
+            key: 'id',
+            label: 'Id',
+            _props: { scope: 'col' },
+            body: (rowData: any) => <div onClick={() => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)}>{rowData.id}</div>
         },
         { key: 'profileId', label: 'ProfileId', _props: { scope: 'col' } },
         { key: 'deviceId', label: 'DeviceId', _props: { scope: 'col' } },
@@ -75,14 +78,11 @@ const Booking = () => {
         { key: 'startingStationId', label: 'StartingStationId', _props: { scope: 'col' } },
         { key: 'endingStationId', label: 'EndingStationId', _props: { scope: 'col' } },
         { key: 'userId', label: 'EndingStationId', _props: { scope: 'col' } },
-        { key: 'carbonEmissionSaved', label: 'CarbonEmissionSaved', _props: { scope: 'col' } },
-
+        { key: 'carbonEmissionSaved', label: 'CarbonEmissionSaved', _props: { scope: 'col' } }
     ];
     const fetchData = async () => {
-        let response = await getBookingsWithPlanAndUser(planId ? planId : "", userId ? userId : "");
+        let response = await getBookingsWithPlanAndUser(planId ? planId : '', userId ? userId : '');
         if (response.success && response.data) {
-
-
             setItems(response.data);
         }
         setLoading1(false);
@@ -93,9 +93,8 @@ const Booking = () => {
                 <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
             </div>
             <div className="col-12">
-                <CustomTable mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                <CustomTable tableName="bookings" mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
             </div>
-
         </div>
     );
 };

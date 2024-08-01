@@ -189,9 +189,22 @@ const Stations = () => {
             }
         }
     };
+    const getUserD = async () => {
+        let response = await getUsers("admin@");
+        if (response.success) {
+            if (response.data) {
+                const data: any[] = [];
+                for (let i = 0; i < response.data.length; i++) {
+                    data.push({ code: response.data[i].name, ...response.data[i] });
+                }
+                setUsers(() => data);
+            }
+        }
+    };
 
     const fetchData = async () => {
         getCityD();
+        getUserD();
         let userIdL = userId ? userId : '';
         let stationIdL = stationId ? stationId : '';
         const response = await getStations(userIdL, stationIdL);

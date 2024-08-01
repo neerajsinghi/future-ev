@@ -184,7 +184,7 @@ const BikesStationed = () => {
 
     const cellEditor = (options: ColumnEditorOptions) => {
         return (
-            <Dropdown
+            <Dropdown filter
                 options={[
                     { name: 'Booked', code: 'booked' },
                     { name: 'Available', code: 'available' },
@@ -477,12 +477,12 @@ const BikesStationed = () => {
                 <form onSubmit={handleSubmit} className="p-fluid grid">
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="name">City</label>
-                        <Dropdown value={selectedCity} options={cities.map((city) => city.name)} onChange={(e) => handleChange('city', e.value)} placeholder="Select a City" />
+                        <Dropdown filter value={selectedCity} options={cities.map((city) => city.name)} onChange={(e) => handleChange('city', e.value)} placeholder="Select a City" />
                     </div>
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="VehicleTypeID">Vehicle Type ID</label>
-                        <Dropdown
+                        <Dropdown filter
                             id="VehicleTypeID"
                             // defaultValue="Normal"
                             // disabled
@@ -496,16 +496,16 @@ const BikesStationed = () => {
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="StationID">Station ID</label>
-                        <Dropdown id="StationID" options={station} value={selectedStation} onChange={(e) => handleChange('stationID', e.value)} optionLabel="name" placeholder="Select a Station" />
+                        <Dropdown filter id="StationID" options={station} value={selectedStation} onChange={(e) => handleChange('stationID', e.value)} optionLabel="name" placeholder="Select a Station" />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="DeviceID">Device ID</label>
-                        <Dropdown id="DeviceID" options={devices} value={selectedDevice} onChange={(e) => handleChange('deviceID', e.value)} optionLabel="name" placeholder="Select a Device" />
+                        <Dropdown filter id="DeviceID" options={devices} value={selectedDevice} onChange={(e) => handleChange('deviceID', e.value)} optionLabel="name" placeholder="Select a Device" />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="Status">Status</label>
 
-                        <Dropdown
+                        <Dropdown filter
                             id="Status"
                             options={[
                                 { name: 'Booked', code: 'booked' },

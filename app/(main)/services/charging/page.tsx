@@ -179,12 +179,12 @@ const Plan = () => {
                     <form onSubmit={handleSubmit} className="p-fluid grid">
                         <div className="field col-12 lg:col-6">
                             <label htmlFor="name">City</label>
-                            <Dropdown value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                            <Dropdown filter value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
                         </div>
 
                         <div className="field col-12 lg:col-6">
                             <label htmlFor="description">Vehicle Type</label>
-                            <Dropdown value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
+                            <Dropdown filter value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
                         </div>
                         <div className="field col-12 lg:col-6">
                             <label htmlFor="name">Charger Type</label>

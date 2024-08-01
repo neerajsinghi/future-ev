@@ -99,12 +99,12 @@ const RentalPlanForm = ({ city, vehicleType, setShowDialog, fetchData, type }: {
                 <div className="flex w-full gap-3">
                     <div className="field w-full">
                         <label htmlFor="name">City</label>
-                        <Dropdown value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                        <Dropdown filter value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
                     </div>
 
                     <div className="field w-full">
                         <label htmlFor="description">Vehicle Type</label>
-                        <Dropdown value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
+                        <Dropdown filter value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
                     </div>
                     <div className="field w-full">
                         <label htmlFor="validity">Refundable Deposit</label>

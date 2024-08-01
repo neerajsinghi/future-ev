@@ -252,7 +252,7 @@ const Users = () => {
     };
     const typeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
         return (
-            <Dropdown value={options.value} options={services} onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear />
+            <Dropdown filter value={options.value} options={services} onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear />
         );
     };
     const columns = [

@@ -188,7 +188,7 @@ const Notification = () => {
 
                         <div className="field">
                             <label htmlFor="category">Category</label>
-                            <Dropdown className="element" id="category" value={formData.category} options={categories} onChange={(e) => handleChange('category', e.value)} placeholder="Select Category" />
+                            <Dropdown filter className="element" id="category" value={formData.category} options={categories} onChange={(e) => handleChange('category', e.value)} placeholder="Select Category" />
                         </div>
                         {formData.category === 'city' && (
                             <div className="field">
@@ -200,7 +200,7 @@ const Notification = () => {
                             <div className="field">
                                 <label htmlFor="targetValue">Gender</label>
 
-                                <Dropdown
+                                <Dropdown filter
                                     className="element"
                                     id="category"
                                     value={formData.category}
@@ -234,7 +234,7 @@ const Notification = () => {
                         )}
                         <div className={!formData.category ? 'field field-full' : 'field'}>
                             <label htmlFor="Users">Users</label>
-                            <MultiSelect style={{ width: '100%' }} id="Users" value={selectedUser} options={users} onChange={(e) => setSelectedUser(e.value)} optionLabel="name" filter placeholder="Select Users" />
+                            <MultiSelect filter style={{ width: '100%' }} id="Users" value={selectedUser} options={users} onChange={(e) => setSelectedUser(e.value)} optionLabel="name" filter placeholder="Select Users" />
                         </div>
                         <div className="field field-full">
                             <label htmlFor="body">Body</label>

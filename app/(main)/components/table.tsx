@@ -169,7 +169,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
     };
     const typeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
         return (
-            <Dropdown value={options.value} options={statuses} onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear />
+            <Dropdown filter value={options.value} options={statuses} onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear />
         );
     };
 

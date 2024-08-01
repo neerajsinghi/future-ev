@@ -112,7 +112,7 @@ const Dashboard = () => {
                 <div className="grid  align-items-center">
                     <div className='col-12 md:col-1  align-items-center' style={{ marginRight: "30px" }}>
 
-                        <Dropdown
+                        <Dropdown filter
                             placeholder="Select City"
                             optionLabel="name"
                             optionValue="id"
@@ -124,7 +124,7 @@ const Dashboard = () => {
                         />
                     </div>
                     <div className='col-12 md:col-2  align-items-center'>
-                        {/* <Dropdown
+                        {/* <Dropdown filter
                             placeholder="Select Service"
                             optionLabel="name"
                             optionValue="id"

@@ -139,10 +139,10 @@ const Plan = () => {
     };
     const cellEditor = (options: ColumnEditorOptions) => {
         if (options.field === 'city') {
-            return <Dropdown value={{ name: options.value, code: options.value }} options={city} onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)} optionLabel="name" placeholder="Select a City" />;
+            return <Dropdown filter value={{ name: options.value, code: options.value }} options={city} onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)} optionLabel="name" placeholder="Select a City" />;
         } else if (options.field === 'vehicleType') {
             return (
-                <Dropdown value={{ name: options.value, code: options.value }} options={vehicleType} onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)} optionLabel="name" placeholder="Select a Vehicle Type" />
+                <Dropdown filter value={{ name: options.value, code: options.value }} options={vehicleType} onChange={(e) => options?.editorCallback && options.editorCallback(e.target.value.code)} optionLabel="name" placeholder="Select a Vehicle Type" />
             );
         }
     };
@@ -152,7 +152,7 @@ const Plan = () => {
     const cellMinEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} suffix=" min" onKeyDown={(e) => e.stopPropagation()} />;
     };
-    const textEditor = (options: ColumnEditorOptions) => {};
+    const textEditor = (options: ColumnEditorOptions) => { };
     const onCellEditComplete = async (e: ColumnEvent) => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
@@ -240,12 +240,12 @@ const Plan = () => {
                 <form onSubmit={handleSubmit} className="p-fluid grid">
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="name">City</label>
-                        <Dropdown value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                        <Dropdown filter value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
                     </div>
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="description">Vehicle Type</label>
-                        <Dropdown value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
+                        <Dropdown filter value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
                     </div>
                     <div className="field col-12">
                         {formData.price.map((price, index) => {

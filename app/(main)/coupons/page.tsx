@@ -201,17 +201,17 @@ const Coupon = () => {
                 <form onSubmit={handleSubmit} className="p-fluid grid">
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="serviceType">Service Type</label>
-                        <MultiSelect id="serviceType" value={formData.serviceType} placeholder="Select a Service Type" options={serviceType?.map((service: serviceTypes) => service.name)} onChange={(e) => handleChange('serviceType', e.value)} />
+                        <MultiSelect filter id="serviceType" value={formData.serviceType} placeholder="Select a Service Type" options={serviceType?.map((service: serviceTypes) => service.name)} onChange={(e) => handleChange('serviceType', e.value)} />
                     </div>
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="city">City</label>
-                        <MultiSelect id="city" value={formData.city} options={cities.map((city) => city.name)} onChange={(e) => handleChange('city', e.value)} placeholder="Select a City" />
+                        <MultiSelect filter id="city" value={formData.city} options={cities.map((city) => city.name)} onChange={(e) => handleChange('city', e.value)} placeholder="Select a City" />
                     </div>
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="vehicleType">Vehicle Type</label>
-                        <MultiSelect id="vehicleType" value={formData.vehicleType} options={vehicleTypes?.map((vehicle) => vehicle.name)} onChange={(e) => handleChange('vehicleType', e.value)} placeholder="Select a Vehicle Type" />
+                        <MultiSelect filter id="vehicleType" value={formData.vehicleType} options={vehicleTypes?.map((vehicle) => vehicle.name)} onChange={(e) => handleChange('vehicleType', e.value)} placeholder="Select a Vehicle Type" />
                     </div>
 
                     <div className="field col-12 lg:col-6">
@@ -221,7 +221,7 @@ const Coupon = () => {
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="couponType">Coupon Type</label>
-                        <Dropdown value={formData.couponType} options={['discount', 'freeRide']} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
+                        <Dropdown filter value={formData.couponType} options={['discount', 'freeRide']} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="minValue">Min Value</label>

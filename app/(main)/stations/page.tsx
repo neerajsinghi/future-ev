@@ -446,7 +446,7 @@ const Stations = () => {
                     {/* ... (other address fields - city, state) */}
                     <div className="field col-12 md:col-6">
                         <label htmlFor="address.city">City</label>
-                        <Dropdown
+                        <Dropdown filter
                             id="address.city"
                             value={selectedCity}
                             options={city}
@@ -500,7 +500,7 @@ const Stations = () => {
                     {/* ... (fields for supervisorID, stock, public, status) */}
                     <div className="field col-12 md:col-6">
                         <label htmlFor="supervisorID">Supervisor ID</label>
-                        <Dropdown id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" placeholder="Select a Supervisor" />
+                        <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" placeholder="Select a Supervisor" />
                     </div>
                     {/* ... (submit button) */}
                     <div className="field col-12 button-row w-full">

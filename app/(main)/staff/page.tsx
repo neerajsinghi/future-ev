@@ -391,7 +391,7 @@ const Staff = () => {
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="city">City</label>
-                        <Dropdown
+                        <Dropdown filter
                             value={selectedCity}
                             options={city}
                             onChange={(e) => {
@@ -440,7 +440,7 @@ const Staff = () => {
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="staffStatus">Staff Status</label>
-                        <Dropdown
+                        <Dropdown filter
                             options={[
                                 { name: 'On Duty', code: 'On Duty' },
                                 { name: 'Leave', code: 'Leave' },
@@ -473,7 +473,7 @@ const Staff = () => {
                     </div>
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="gender">Gender</label>
-                        <Dropdown
+                        <Dropdown filter
                             options={[
                                 { name: 'Male', code: 'male' },
                                 { name: 'Female', code: 'female' }
@@ -935,7 +935,7 @@ const Staff = () => {
                         <label htmlFor="staffStatus" style={{ marginRight: '40px' }}>
                             Staff Status{' '}
                         </label>
-                        <Dropdown
+                        <Dropdown filter
                             options={[
                                 { name: 'On Duty', code: 'On Duty' },
                                 { name: 'Leave', code: 'Leave' },

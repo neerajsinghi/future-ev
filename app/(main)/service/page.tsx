@@ -141,7 +141,7 @@ status
                     </div>
                     <div className="field col-12 md:col-6">
                         <label htmlFor="status">Status</label>
-                        <Dropdown
+                        <Dropdown filter
                             id="Status"
                             options={[
                                 { name: 'Active', code: 'Active' },
@@ -155,7 +155,7 @@ status
                     </div>
                     <div className="field col-12 md:col-6">
                         <label htmlFor="type">Type</label>
-                        <Dropdown
+                        <Dropdown filter
                             id="type"
                             options={[
                                 { name: 'eCar', code: 'eCar' },

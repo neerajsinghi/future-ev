@@ -204,7 +204,7 @@ const Chargers = () => {
 
                     <div className="field col-12 md:col-6">
                         <label htmlFor="location.type">Type</label>
-                        <Dropdown id="location.type" value={formData.location.type} options={['Point']} onChange={(e) => handleChange('location.type', e.value)} />
+                        <Dropdown filter id="location.type" value={formData.location.type} options={['Point']} onChange={(e) => handleChange('location.type', e.value)} />
                     </div>
                     {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
                     <div className="field col-12 md-6">

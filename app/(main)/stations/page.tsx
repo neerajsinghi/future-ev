@@ -140,6 +140,7 @@ const Stations = () => {
         const tempMap = map;
         if (map) {
             map.fitBounds(bounds);
+            map.setZoom(16);
             setMap(map);
         }
         setMarkers({

@@ -21,6 +21,7 @@ import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import { ColumnEditorOptions, ColumnEvent, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { StandaloneSearchBox } from '@react-google-maps/api';
+import { showToast } from '@/app/hooks/toast';
 
 /*
 Name
@@ -155,7 +156,7 @@ const Stations = () => {
 
     const toast = useRef<any>(null);
 
-    const showToast = (info: string, severity: 'info' | 'danger' | 'warning') => {
+    const showToastI = (info: string, severity: 'info' | 'danger' | 'warning') => {
         toast?.current?.show({ severity: 'danger', summary: info, detail: '' });
     };
 
@@ -214,7 +215,7 @@ const Stations = () => {
             setShowDialog(false);
             fetchData();
             // router.refresh();
-            showToast('Station Added', 'success');
+            showToast('Station Added Successfully', 'success');
         } else {
             console.log('Failed');
 

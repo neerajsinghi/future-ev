@@ -5,8 +5,6 @@ import { getCity } from '@/app/api/services';
 import { getBikes, getStations } from '@/app/api/iotBikes';
 import { Dropdown } from 'primereact/dropdown';
 import Link from 'next/link';
-import bike from '@/public/demo/images/avatar/bike.png';
-import station from '@/public/demo/images/avatar/station.svg';
 
 const containerStyle = {
     width: '100%',
@@ -48,7 +46,7 @@ type stationType = {
         name: string;
         phone: string;
         email: string;
-    };
+    }
     stock: number;
     public: boolean;
     status: string;
@@ -91,7 +89,7 @@ const MapComponent = () => {
     const [stations, setStations] = useState<stationType[]>([]);
     const [bikes, setBikes] = useState<bikeType[]>([]);
     const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 28.6139, lng: 77.209 });
-    const [zoom, setZoom] = useState<number>(11);
+    const [zoom, setZoom] = useState<number>(6);
     const dataLayerRef = useRef<any>(null);
 
     useEffect(() => {
@@ -164,7 +162,7 @@ const MapComponent = () => {
                 <div className="grid">
                     <div className="col-12 lg:col-10 "> </div>
 
-                    <Dropdown
+                    <Dropdown filter
                         placeholder="Select City"
                         optionLabel="name"
                         optionValue="id"
@@ -240,10 +238,6 @@ const MapComponent = () => {
                                     lat: station.location.coordinates[1],
                                     lng: station.location.coordinates[0]
                                 }}
-                                icon={{
-                                    scaledSize: new window.google.maps.Size(25, 25),
-                                    url: 'https://www.svgrepo.com/download/218900/gas-station-petrol.svg'
-                                }}
                                 onClick={() => {
                                     // Optional: If you have any actions to perform before navigation
                                     window.location.href = `/stations?stationId=${station.id}`;
@@ -263,6 +257,8 @@ const MapComponent = () => {
                                     station.servicesAvailable.join(', ') +
                                     '\nSupervisor Name: ' +
                                     station.supervisor.name
+
+
                                 }
                             />
                         ))}
@@ -271,19 +267,20 @@ const MapComponent = () => {
                                 <Marker
                                     key={bike.deviceId}
                                     position={{
-                                        lat: bike.location.coordinates[1], // Adjust the offset range as needed
-                                        lng: bike.location.coordinates[0] // Adjust the offset range as needed
+                                        lat: bike.location.coordinates[1],
+                                        lng: bike.location.coordinates[0]
                                     }}
-                                    title={'id: ' + bike.deviceId + '\nName: ' + bike.name + '\nBattery: ' + bike.batteryLevel + '\nSpeed: ' + bike.speed + '\nTotal Distance: ' + bike.totalDistance}
+                                    title={"id: " + bike.deviceId + "\nName: " + bike.name + "\nBattery: " + bike.batteryLevel + "\nSpeed: " + bike.speed + "\nTotal Distance: " + bike.totalDistance}
                                     icon={{
-                                        scaledSize: new window.google.maps.Size(25, 25),
-                                        url: 'https://futev.s3.ap-south-1.amazonaws.com/car-front-svgrepo-com+(1).svg'
+                                        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                                        // Remove the infoWindowAnchor property
                                     }}
                                     onClick={() => {
                                         // Optional: If you have any actions to perform before navigation
                                         window.location.href = `/vehicleOnboarding/${bike.deviceId}`;
                                     }}
-                                ></Marker>
+                                >
+                                </Marker>
                             );
                         })}
                     </GoogleMap>

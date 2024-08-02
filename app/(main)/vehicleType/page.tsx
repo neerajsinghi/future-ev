@@ -9,6 +9,7 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import './plan.css';
+import { showToast } from '@/app/hooks/toast';
 interface VehicleTypeFormData {
     name: string;
     price: number;
@@ -36,8 +37,10 @@ const VehicleTypePage = () => {
         if (response.success && response.data) {
             setShowDialog(false);
             fetchData();
+            showToast(response.message || 'added Veicle Type', 'success');
         } else {
             console.log('Failed');
+            showToast(response.message || 'Failed To Add Veicle Type', 'error');
         }
     };
     const columns = [

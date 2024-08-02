@@ -16,6 +16,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { deletePlan, getCity } from '@/app/api/services';
 import RentalPlanForm from '../component/rentalPlan';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { showToast } from '@/app/hooks/toast';
 interface ProductFormData {
     city: string;
     vehicleType: string;
@@ -113,22 +114,35 @@ const Plan = () => {
         { key: 'isActive', label: 'Active', _props: { scope: 'col' }, body: activeTemplate },
         { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
         {
-            key: 'action', label: 'Action', _props: { scope: 'col' }, body: (rowData: any) => {
-                return <Button type="button" icon="pi pi-trash" onClick={() => {
-                    setSelectedUser(rowData.id);
-                    setShowDeleteDialog(true);
-                }}></Button>
+            key: 'action',
+            label: 'Action',
+            _props: { scope: 'col' },
+            body: (rowData: any) => {
+                return (
+                    <Button
+                        type="button"
+                        icon="pi pi-trash"
+                        onClick={() => {
+                            setSelectedUser(rowData.id);
+                            setShowDeleteDialog(true);
+                        }}
+                    ></Button>
+                );
             }
         }
     ];
     const deletePlanD = async () => {
-        debugger
+        // debugger
         const response = await deletePlan(selectedUser);
         if (response.success) {
             fetchData();
             setShowDeleteDialog(false);
+
+            showToast(response.message || 'Deleted Plan', 'success');
+        } else {
+            showToast(response.message || 'Failed To Deleted Plan', 'error');
         }
-    }
+    };
 
     useEffect(() => {
         fetchData();
@@ -202,24 +216,30 @@ const Plan = () => {
                     <RentalPlanForm city={city} vehicleType={vehicleType} fetchData={fetchData} setShowDialog={setShowDialog} type={'rental'} />
                 </Dialog>
             )}
-            {
-                showDeleteDialog && (
-                    <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
-                        <div className="grid">
-                            <div className="col-12">
-                                <h2>Are you sure you want to delete this Plan?</h2>
-                            </div>
-                            <div className="col-12">
-                                <Button label="Yes" onClick={() => {
-                                    deletePlanD();
-                                }} />
-                                <Button label="No" onClick={() => {
-                                    setShowDeleteDialog(false);
-                                }} />
-                            </div>
+            {showDeleteDialog && (
+                <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                    <div className="grid">
+                        <div className="col-12 text-center">
+                            <h2>Are you sure you want to delete this Plan?</h2>
                         </div>
-                    </Dialog>
-                )}
+                        <div className="button-row col-12 gap-3 center-center">
+                            <Button
+                                label="Yes"
+                                style={{ background: '#ff3333' }}
+                                onClick={() => {
+                                    deletePlanD();
+                                }}
+                            />
+                            <Button
+                                label="No"
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
+            )}
         </>
     );
 };

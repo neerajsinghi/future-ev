@@ -21,6 +21,7 @@ import { InputSwitch } from 'primereact/inputswitch';
 import Link from 'next/link';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { showToast } from '@/app/hooks/toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -65,6 +66,9 @@ const BikesStationed = () => {
     const [selectedVehicleType, setSelectedVehicleType] = useState<any>('Normal');
     const [cityBasedVehicleType, setCityBasedVehicleType] = useState<any[]>([]);
     const [selectedDevice, setSelectedDevice] = useState<any>(null);
+    const [selectedVehicle, setSelectedVehicle] = useState<any>();
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
     const [selectedStatus, setSelectedStatus] = useState<any>(null);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -116,6 +120,7 @@ const BikesStationed = () => {
             let response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/immobilize/${rowData.deviceId}`);
             let data = await response.json();
             if (data.status) {
+                showToast(data.message || 'Immobilised', 'success');
                 router.refresh();
             }
             return data;
@@ -165,6 +170,7 @@ const BikesStationed = () => {
         document.body.appendChild(anchor);
         anchor.click();
         document.body.removeChild(anchor);
+        showToast('QR Downloaded', 'success');
     };
 
     const qrCodeTemplate = (rowData: any) => {
@@ -184,7 +190,8 @@ const BikesStationed = () => {
 
     const cellEditor = (options: ColumnEditorOptions) => {
         return (
-            <Dropdown filter
+            <Dropdown
+                filter
                 options={[
                     { name: 'Booked', code: 'booked' },
                     { name: 'Available', code: 'available' },
@@ -223,7 +230,24 @@ const BikesStationed = () => {
         { key: 'deviceData.type', label: 'Type', _props: { scope: 'col' }, body: statusDeviceTypeTemplate, filterField: 'deviceData.type' },
         { key: 'deviceQR', label: 'Device QR', _props: { scope: 'col' }, body: qrCodeTemplate, filterField: 'deviceData.deviceId' },
         { key: 'station.name', label: 'Station Name', _props: { scope: 'col' }, body: statusStationNameTemplate, filterField: 'station.name' },
-        { key: 'status', label: 'Status', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete }
+        { key: 'status', label: 'Status', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
+        {
+            key: 'action',
+            label: 'Action',
+            _props: { scope: 'col' },
+            body: (rowData: any) => {
+                return (
+                    <Button
+                        type="button"
+                        icon="pi pi-trash"
+                        onClick={() => {
+                            setSelectedVehicle(rowData.id);
+                            setShowDeleteDialog(true);
+                        }}
+                    ></Button>
+                );
+            }
+        }
     ];
 
     const getAStations = async () => {
@@ -306,6 +330,16 @@ const BikesStationed = () => {
         }
         setLoading1(false);
     }, [searchParams]);
+
+    //  const deletePlanD = async () => {
+    //      debugger;
+    //      const response = await delete(selectedUser);
+    //      if (response.success) {
+    //          fetchData();
+    //          setShowDeleteDialog(false);
+    //      }
+    //  };
+
     useEffect(() => {
         fetchBikes();
         getAVehicleTypes();
@@ -366,8 +400,11 @@ const BikesStationed = () => {
         if (response.success && response.data) {
             setShowDialog(false);
             fetchBikes();
+
+            showToast(response.message || 'added Vehicle', 'success');
         } else {
             console.log('Failed');
+            showToast(response.message || 'Failed To Add Vehicle', 'success');
         }
     };
     const fetchBikes = async () => {
@@ -482,7 +519,8 @@ const BikesStationed = () => {
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="VehicleTypeID">Vehicle Type ID</label>
-                        <Dropdown filter
+                        <Dropdown
+                            filter
                             id="VehicleTypeID"
                             // defaultValue="Normal"
                             // disabled
@@ -505,7 +543,8 @@ const BikesStationed = () => {
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="Status">Status</label>
 
-                        <Dropdown filter
+                        <Dropdown
+                            filter
                             id="Status"
                             options={[
                                 { name: 'Booked', code: 'booked' },
@@ -587,6 +626,32 @@ const BikesStationed = () => {
                     </div>
                 </form>
             </Dialog>
+
+            {showDeleteDialog && (
+                <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                    <div className="grid">
+                        <div className="col-12 text-center">
+                            <h2>Are you sure you want to delete this Plan?</h2>
+                        </div>
+                        <div className="button-row col-12 gap-3 center-center">
+                            <Button
+                                label="Yes"
+                                style={{ background: '#ff3333' }}
+                                onClick={() => {
+                                    // deleteFaqD();
+                                    showToast('Under Development', 'info');
+                                }}
+                            />
+                            <Button
+                                label="No"
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
+            )}
         </>
     );
 };

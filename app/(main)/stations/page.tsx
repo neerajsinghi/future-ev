@@ -13,10 +13,8 @@ import { InputNumber } from 'primereact/inputnumber';
 import { setStation, getStations, getUsers, updateStation, getServices } from '@/app/api/iotBikes';
 import Link from 'next/link';
 import { Tag } from 'primereact/tag';
-
-import { Toast } from 'primereact/toast';
-
-import { getCity } from '@/app/api/services';
+import { Bounce, toast, ToastOptions } from 'react-toastify';
+import { deleteStation, getCity } from '@/app/api/services';
 import { MultiSelect } from 'primereact/multiselect';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
@@ -94,10 +92,12 @@ const Stations = () => {
     const [users, setUsers] = useState<any>([]);
     const [city, setCity] = useState<any>([]);
     const [selectedCity, setSelectedCity] = useState<any[]>([]);
+    const [selectedStation, setSelectedStation] = useState<any>();
     const [serviceType, setServiceType] = useState<serviceTypes[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [selectedServices, setSelectedServices] = useState<any[]>([]);
     const [markers, setMarkers] = useState<any>();
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 28.6139, lng: 77.209 });
     const [zoom, setZoom] = useState<number>(12);
     const isAccessible = useIsAccessible('stations');
@@ -214,9 +214,11 @@ const Stations = () => {
             setShowDialog(false);
             fetchData();
             // router.refresh();
+            showToast('Station Added', 'success');
         } else {
             console.log('Failed');
-            showToast(response.message, 'danger');
+
+            showToast('Error adding Station', 'error');
         }
     };
 
@@ -421,7 +423,24 @@ const Stations = () => {
         { key: 'group', label: 'Group', _props: { scope: 'col' } },
         { key: 'superVisorName', label: 'Supervisor Name', _props: { scope: 'col' } },
         { key: 'stock', label: 'Stock', _props: { scope: 'col' }, body: statusStockTemplate },
-        { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate }
+        { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate },
+        {
+            key: 'action',
+            label: 'Action',
+            _props: { scope: 'col' },
+            body: (rowData: any) => {
+                return (
+                    <Button
+                        type="button"
+                        icon="pi pi-trash"
+                        onClick={() => {
+                            setSelectedStation(rowData.id);
+                            setShowDeleteDialog(true);
+                        }}
+                    ></Button>
+                );
+            }
+        }
         // { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
     ];
     const onMapClick = (event: any) => {
@@ -435,14 +454,41 @@ const Stations = () => {
     };
 
     useEffect(() => {
-        console.log(items);
-    }, [selectedServices]);
+        if (items.length !== 0 && searchStation !== '') {
+            const location = items
+                .filter((station: any) => {
+                    const stationName = station.name?.toLowerCase();
+                    const search = searchStation.toLowerCase();
+                    return stationName?.includes(search) || stationName?.startsWith(search);
+                })
+                .map((station: any) => ({
+                    lng: station.location.coordinates[0],
+                    lat: station.location.coordinates[1]
+                }));
+
+            console.log(location[0]);
+            setCenter(location[0]);
+        } else {
+            setCenter({ lat: 28.6139, lng: 77.209 });
+        }
+    }, [searchStation]);
+
+    const deleteStationD = async () => {
+        const response = await deleteStation(selectedStation);
+        if (response.success) {
+            fetchData();
+            setShowDeleteDialog(false);
+            showToast(response.message || 'Deleted Station', 'success');
+        } else {
+            showToast(response.message || 'Failed To Delete Station', 'error');
+        }
+    };
+
     return (
         <>
             {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
             {(isAccessible === 'Edit' || isAccessible === 'View') && (
                 <div className="grid">
-                    <Toast ref={toast} />
                     <div className="col-12">
                         <BreadCrumb model={[{ label: 'Station' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                     </div>
@@ -585,7 +631,7 @@ const Stations = () => {
                         {/* ... (fields for supervisorID, stock, public, status) */}
                         <div className="field col-12 md:col-6">
                             <label htmlFor="supervisorID">Supervisor ID</label>
-                            <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" optionValue='id' placeholder="Select a Supervisor" />
+                            <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" optionValue="id" placeholder="Select a Supervisor" />
                         </div>
                         {/* ... (submit button) */}
                         <div className="field col-12 button-row w-full">

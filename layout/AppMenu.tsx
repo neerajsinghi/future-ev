@@ -66,8 +66,8 @@ const AppMenu = () => {
                         }
                     ]
                 },
-                { label: 'Staff', icon: 'pi pi-spin pi-fw pi-users', to: '/staff' },
-                { label: 'City', icon: 'pi pi-spin pi-fw pi-map', to: '/city' },
+                { label: 'Staff', icon: 'pi pi-fw pi-users', to: '/staff' },
+                { label: 'City', icon: 'pi pi-fw pi-map', to: '/city' },
                 { label: 'Stations', icon: 'pi pi-fw pi-map-marker', to: '/stations' },
 
                 // { label: 'Bikes', icon: 'pi pi-spin pi-fw pi-circle', to: '/bikes' },

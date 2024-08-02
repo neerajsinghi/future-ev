@@ -2,7 +2,7 @@
 
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
-import { use, useEffect, useRef, useState } from 'react';
+import { use, useCallback, useEffect, useRef, useState } from 'react';
 import CustomTable from '../components/table';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -22,6 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import { ColumnEditorOptions, ColumnEvent, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { StandaloneSearchBox } from '@react-google-maps/api';
 
 /*
 Name
@@ -74,10 +75,13 @@ interface serviceTypes {
     status: string;
     createdTime: string;
 }
-
+interface PlaceResultExtended extends google.maps.places.PlaceResult {
+    // Add any custom properties here if needed
+}
 const Stations = () => {
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
+        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc',
+        libraries: ['places']
     });
     const router = useRouter();
     const [searchStation, setSearchStation] = useState('');
@@ -120,6 +124,34 @@ const Stations = () => {
         status: 'available',
         servicesAvailable: []
     });
+    const [searchBox, setSearchBox] = useState<any>();
+    const [searchPredictions, setSearchPredictions] = useState<PlaceResultExtended[]>([]);
+
+    const onPlacesChanged = useCallback(() => {
+        if (searchBox) {
+            debugger
+            const places = searchBox.getPlaces() as PlaceResultExtended[];
+            setSearchPredictions(places); // Update the dropdown with predictions
+        }
+    }, [searchBox]);
+
+
+    const handlePlaceSelect = useCallback(
+        (place: PlaceResultExtended) => {
+            debugger
+            if (place.geometry && place.geometry.location) {
+                setMarkers(place.geometry.location);
+
+                const form = { ...formData };
+                form.location.coordinates = [place.geometry.location.lng(), place.geometry.location.lat()];
+                setFormData(form);
+            }
+
+            setSearchPredictions([]); // Clear predictions after selection
+        },
+        [formData, setFormData]
+    );
+    const libraries = ["places"];
 
     const toast = useRef<any>(null);
 
@@ -504,6 +536,8 @@ const Stations = () => {
                         {/* Location Fields */}
                         {selectedCity && (
                             <>
+
+
                                 <div className="col-12">
                                     <h4 className="col-12">Location</h4>
                                     <InputText onChange={(e) => setSearchStation(e.target.value)} className="col-12" placeholder="Search Station" id="Search" />
@@ -511,14 +545,33 @@ const Stations = () => {
                                 {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
                                 <div className="field col-12 md:col-12">
                                     {isLoaded && (
-                                        <GoogleMap
-                                            mapContainerStyle={{ width: '100%', height: '400px' }}
-                                            center={center} // Initial map center (adjust)
-                                            zoom={zoom}
-                                            onClick={onMapClick}
-                                        >
-                                            <MarkerF position={markers} />
-                                        </GoogleMap>
+                                        <>
+                                            <div>    <StandaloneSearchBox onLoad={(ref) => setSearchBox(ref)} onPlacesChanged={onPlacesChanged}>
+                                                <InputText type="text" placeholder="Search for places" />
+                                            </StandaloneSearchBox>
+                                                {/* Dropdown for location suggestions */}
+                                                {searchPredictions.length > 0 && (
+                                                    <Dropdown
+                                                        style={{ zIndex: 1000 }}
+                                                        value={searchPredictions[0]}
+                                                        options={searchPredictions}
+                                                        onChange={(e) => { handlePlaceSelect(e.value as PlaceResultExtended) }}
+                                                        optionLabel="formatted_address"
+                                                        placeholder="Select a Location"
+                                                    />
+                                                )}
+                                            </div>
+                                            <div>
+                                                <GoogleMap
+                                                    mapContainerStyle={{ width: '100%', height: '400px' }}
+                                                    center={center} // Initial map center (adjust)
+                                                    zoom={zoom}
+                                                    onClick={onMapClick}
+                                                >
+                                                    <MarkerF position={markers} />
+                                                </GoogleMap>
+                                            </div>
+                                        </>
                                     )}
                                 </div>
                             </>
@@ -539,7 +592,7 @@ const Stations = () => {
                             <Button label="Submit" type="submit" className="px-5 py-2 w-full" />
                         </div>
                     </form>
-                </Dialog>
+                </Dialog >
             )}
         </>
     );

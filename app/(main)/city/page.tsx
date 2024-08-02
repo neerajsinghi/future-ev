@@ -1,5 +1,5 @@
 'use client';
-import { getCity } from '@/app/api/services';
+import { getCity, setCity } from '@/app/api/services';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
@@ -12,6 +12,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import CustomTable from '../components/table';
 import { GoogleMap, useLoadScript, DrawingManager, Polygon } from '@react-google-maps/api';
 import './plan.css';
+import { Toast } from 'primereact/toast';
 
 interface LocationPolygon {
     type: string;
@@ -44,7 +45,7 @@ interface FormData {
 
 const City: React.FC = () => {
     const isAccessible = useIsAccessible('city');
-    const [city, setCity] = useState<CityData[]>([]);
+    const [city, setCities] = useState<CityData[]>([]);
     const [showDialog, setShowDialog] = useState(false);
     const [loading1, setLoading1] = useState(true);
     const [polygonPath, setPolygonPath] = useState<{ lat: number; lng: number }[]>([]);
@@ -71,19 +72,30 @@ const City: React.FC = () => {
                     ...item
                 }));
                 console.log(data);
-                setCity(data);
+                setCities(data);
                 setLoading1(false);
             }
         }
     };
 
-    const onSubmit: SubmitHandler<FormData> = (data) => {
+    const onSubmit: SubmitHandler<FormData> = async (data: any) => {
+        debugger
         const locationPolygon: LocationPolygon = {
             type: 'MultiPolygon',
             coordinates: [[polygonPath.map(({ lat, lng }) => [lng, lat])]]
         };
-
+        const body = { ...data, locationPolygon };
         console.log({ ...data, locationPolygon });
+        console.log(body);
+        const response = await setCity(body);
+        if (response.success) {
+            getCityD();
+            setShowDialog(false);
+            setPolygonPath([]);
+            reset();
+        } else {
+            console.log({ response })
+        }
         setShowDialog(false);
         setPolygonPath([]);
         reset();
@@ -118,8 +130,6 @@ const City: React.FC = () => {
         { key: 'id', label: 'ID', _props: { scope: 'col' } },
         { key: 'name', label: 'Name', _props: { scope: 'col' } },
         { key: 'active', label: 'Active', _props: { scope: 'col' } },
-        { key: 'numberOfStations', label: 'Number of Stations', _props: { scope: 'col' } },
-        { key: 'numberOfVehicles', label: 'Number of Vehicles', _props: { scope: 'col' } },
         { key: 'services', label: 'Services', _props: { scope: 'col' } },
         { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' } }
     ];
@@ -161,7 +171,7 @@ const City: React.FC = () => {
                                 control={control}
                                 defaultValue=""
                                 rules={{ required: 'Name is required' }}
-                                render={({ field }) => (
+                                render={({ field }: { field: any }) => (
                                     <>
                                         <InputText placeholder="Enter City Name" id="name" {...field} />
                                         {errors.name && <small className="p-error">{errors.name.message}</small>}
@@ -177,7 +187,7 @@ const City: React.FC = () => {
                                 control={control}
                                 defaultValue={[]}
                                 rules={{ required: 'At least one service is required' }}
-                                render={({ field }) => (
+                                render={({ field }: { field: any }) => (
                                     <>
                                         <MultiSelect
                                             value={field.value}

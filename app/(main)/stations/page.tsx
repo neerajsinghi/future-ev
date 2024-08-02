@@ -22,6 +22,7 @@ import { ColumnEditorOptions, ColumnEvent, ColumnFilterElementTemplateOptions } 
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { StandaloneSearchBox } from '@react-google-maps/api';
 import { showToast } from '@/app/hooks/toast';
+import { Badge } from 'primereact/badge';
 
 /*
 Name
@@ -126,7 +127,8 @@ const Stations = () => {
         servicesAvailable: []
     });
     const [map, setMap] = useState<google.maps.Map>();
-
+    const [selectID, setSelectID] = useState<string>('');
+    const [showSuperVisorDialog, setShowSuperVisorDialog] = useState(false);
     const searchBox = useRef<google.maps.places.SearchBox>();
     const onSearchBoxLoad = (ref: google.maps.places.SearchBox | undefined) => {
         debugger
@@ -430,26 +432,39 @@ const Stations = () => {
         { key: 'long', label: 'Longitude', _props: { scope: 'col' }, body: statusLongTemplate, filterField: 'location.coordinates[0]' },
         { key: 'lat', label: 'Latitude', _props: { scope: 'col' }, body: statusLatTemplate, filterField: 'location.coordinates[1]' },
         { key: 'group', label: 'Group', _props: { scope: 'col' } },
-        { key: 'superVisorName', label: 'Supervisor Name', _props: { scope: 'col' } },
+        {
+            key: 'supervisor.name', label: 'Supervisor Name', _props: { scope: 'col' }, body: (rowData: any) => <Badge onClick={() => {
+                debugger
+                console.log(rowData.supervisor.name);
+                console.log(rowData);
+                setSelectID(rowData.id);
+                setShowSuperVisorDialog(true);
+                setSelectedUser(rowData.supervisor);
+
+            }}
+                value={rowData.supervisor.name}
+                style={{ cursor: 'pointer', margin: "0px auto" }}
+            >{rowData.supervisor.name}</Badge>
+        },
         { key: 'stock', label: 'Stock', _props: { scope: 'col' }, body: statusStockTemplate },
         { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate },
-        {
-            key: 'action',
-            label: 'Action',
-            _props: { scope: 'col' },
-            body: (rowData: any) => {
-                return (
-                    <Button
-                        type="button"
-                        icon="pi pi-trash"
-                        onClick={() => {
-                            setSelectedStation(rowData.id);
-                            setShowDeleteDialog(true);
-                        }}
-                    ></Button>
-                );
-            }
-        }
+        // {
+        //     key: 'action',
+        //     label: 'Action',
+        //     _props: { scope: 'col' },
+        //     body: (rowData: any) => {
+        //         return (
+        //             <Button
+        //                 type="button"
+        //                 icon="pi pi-trash"
+        //                 onClick={() => {
+        //                     setSelectedStation(rowData.id);
+        //                     setShowDeleteDialog(true);
+        //                 }}
+        //             ></Button>
+        //         );
+        //     }
+        // }
         // { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
     ];
     const onMapClick = (event: any) => {
@@ -683,6 +698,49 @@ const Stations = () => {
                     </div>
                 </Dialog>
             )}
+            {
+                showSuperVisorDialog && selectedUser && (
+                    <Dialog header="Change Supervisor" visible={showSuperVisorDialog} style={{ maxWidth: "20vw" }} onHide={() => setShowSuperVisorDialog(false)}>
+                        <div className="grid">
+                            <div className="col-12 button-row w-full">
+                                <Dropdown
+                                    filter
+                                    id="supervisorID"
+                                    value={selectedUser}
+                                    options={users}
+                                    onChange={(e) => {
+                                        handleChange('supervisorID', e.value);
+                                    }}
+                                    optionLabel="name"
+                                    optionValue='id'
+                                    placeholder="Select a Supervisor"
+                                />
+                            </div>
+                            <div className="button-row col-12 gap-3 center-center">
+                                <Button
+                                    label="Submit"
+                                    onClick={async () => {
+                                        const resp = await updateStation(selectID, { supervisorID: selectedUser.id });
+                                        if (resp.success) {
+                                            fetchData();
+                                            setShowSuperVisorDialog(false);
+                                        } else {
+                                            showToast(resp.message || 'Failed To Update Supervisor', 'error');
+
+                                        }
+                                    }}
+                                />
+                                <Button
+                                    label="Cancel"
+                                    onClick={() => {
+                                        setShowSuperVisorDialog(false);
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </Dialog>
+                )
+            }
         </>
     );
 };

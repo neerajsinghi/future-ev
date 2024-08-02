@@ -14,7 +14,7 @@ import { setStation, getStations, getUsers, updateStation, getServices } from '@
 import Link from 'next/link';
 import { Tag } from 'primereact/tag';
 import { Bounce, toast, ToastOptions } from 'react-toastify';
-import { getCity } from '@/app/api/services';
+import { deleteStation, getCity } from '@/app/api/services';
 import { MultiSelect } from 'primereact/multiselect';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
@@ -89,10 +89,12 @@ const Stations = () => {
     const [users, setUsers] = useState<any>([]);
     const [city, setCity] = useState<any>([]);
     const [selectedCity, setSelectedCity] = useState<any[]>([]);
+    const [selectedStation, setSelectedStation] = useState<any>();
     const [serviceType, setServiceType] = useState<serviceTypes[]>([]);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [selectedServices, setSelectedServices] = useState<any[]>([]);
     const [markers, setMarkers] = useState<any>();
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [center, setCenter] = useState<{ lat: number; lng: number }>({ lat: 28.6139, lng: 77.209 });
     const [zoom, setZoom] = useState<number>(12);
     const isAccessible = useIsAccessible('stations');
@@ -384,7 +386,24 @@ const Stations = () => {
         { key: 'group', label: 'Group', _props: { scope: 'col' } },
         { key: 'superVisorName', label: 'Supervisor Name', _props: { scope: 'col' } },
         { key: 'stock', label: 'Stock', _props: { scope: 'col' }, body: statusStockTemplate },
-        { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate }
+        { key: 'status', label: 'Status', _props: { scope: 'col' }, body: statusTemplate },
+        {
+            key: 'action',
+            label: 'Action',
+            _props: { scope: 'col' },
+            body: (rowData: any) => {
+                return (
+                    <Button
+                        type="button"
+                        icon="pi pi-trash"
+                        onClick={() => {
+                            setSelectedStation(rowData.id);
+                            setShowDeleteDialog(true);
+                        }}
+                    ></Button>
+                );
+            }
+        }
         // { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap }
     ];
     const onMapClick = (event: any) => {
@@ -400,6 +419,18 @@ const Stations = () => {
     useEffect(() => {
         console.log(items);
     }, [selectedServices]);
+
+    const deleteStationD = async () => {
+        const response = await deleteStation(selectedStation);
+        if (response.success) {
+            fetchData();
+            setShowDeleteDialog(false);
+            showToast(response.message || 'Deleted Station', 'success');
+        } else {
+            showToast(response.message || 'Failed To Delete Station', 'error');
+        }
+    };
+
     return (
         <>
             {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
@@ -533,6 +564,31 @@ const Stations = () => {
                             <Button label="Submit" type="submit" className="px-5 py-2 w-full" />
                         </div>
                     </form>
+                </Dialog>
+            )}
+
+            {showDeleteDialog && (
+                <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                    <div className="grid">
+                        <div className="col-12 text-center">
+                            <h2>Are you sure you want to delete this Plan?</h2>
+                        </div>
+                        <div className="button-row col-12 gap-3 center-center">
+                            <Button
+                                label="Yes"
+                                style={{ background: '#ff3333' }}
+                                onClick={() => {
+                                    deleteStationD();
+                                }}
+                            />
+                            <Button
+                                label="No"
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }}
+                            />
+                        </div>
+                    </div>
                 </Dialog>
             )}
         </>

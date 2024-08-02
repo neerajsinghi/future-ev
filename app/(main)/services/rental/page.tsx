@@ -219,12 +219,13 @@ const Plan = () => {
             {showDeleteDialog && (
                 <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
                     <div className="grid">
-                        <div className="col-12">
+                        <div className="col-12 text-center">
                             <h2>Are you sure you want to delete this Plan?</h2>
                         </div>
-                        <div className="col-12">
+                        <div className="button-row col-12 gap-3 center-center">
                             <Button
                                 label="Yes"
+                                style={{ background: '#ff3333' }}
                                 onClick={() => {
                                     deletePlanD();
                                 }}

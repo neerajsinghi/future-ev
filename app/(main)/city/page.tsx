@@ -1,5 +1,5 @@
 'use client';
-import { getCity, setCity } from '@/app/api/services';
+import { deleteCity, getCity, setCity } from '@/app/api/services';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
@@ -36,6 +36,7 @@ interface TableColumn {
     key: string;
     label: string;
     _props?: { scope: string };
+    body: any;
 }
 
 interface FormData {
@@ -49,6 +50,9 @@ const City: React.FC = () => {
     const [city, setCities] = useState<CityData[]>([]);
     const [showDialog, setShowDialog] = useState(false);
     const [loading1, setLoading1] = useState(true);
+    const [SelectedCity, setSelectedCity] = useState<any>();
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
     const [polygonPath, setPolygonPath] = useState<{ lat: number; lng: number }[]>([]);
     const polygonRef = useRef<google.maps.Polygon | null>(null);
 
@@ -129,16 +133,46 @@ const City: React.FC = () => {
         </div>
     );
 
+    const deleteCityD = async () => {
+        const response = await deleteCity(SelectedCity);
+        if (response.success) {
+            getCityD();
+            setShowDeleteDialog(false);
+            showToast(response.message || 'Deleted City', 'success');
+        } else {
+            showToast(response.message || 'Failed To Deleted City', 'error');
+        }
+    };
+
     useEffect(() => {
         getCityD();
     }, []);
 
-    const columns: TableColumn[] = [
+    const deleteTemplate = (rowData: any) => {
+        return (
+            <Button
+                type="button"
+                icon="pi pi-trash"
+                onClick={() => {
+                    setSelectedCity(rowData.id);
+                    setShowDeleteDialog(true);
+                }}
+            ></Button>
+        );
+    };
+
+    const columns = [
         { key: 'id', label: 'ID', _props: { scope: 'col' } },
         { key: 'name', label: 'Name', _props: { scope: 'col' } },
         { key: 'active', label: 'Active', _props: { scope: 'col' } },
         { key: 'services', label: 'Services', _props: { scope: 'col' } },
-        { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' } }
+        { key: 'vehicleType', label: 'Vehicle Type', _props: { scope: 'col' } },
+        {
+            key: 'action',
+            label: 'Action',
+            _props: { scope: 'col' },
+            body: deleteTemplate
+        }
     ];
 
     return (
@@ -275,6 +309,31 @@ const City: React.FC = () => {
                 </form>
             </Dialog>
             {/* )} */}
+
+            {showDeleteDialog && (
+                <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                    <div className="grid">
+                        <div className="col-12 text-center">
+                            <h2>Are you sure you want to delete this Plan?</h2>
+                        </div>
+                        <div className="button-row col-12 gap-3 center-center">
+                            <Button
+                                label="Yes"
+                                style={{ background: '#ff3333' }}
+                                onClick={() => {
+                                    deleteCityD();
+                                }}
+                            />
+                            <Button
+                                label="No"
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
+            )}
         </div>
     );
 };

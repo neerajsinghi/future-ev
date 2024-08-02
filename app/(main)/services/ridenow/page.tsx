@@ -127,7 +127,11 @@ const Plan = () => {
         const response = await updatePlan(body, id);
         if (response.success) {
             fetchData();
+            showToast(response.message || 'Active', 'success');
+        } else {
+            showToast(response.message || 'InActive', 'error');
         }
+
         setLoadingRows((prevState) => ({ ...prevState, [id]: false }));
     };
 
@@ -253,6 +257,9 @@ const Plan = () => {
         if (response.success) {
             fetchData();
             setShowDeleteDialog(false);
+            showToast(response.message || 'Deleted Plan', 'success');
+        } else {
+            showToast(response.message || 'Failed To Delete Plan', 'error');
         }
     };
     const isMobile = useIsMobile();
@@ -394,12 +401,13 @@ const Plan = () => {
             {showDeleteDialog && (
                 <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
                     <div className="grid">
-                        <div className="col-12">
+                        <div className="col-12 text-center">
                             <h2>Are you sure you want to delete this Plan?</h2>
                         </div>
-                        <div className="col-12">
+                        <div className="button-row col-12 gap-3 center-center">
                             <Button
                                 label="Yes"
+                                style={{ background: '#ff3333' }}
                                 onClick={() => {
                                     deletePlanD();
                                 }}

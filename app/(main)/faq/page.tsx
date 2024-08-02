@@ -12,16 +12,22 @@ import './plan.css';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { showToast } from '@/app/hooks/toast';
+import { deleteFaq } from '@/app/api/services';
+import { useRouter } from 'next/navigation';
 interface ProductFormData {
     question: string;
     answer: string;
 }
 
 const FAQ = () => {
+    const router = useRouter();
     const isAccessible = useIsAccessible('faq');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
     const [showDialog, setShowDialog] = useState(false);
+    const [faqId, setFaqId] = useState<any>();
     const [formData, setFormData] = useState<ProductFormData>({
         question: '',
         answer: ''
@@ -75,11 +81,41 @@ const FAQ = () => {
         }
     };
 
+    const deleteFaqD = async () => {
+        debugger;
+        const response = await deleteFaq(faqId);
+        if (response.success) {
+            fetchData();
+            setShowDeleteDialog(false);
+            router.refresh();
+            showToast(response.message || 'Deleted FAQ', 'success');
+        } else {
+            showToast(response.message || 'Failed To Delete FAQ', 'error');
+        }
+    };
+
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
         { key: 'question', label: 'Question', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'answer', label: 'Answer', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } }
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
+        {
+            key: 'action',
+            label: 'Action',
+            _props: { scope: 'col' },
+            body: (rowData: any) => {
+                return (
+                    <Button
+                        type="button"
+                        icon="pi pi-trash"
+                        onClick={() => {
+                            setFaqId(rowData.id);
+                            setShowDeleteDialog(true);
+                        }}
+                    ></Button>
+                );
+            }
+        }
     ];
 
     useEffect(() => {
@@ -140,6 +176,31 @@ const FAQ = () => {
                 </div>
             </Dialog>
             {/* )} */}
+
+            {showDeleteDialog && (
+                <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                    <div className="grid">
+                        <div className="col-12 text-center">
+                            <h2>Are you sure you want to delete this Plan?</h2>
+                        </div>
+                        <div className="button-row col-12 gap-3 center-center">
+                            <Button
+                                label="Yes"
+                                style={{ background: '#ff3333' }}
+                                onClick={() => {
+                                    deleteFaqD();
+                                }}
+                            />
+                            <Button
+                                label="No"
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
+            )}
         </>
     );
 };

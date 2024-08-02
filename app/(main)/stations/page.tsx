@@ -417,8 +417,24 @@ const Stations = () => {
     };
 
     useEffect(() => {
-        console.log(items);
-    }, [selectedServices]);
+        if (items.length !== 0 && searchStation !== '') {
+            const location = items
+                .filter((station: any) => {
+                    const stationName = station.name?.toLowerCase();
+                    const search = searchStation.toLowerCase();
+                    return stationName?.includes(search) || stationName?.startsWith(search);
+                })
+                .map((station: any) => ({
+                    lng: station.location.coordinates[0],
+                    lat: station.location.coordinates[1]
+                }));
+
+            console.log(location[0]);
+            setCenter(location[0]);
+        } else {
+            setCenter({ lat: 28.6139, lng: 77.209 });
+        }
+    }, [searchStation]);
 
     const deleteStationD = async () => {
         const response = await deleteStation(selectedStation);
@@ -537,11 +553,47 @@ const Stations = () => {
                                 <div className="field col-12 md:col-12">
                                     {isLoaded && (
                                         <GoogleMap
+                                            options={{
+                                                gestureHandling: 'greedy'
+                                            }}
                                             mapContainerStyle={{ width: '100%', height: '400px' }}
                                             center={center} // Initial map center (adjust)
                                             zoom={zoom}
                                             onClick={onMapClick}
                                         >
+                                            {items
+                                                .filter((stations: any) => stations.name.toLowerCase()?.includes(searchStation.toLowerCase()) || stations.name?.startsWith(searchStation))
+                                                .map((station: any) => {
+                                                    return (
+                                                        <MarkerF
+                                                            icon={{
+                                                                scaledSize: new window.google.maps.Size(25, 25),
+                                                                url: 'https://www.svgrepo.com/download/218900/gas-station-petrol.svg'
+                                                            }}
+                                                            key={station.id}
+                                                            position={{
+                                                                lat: station.location.coordinates[1],
+                                                                lng: station.location.coordinates[0]
+                                                            }}
+                                                            title={
+                                                                'id: ' +
+                                                                station.id +
+                                                                '\nName: ' +
+                                                                station.name +
+                                                                '\nAddress: ' +
+                                                                station.address.address +
+                                                                '\nStock: ' +
+                                                                station.stock +
+                                                                '\nStatus: ' +
+                                                                station.status +
+                                                                '\nServices Available: ' +
+                                                                station.servicesAvailable.join(', ') +
+                                                                '\nSupervisor Name: ' +
+                                                                station.supervisor.name
+                                                            }
+                                                        />
+                                                    );
+                                                })}
                                             <MarkerF position={markers} />
                                         </GoogleMap>
                                     )}

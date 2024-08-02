@@ -194,7 +194,7 @@ const MapComponent = () => {
                 </div>
             </div>
             <div className="card-body">
-                {isLoaded ? (
+                {isLoaded ? (         
                     <GoogleMap
                         options={{
                             gestureHandling: 'greedy'

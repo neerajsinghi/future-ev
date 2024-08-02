@@ -18,7 +18,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     useEffect(() => {
         setTheme(window.matchMedia('(prefers-color-scheme: dark)'));
     }, []);
-    
+
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
@@ -30,7 +30,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </head>
             <body>
                 <PrimeReactProvider>
-                    <LayoutProvider>{children}</LayoutProvider>
+                    <LayoutProvider>
+                        {/* <> */}
+
+                        {children}
+                        {/* </> */}
+                    </LayoutProvider>
                 </PrimeReactProvider>
             </body>
         </html>

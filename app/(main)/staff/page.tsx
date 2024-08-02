@@ -18,6 +18,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { Image } from 'primereact/image';
 import Link from 'next/link';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { showToast } from '@/app/hooks/toast';
 
 interface UserFormData {
     name: string;
@@ -149,7 +150,7 @@ const Staff = () => {
         }
     };
     const handleSubmit = async (e: React.FormEvent) => {
-        debugger;
+        // debugger;
         e.preventDefault();
         // Send formData to your backend for processing
         console.log(formData);
@@ -157,7 +158,9 @@ const Staff = () => {
         if (response.success) {
             setShowDialog(false);
             fetchData();
+            showToast(response.message || 'added Staff', 'success');
         } else {
+            showToast(response.message || 'Failed To Add Staff', 'error');
             console.log('Failed');
         }
     };
@@ -188,7 +191,7 @@ const Staff = () => {
         );
     };
     const accessTemplate = (rowData: any) => {
-        debugger
+        debugger;
         return (
             <>
                 {rowData.access && (

@@ -12,9 +12,11 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Calendar } from 'primereact/calendar';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
-import { getCity } from '@/app/api/services';
+import { deleteCoupons, getCity } from '@/app/api/services';
 import { format } from 'date-fns';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { showToast } from '@/app/hooks/toast';
+import { useRouter } from 'next/navigation';
 /*
 ServiceType    []string
 City           []string
@@ -65,11 +67,15 @@ interface vehicleProps {
 }
 const Coupon = () => {
     const isAccessible = useIsAccessible('coupons');
+    const router = useRouter();
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
     const [serviceType, setserviceType] = useState<serviceTypes[]>([]);
     const [cities, setCities] = useState<any[]>([]);
+    const [coupon, setCoupon] = useState<any>();
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
     const [selectedStatus, setSelectedStatus] = useState<any>(null);
     const [vehicleTypes, setVehicleTypes] = useState<vehicleProps[]>([]);
     const [formData, setFormData] = useState<CouponProps>({
@@ -105,7 +111,24 @@ const Coupon = () => {
         { key: 'validFrom', label: 'Valid From', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validFrom'), filterField: 'validFrom' },
         { key: 'validTill', label: 'Valid Till', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validTill'), filterField: 'validTill' },
         { key: 'couponType', label: 'Coupon Type', _props: { scope: 'col' }, filterField: 'couponType' },
-        { key: 'description', label: 'Description', _props: { scope: 'col' }, filterField: 'description' }
+        { key: 'description', label: 'Description', _props: { scope: 'col' }, filterField: 'description' },
+        {
+            key: 'action',
+            label: 'Action',
+            _props: { scope: 'col' },
+            body: (rowData: any) => {
+                return (
+                    <Button
+                        type="button"
+                        icon="pi pi-trash"
+                        onClick={() => {
+                            setCoupon(rowData.id);
+                            setShowDeleteDialog(true);
+                        }}
+                    ></Button>
+                );
+            }
+        }
     ];
 
     // Filter items based on coupon code and validity
@@ -160,6 +183,21 @@ const Coupon = () => {
         if (response.success) {
             getCouponsData();
             setShowDialog(false);
+            showToast(response.message || 'added Coupon', 'success');
+        } else {
+            showToast(response.message || 'Error adding Coupon', 'error');
+        }
+    };
+
+    const deleteCouponD = async () => {
+        debugger;
+        const response = await deleteCoupons(coupon);
+        if (response.success) {
+            router.refresh();
+            setShowDeleteDialog(false);
+            showToast(response.message || 'Deleted Coupon', 'success');
+        } else {
+            showToast(response.message || 'Failed To Delete Coupon', 'error');
         }
     };
 
@@ -295,6 +333,31 @@ const Coupon = () => {
                             <Button label="Submit" type="submit" />
                         </div>
                     </form>
+                </Dialog>
+            )}
+
+            {showDeleteDialog && (
+                <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                    <div className="grid">
+                        <div className="col-12 text-center">
+                            <h2>Are you sure you want to delete this Plan?</h2>
+                        </div>
+                        <div className="button-row col-12 gap-3 center-center">
+                            <Button
+                                label="Yes"
+                                style={{ background: '#ff3333' }}
+                                onClick={() => {
+                                    deleteCouponD();
+                                }}
+                            />
+                            <Button
+                                label="No"
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }}
+                            />
+                        </div>
+                    </div>
                 </Dialog>
             )}
         </>

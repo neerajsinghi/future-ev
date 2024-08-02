@@ -200,7 +200,7 @@ const Stations = () => {
             setShowDialog(false);
             fetchData();
             // router.refresh();
-            showToast('Station Added', 'success');
+            showToast('Station Added Successfully', 'success');
         } else {
             console.log('Failed');
 

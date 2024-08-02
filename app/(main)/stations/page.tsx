@@ -17,7 +17,7 @@ import { Bounce, toast, ToastOptions } from 'react-toastify';
 import { deleteStation, getCity } from '@/app/api/services';
 import { MultiSelect } from 'primereact/multiselect';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import { ColumnEditorOptions, ColumnEvent, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { StandaloneSearchBox } from '@react-google-maps/api';
@@ -128,37 +128,22 @@ const Stations = () => {
     const [searchBox, setSearchBox] = useState<any>();
     const [searchPredictions, setSearchPredictions] = useState<PlaceResultExtended[]>([]);
 
-    const onPlacesChanged = useCallback(() => {
+    const onPlacesChanged = () => {
         if (searchBox) {
-            debugger
-            const places = searchBox.getPlaces() as PlaceResultExtended[];
-            setSearchPredictions(places); // Update the dropdown with predictions
-        }
-    }, [searchBox]);
-
-
-    const handlePlaceSelect = useCallback(
-        (place: PlaceResultExtended) => {
-            debugger
-            if (place.geometry && place.geometry.location) {
-                setMarkers(place.geometry.location);
-
-                const form = { ...formData };
-                form.location.coordinates = [place.geometry.location.lng(), place.geometry.location.lat()];
-                setFormData(form);
+            const places = searchBox.getPlaces();
+            if (places.length > 0) {
+                setSearchPredictions(places);
             }
-
-            setSearchPredictions([]); // Clear predictions after selection
-        },
-        [formData, setFormData]
-    );
-    const libraries = ["places"];
-
-    const toast = useRef<any>(null);
-
-    const showToastI = (info: string, severity: 'info' | 'danger' | 'warning') => {
-        toast?.current?.show({ severity: 'danger', summary: info, detail: '' });
+        }
     };
+
+    const handlePlaceSelect = (place: any) => {
+        setCenter({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+        setZoom(15);
+        setMarkers({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
+        setSearchPredictions([]); // Clear the dropdown after selecting a place
+    };
+    const libraries = ['places'];
 
     const handleChange = (name: string, value: any) => {
         if (name.startsWith('address.')) {
@@ -380,31 +365,31 @@ const Stations = () => {
     //     return <i onClick={(e) => router.push(`/stations/${rowData.id}`)} className="pi pi-map-marker map-icon" style={{ fontSize: '1.5em' }}></i>;
     // };
     //public template
-    const statusPublicTemplate = (rowData: any) => {
-        return (
-            <Button tooltip="Click to change public status" severity={rowData.public ? 'success' : 'danger'} onClick={() => changePublic(!rowData.public, rowData.id)}>
-                {rowData.public ? 'Yes' : 'No'}
-            </Button>
-        );
-    };
+    // const statusPublicTemplate = (rowData: any) => {
+    //     return (
+    //         <Button tooltip="Click to change public status" severity={rowData.public ? 'success' : 'danger'} onClick={() => changePublic(!rowData.public, rowData.id)}>
+    //             {rowData.public ? 'Yes' : 'No'}
+    //         </Button>
+    //     );
+    // };
 
     const statusItemTemplate = (option: any) => {
         return <span className={`customer-badge status-${option}`}>{option}</span>;
     };
 
-    const typeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
-        return (
-            <MultiSelect
-                value={options.value}
-                options={serviceType}
-                onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)}
-                itemTemplate={statusItemTemplate}
-                placeholder="Select One"
-                className="p-column-filter"
-                showClear
-            />
-        );
-    };
+    // const typeFilterTemplate = (options: ColumnFilterElementTemplateOptions) => {
+    //     return (
+    //         <MultiSelect
+    //             value={options.value}
+    //             options={serviceType}
+    //             onChange={(e: DropdownChangeEvent) => options.filterCallback(e.value, options.index)}
+    //             itemTemplate={statusItemTemplate}
+    //             placeholder="Select One"
+    //             className="p-column-filter"
+    //             showClear
+    //         />
+    //     );
+    // };
 
     const columns = [
         { key: 'name', label: 'Name', _props: { scope: 'col' } },
@@ -583,42 +568,38 @@ const Stations = () => {
                         {/* Location Fields */}
                         {selectedCity && (
                             <>
-
-
-                                <div className="col-12">
+                                {/* <div className="col-12">
                                     <h4 className="col-12">Location</h4>
                                     <InputText onChange={(e) => setSearchStation(e.target.value)} className="col-12" placeholder="Search Station" id="Search" />
-                                </div>
+                                </div> */}
                                 {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
                                 <div className="field col-12 md:col-12">
                                     {isLoaded && (
-                                        <>
-                                            <div>    <StandaloneSearchBox onLoad={(ref) => setSearchBox(ref)} onPlacesChanged={onPlacesChanged}>
-                                                <InputText type="text" placeholder="Search for places" />
-                                            </StandaloneSearchBox>
+                                        <GoogleMap
+                                            mapContainerStyle={{ width: '100%', height: '400px' }}
+                                            center={center} // Initial map center (adjust)
+                                            zoom={zoom}
+                                            onClick={onMapClick}
+                                        >
+                                            <div style={{ position: 'relative' }}>
+                                                <StandaloneSearchBox onLoad={(ref) => setSearchBox(ref)} onPlacesChanged={onPlacesChanged}>
+                                                    <InputText type="text" placeholder="Search for places" style={{ width: '100%', padding: '10px', marginBottom: '1em' }} />
+                                                </StandaloneSearchBox>
                                                 {/* Dropdown for location suggestions */}
                                                 {searchPredictions.length > 0 && (
                                                     <Dropdown
-                                                        style={{ zIndex: 1000 }}
-                                                        value={searchPredictions[0]}
+                                                        className="col-12"
+                                                        // style={{ position: 'absolute', zIndex: 1000 }}
+                                                        value={null}
                                                         options={searchPredictions}
-                                                        onChange={(e) => { handlePlaceSelect(e.value as PlaceResultExtended) }}
+                                                        onChange={(e) => handlePlaceSelect(e.value)}
                                                         optionLabel="formatted_address"
                                                         placeholder="Select a Location"
                                                     />
                                                 )}
                                             </div>
-                                            <div>
-                                                <GoogleMap
-                                                    mapContainerStyle={{ width: '100%', height: '400px' }}
-                                                    center={center} // Initial map center (adjust)
-                                                    zoom={zoom}
-                                                    onClick={onMapClick}
-                                                >
-                                                    <MarkerF position={markers} />
-                                                </GoogleMap>
-                                            </div>
-                                        </>
+                                            {markers && <MarkerF position={markers} />}
+                                        </GoogleMap>
                                     )}
                                 </div>
                             </>
@@ -639,7 +620,32 @@ const Stations = () => {
                             <Button label="Submit" type="submit" className="px-5 py-2 w-full" />
                         </div>
                     </form>
-                </Dialog >
+                </Dialog>
+            )}
+
+            {showDeleteDialog && (
+                <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                    <div className="grid">
+                        <div className="col-12 text-center">
+                            <h2>Are you sure you want to delete this Plan?</h2>
+                        </div>
+                        <div className="button-row col-12 gap-3 center-center">
+                            <Button
+                                label="Yes"
+                                style={{ background: '#ff3333' }}
+                                onClick={() => {
+                                    deleteStationD();
+                                }}
+                            />
+                            <Button
+                                label="No"
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
             )}
         </>
     );

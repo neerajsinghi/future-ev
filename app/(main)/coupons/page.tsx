@@ -15,6 +15,7 @@ import { MultiSelect } from 'primereact/multiselect';
 import { getCity } from '@/app/api/services';
 import { format } from 'date-fns';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { showToast } from '@/app/hooks/toast';
 /*
 ServiceType    []string
 City           []string
@@ -160,6 +161,9 @@ const Coupon = () => {
         if (response.success) {
             getCouponsData();
             setShowDialog(false);
+            showToast(response.message || 'added Coupon', 'success');
+        } else {
+            showToast(response.message || 'Error adding Station', 'error');
         }
     };
 

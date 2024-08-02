@@ -21,6 +21,7 @@ import { InputSwitch } from 'primereact/inputswitch';
 import Link from 'next/link';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { showToast } from '@/app/hooks/toast';
 
 export const dynamic = 'force-dynamic';
 
@@ -116,6 +117,7 @@ const BikesStationed = () => {
             let response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/immobilize/${rowData.deviceId}`);
             let data = await response.json();
             if (data.status) {
+                showToast(data.message || 'Immobilised', 'success');
                 router.refresh();
             }
             return data;
@@ -165,6 +167,7 @@ const BikesStationed = () => {
         document.body.appendChild(anchor);
         anchor.click();
         document.body.removeChild(anchor);
+        showToast('QR Downloaded', 'success');
     };
 
     const qrCodeTemplate = (rowData: any) => {
@@ -184,7 +187,8 @@ const BikesStationed = () => {
 
     const cellEditor = (options: ColumnEditorOptions) => {
         return (
-            <Dropdown filter
+            <Dropdown
+                filter
                 options={[
                     { name: 'Booked', code: 'booked' },
                     { name: 'Available', code: 'available' },
@@ -366,8 +370,11 @@ const BikesStationed = () => {
         if (response.success && response.data) {
             setShowDialog(false);
             fetchBikes();
+
+            showToast(response.message || 'added Vehicle', 'success');
         } else {
             console.log('Failed');
+            showToast(response.message || 'Failed To Add Vehicle', 'success');
         }
     };
     const fetchBikes = async () => {
@@ -482,7 +489,8 @@ const BikesStationed = () => {
 
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="VehicleTypeID">Vehicle Type ID</label>
-                        <Dropdown filter
+                        <Dropdown
+                            filter
                             id="VehicleTypeID"
                             // defaultValue="Normal"
                             // disabled
@@ -505,7 +513,8 @@ const BikesStationed = () => {
                     <div className="field col-12 lg:col-6">
                         <label htmlFor="Status">Status</label>
 
-                        <Dropdown filter
+                        <Dropdown
+                            filter
                             id="Status"
                             options={[
                                 { name: 'Booked', code: 'booked' },

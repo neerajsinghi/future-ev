@@ -1,13 +1,15 @@
 'use client';
 
-import { useEffect } from "react";
-
+import { showToast } from '@/app/hooks/toast';
+import { useEffect } from 'react';
 
 const Logout = () => {
-    useEffect(() => {
-        localStorage.clear()
-        window.location.href = '/'
-    }, [])
-}
+    showToast('Logout Successful', 'success');
 
-export default Logout
+    useEffect(() => {
+        localStorage.clear();
+        window.location.href = '/';
+    }, []);
+};
+
+export default Logout;

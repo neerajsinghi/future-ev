@@ -12,6 +12,7 @@ import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from 'primereact/multiselect';
 import './plan.css';
+import { showToast } from '@/app/hooks/toast';
 
 interface NotificationFormData {
     title: string;
@@ -57,7 +58,9 @@ const Notification = () => {
         if (response.success) {
             setShowDialog(false);
             fetchData();
+            showToast(response.message || 'Added Notification', 'success');
         } else {
+            showToast(response.message || 'Failed to Add Notification', 'error');
             console.log('Failed');
         }
     };
@@ -200,7 +203,8 @@ const Notification = () => {
                             <div className="field">
                                 <label htmlFor="targetValue">Gender</label>
 
-                                <Dropdown filter
+                                <Dropdown
+                                    filter
                                     className="element"
                                     id="category"
                                     value={formData.category}

@@ -20,6 +20,7 @@ import { ColumnFilterElementTemplateOptions } from 'primereact/column';
 import useIsMobile from '@/app/api/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { showToast } from '@/app/hooks/toast';
 export const dynamic = 'force-dynamic';
 
 const Users = () => {
@@ -145,7 +146,9 @@ const Users = () => {
             if (response.success) {
                 fetchData();
                 setBlockedDialog(false);
+                showToast(response.message || 'Blocked', 'success');
             } else {
+                showToast(response.message || 'Failed To Block', 'error');
                 console.log('Failed');
             }
         });

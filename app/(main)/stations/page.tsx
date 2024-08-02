@@ -13,15 +13,14 @@ import { InputNumber } from 'primereact/inputnumber';
 import { setStation, getStations, getUsers, updateStation, getServices } from '@/app/api/iotBikes';
 import Link from 'next/link';
 import { Tag } from 'primereact/tag';
-
-import { Toast } from 'primereact/toast';
-
+import { Bounce, toast, ToastOptions } from 'react-toastify';
 import { getCity } from '@/app/api/services';
 import { MultiSelect } from 'primereact/multiselect';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
 import { ColumnEditorOptions, ColumnEvent, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { showToast } from '@/app/hooks/toast';
 
 /*
 Name
@@ -121,12 +120,6 @@ const Stations = () => {
         servicesAvailable: []
     });
 
-    const toast = useRef<any>(null);
-
-    const showToast = (info: string, severity: 'info' | 'danger' | 'warning') => {
-        toast?.current?.show({ severity: 'danger', summary: info, detail: '' });
-    };
-
     const handleChange = (name: string, value: any) => {
         if (name.startsWith('address.')) {
             setFormData({
@@ -182,9 +175,11 @@ const Stations = () => {
             setShowDialog(false);
             fetchData();
             // router.refresh();
+            showToast('Station Added', 'success');
         } else {
             console.log('Failed');
-            showToast(response.message, 'danger');
+
+            showToast('Error adding Station', 'error');
         }
     };
 
@@ -410,7 +405,6 @@ const Stations = () => {
             {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
             {(isAccessible === 'Edit' || isAccessible === 'View') && (
                 <div className="grid">
-                    <Toast ref={toast} />
                     <div className="col-12">
                         <BreadCrumb model={[{ label: 'Station' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                     </div>
@@ -532,7 +526,7 @@ const Stations = () => {
                         {/* ... (fields for supervisorID, stock, public, status) */}
                         <div className="field col-12 md:col-6">
                             <label htmlFor="supervisorID">Supervisor ID</label>
-                            <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" optionValue='id' placeholder="Select a Supervisor" />
+                            <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" optionValue="id" placeholder="Select a Supervisor" />
                         </div>
                         {/* ... (submit button) */}
                         <div className="field col-12 button-row w-full">

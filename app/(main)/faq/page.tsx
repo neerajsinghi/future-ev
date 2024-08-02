@@ -11,6 +11,7 @@ import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber
 import './plan.css';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { showToast } from '@/app/hooks/toast';
 interface ProductFormData {
     question: string;
     answer: string;
@@ -38,7 +39,9 @@ const FAQ = () => {
         if (response.success && response.data) {
             setShowDialog(false);
             fetchData();
+            showToast(response.message || 'Added FAQ', 'success');
         } else {
+            showToast(response.message || ' Failed to Add FAQ', 'error');
             console.log('Failed');
         }
     };

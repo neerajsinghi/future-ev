@@ -13,6 +13,7 @@ import CustomTable from '../components/table';
 import { GoogleMap, useLoadScript, DrawingManager, Polygon } from '@react-google-maps/api';
 import './plan.css';
 import { Toast } from 'primereact/toast';
+import { showToast } from '@/app/hooks/toast';
 
 interface LocationPolygon {
     type: string;
@@ -79,8 +80,8 @@ const City: React.FC = () => {
     };
 
     const onSubmit: SubmitHandler<FormData> = async (data: any) => {
-        debugger
-        const polyPath = polygonPath
+        debugger;
+        const polyPath = polygonPath;
         if (polygonPath[0] !== polygonPath[polygonPath.length - 1]) {
             polyPath.push(polygonPath[0]);
         }
@@ -97,8 +98,10 @@ const City: React.FC = () => {
             setShowDialog(false);
             setPolygonPath([]);
             reset();
+            showToast(response.message || 'Added City', 'success');
         } else {
-            console.log({ response })
+            console.log({ response });
+            showToast(response.message || 'Error adding Station', 'error');
         }
         setShowDialog(false);
         setPolygonPath([]);

@@ -15,6 +15,7 @@ import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { deletePlan, getCity } from '@/app/api/services';
 import useIsMobile from '@/app/api/hooks';
+import { showToast } from '@/app/hooks/toast';
 interface ProductFormData {
     city: string;
     vehicleType: string;
@@ -108,8 +109,10 @@ const Plan = () => {
             };
             const response = await setPlan(body);
             if (response.success && response.data) {
+                showToast(response.message || 'added Plan', 'success');
             } else {
                 console.log('Failed');
+                showToast(response.message || 'Failed To Add Plan', 'error');
             }
         }
         setShowDialog(false);
@@ -162,7 +165,7 @@ const Plan = () => {
     const cellMinEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} suffix=" min" onKeyDown={(e) => e.stopPropagation()} />;
     };
-    const textEditor = (options: ColumnEditorOptions) => { };
+    const textEditor = (options: ColumnEditorOptions) => {};
     const onCellEditComplete = async (e: ColumnEvent) => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
@@ -185,11 +188,20 @@ const Plan = () => {
         { key: 'isActive', label: 'Active', _props: { scope: 'col' }, body: activeTemplate },
         { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
         {
-            key: 'action', label: 'Action', _props: { scope: 'col' }, body: (rowData: any) => {
-                return <Button type="button" icon="pi pi-trash" onClick={() => {
-                    setSelectedUser(rowData.id);
-                    setShowDeleteDialog(true);
-                }}></Button>
+            key: 'action',
+            label: 'Action',
+            _props: { scope: 'col' },
+            body: (rowData: any) => {
+                return (
+                    <Button
+                        type="button"
+                        icon="pi pi-trash"
+                        onClick={() => {
+                            setSelectedUser(rowData.id);
+                            setShowDeleteDialog(true);
+                        }}
+                    ></Button>
+                );
             }
         }
     ];
@@ -236,14 +248,13 @@ const Plan = () => {
         }
     };
     const deletePlanD = async () => {
-        debugger
+        debugger;
         const response = await deletePlan(selectedUser);
         if (response.success) {
             fetchData();
             setShowDeleteDialog(false);
-
         }
-    }
+    };
     const isMobile = useIsMobile();
     return (
         <>
@@ -380,25 +391,29 @@ const Plan = () => {
                     </div>
                 </form>
             </Dialog>
-            {
-                showDeleteDialog && (
-                    <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
-                        <div className="grid">
-                            <div className="col-12">
-                                <h2>Are you sure you want to delete this Plan?</h2>
-                            </div>
-                            <div className="col-12">
-                                <Button label="Yes" onClick={() => {
-
-                                    deletePlanD();
-                                }} />
-                                <Button label="No" onClick={() => {
-                                    setShowDeleteDialog(false);
-                                }} />
-                            </div>
+            {showDeleteDialog && (
+                <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                    <div className="grid">
+                        <div className="col-12">
+                            <h2>Are you sure you want to delete this Plan?</h2>
                         </div>
-                    </Dialog>
-                )}
+                        <div className="col-12">
+                            <Button
+                                label="Yes"
+                                onClick={() => {
+                                    deletePlanD();
+                                }}
+                            />
+                            <Button
+                                label="No"
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Dialog>
+            )}
         </>
     );
 };

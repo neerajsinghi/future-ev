@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import Layout from '../../layout/layout';
 import React from 'react';
 import AppConfig from '@/layout/AppConfig';
+import { Bounce, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface AppLayoutProps {
     children: React.ReactNode;
@@ -26,5 +28,10 @@ export const metadata: Metadata = {
 };
 
 export default function AppLayout({ children }: AppLayoutProps) {
-    return <Layout>{children}</Layout>;
+    return (
+        <Layout>
+            <ToastContainer />
+            {children}
+        </Layout>
+    );
 }

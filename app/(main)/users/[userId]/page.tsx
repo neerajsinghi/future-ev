@@ -12,6 +12,7 @@ import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
 import Link from 'next/link';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { showToast } from '@/app/hooks/toast';
 
 const Page = (params: any) => {
     const {
@@ -94,7 +95,7 @@ const Page = (params: any) => {
             key: 'id',
             label: 'Id',
             _props: { scope: 'col' },
-            body: (rowData: any) => <div style={{ color: '#3262EC' }}>{rowData.id}</div>
+            body: (rowData: any) => <div>{rowData.id}</div>
         },
         { key: 'paymentId', label: 'Payment ID', _props: { scope: 'col' } },
         { key: 'depositedMoney', label: 'Deposit', _props: { scope: 'col' } },
@@ -146,7 +147,9 @@ const Page = (params: any) => {
                 link.href = canvas.toDataURL('image/png');
                 link.download = 'invoice.png';
                 link.click();
+                showToast('Invoice Downloaded', 'success');
             } catch (error) {
+                showToast(' Download Failed', 'error');
                 console.error('Error capturing invoice:', error);
             }
         } else {

@@ -145,7 +145,7 @@ const Stations = () => {
             setFormData(form);
         } else if (name === 'supervisorID') {
             setSelectedUser(value);
-            setFormData({ ...formData, [name]: value.code });
+            setFormData({ ...formData, [name]: value.id });
         } else if (name === 'servicesAvailable') {
             console.log(value);
             setSelectedServices(value);
@@ -532,7 +532,7 @@ const Stations = () => {
                         {/* ... (fields for supervisorID, stock, public, status) */}
                         <div className="field col-12 md:col-6">
                             <label htmlFor="supervisorID">Supervisor ID</label>
-                            <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" placeholder="Select a Supervisor" />
+                            <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" optionValue='id' placeholder="Select a Supervisor" />
                         </div>
                         {/* ... (submit button) */}
                         <div className="field col-12 button-row w-full">

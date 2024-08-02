@@ -23,6 +23,75 @@ export async function setCity(data: any) {
     }
     return responseObj;
 }
+export async function updateCity(id: string, data: any) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.patch(baseUrl + 'city/' + id, data);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+
+export async function deleteCity(id: string) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.delete(baseUrl + 'city/' + id);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+export async function deleteStation(id: string) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.delete(baseUrl + 'station/' + id);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+//delete faq by id
+export async function deleteFaq(id: string) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.delete(baseUrl + 'faq/' + id);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+
+export async function deleteCoupons(id: string) {
+    let responseObj = { success: false, data: [] as any[], message: '' };
+
+    try {
+        let response = await webService.delete(baseUrl + 'coupon/' + id);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
+export async function deletePlan(id: string) {
+    debugger;
+    let responseObj = { success: false, data: '' as any, message: '' };
+    try {
+        let response = await webService.delete(baseUrl + 'plan/' + id);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
 
 export async function getFeedback() {
     let responseObj = { success: false, data: [] as any[], message: '' };

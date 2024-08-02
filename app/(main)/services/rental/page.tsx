@@ -13,7 +13,7 @@ import { InputSwitch } from 'primereact/inputswitch';
 import './plan.css';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
-import { getCity } from '@/app/api/services';
+import { deletePlan, getCity } from '@/app/api/services';
 import RentalPlanForm from '../component/rentalPlan';
 import useIsAccessible from '@/app/hooks/isAccessible';
 interface ProductFormData {
@@ -60,7 +60,8 @@ const Plan = () => {
     const [vehicleType, setVehicleType] = useState<any>([]);
     const [city, setCity] = useState<any>([]);
     const isAccessible = useIsAccessible('service');
-
+    const [selectedUser, setSelectedUser] = useState<any>();
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const changePlanActive = async (id: string, status: boolean) => {
         const body: any = {
             isActive: status
@@ -110,8 +111,24 @@ const Plan = () => {
         { key: 'validity', label: 'Plan Validity', _props: { scope: 'col' } },
         { key: 'deposit', label: 'Deposit', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
         { key: 'isActive', label: 'Active', _props: { scope: 'col' }, body: activeTemplate },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } }
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
+        {
+            key: 'action', label: 'Action', _props: { scope: 'col' }, body: (rowData: any) => {
+                return <Button type="button" icon="pi pi-trash" onClick={() => {
+                    setSelectedUser(rowData.id);
+                    setShowDeleteDialog(true);
+                }}></Button>
+            }
+        }
     ];
+    const deletePlanD = async () => {
+        debugger
+        const response = await deletePlan(selectedUser);
+        if (response.success) {
+            fetchData();
+            setShowDeleteDialog(false);
+        }
+    }
 
     useEffect(() => {
         fetchData();
@@ -185,6 +202,24 @@ const Plan = () => {
                     <RentalPlanForm city={city} vehicleType={vehicleType} fetchData={fetchData} setShowDialog={setShowDialog} type={'rental'} />
                 </Dialog>
             )}
+            {
+                showDeleteDialog && (
+                    <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
+                        <div className="grid">
+                            <div className="col-12">
+                                <h2>Are you sure you want to delete this Plan?</h2>
+                            </div>
+                            <div className="col-12">
+                                <Button label="Yes" onClick={() => {
+                                    deletePlanD();
+                                }} />
+                                <Button label="No" onClick={() => {
+                                    setShowDeleteDialog(false);
+                                }} />
+                            </div>
+                        </div>
+                    </Dialog>
+                )}
         </>
     );
 };

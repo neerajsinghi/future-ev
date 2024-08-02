@@ -80,12 +80,16 @@ const City: React.FC = () => {
 
     const onSubmit: SubmitHandler<FormData> = async (data: any) => {
         debugger
+        const polyPath = polygonPath
+        if (polygonPath[0] !== polygonPath[polygonPath.length - 1]) {
+            polyPath.push(polygonPath[0]);
+        }
         const locationPolygon: LocationPolygon = {
             type: 'MultiPolygon',
-            coordinates: [[polygonPath.map(({ lat, lng }) => [lng, lat])]]
+            coordinates: [[polyPath.map(({ lat, lng }) => [lng, lat])]]
         };
         const body = { ...data, locationPolygon };
-        console.log({ ...data, locationPolygon });
+        console.log({ ...data, locationPolygon, active: true });
         console.log(body);
         const response = await setCity(body);
         if (response.success) {

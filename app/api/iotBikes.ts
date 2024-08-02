@@ -395,6 +395,7 @@ export async function getNotif() {
 }
 
 export async function setStation(data: any) {
+    debugger;
     let responseObj = { success: false, data: null, message: '' };
 
     try {

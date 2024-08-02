@@ -43,3 +43,8 @@
     scale: 1.3;
     transition: all 0.3s ease;
 }
+
+.pac-container,
+.pac-item {
+    z-index: 2147483647;
+}

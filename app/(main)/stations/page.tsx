@@ -2,7 +2,7 @@
 
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
-import { use, useCallback, useEffect, useRef, useState } from 'react';
+import { SetStateAction, use, useCallback, useEffect, useRef, useState } from 'react';
 import CustomTable from '../components/table';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -125,23 +125,45 @@ const Stations = () => {
         status: 'available',
         servicesAvailable: []
     });
-    const [searchBox, setSearchBox] = useState<any>();
-    const [searchPredictions, setSearchPredictions] = useState<PlaceResultExtended[]>([]);
+    const [map, setMap] = useState<google.maps.Map>();
 
-    const onPlacesChanged = () => {
-        if (searchBox) {
-            const places = searchBox.getPlaces();
-            if (places.length > 0) {
-                setSearchPredictions(places);
-            }
-        }
+    const searchBox = useRef<google.maps.places.SearchBox>();
+    const onSearchBoxLoad = (ref: google.maps.places.SearchBox | undefined) => {
+        debugger
+        searchBox.current = ref
     };
+    const onPlacesChanged = () => {
+        debugger
+        const places = searchBox.current?.getPlaces()
+        const location = places ? places[0].geometry?.location : null;
+        const bounds = new window.google.maps.LatLngBounds(location?.toJSON());
+        const tempMap = map;
+        if (map) {
+            map.fitBounds(bounds);
+            setMap(map);
+        }
+        setMarkers({
+            lat: location?.lat(),
+            lng: location?.lng()
+        });
+        console.log(bounds);
+    };
+
+
+    const onMapLoad = useCallback(function callback(map: google.maps.Map) {
+        debugger
+        const bounds = new window.google.maps.LatLngBounds(center);
+        map.setZoom(12);
+        setMap(map);
+        console.log(map);
+    }, []);
+
+
 
     const handlePlaceSelect = (place: any) => {
         setCenter({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
         setZoom(15);
         setMarkers({ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() });
-        setSearchPredictions([]); // Clear the dropdown after selecting a place
     };
     const libraries = ['places'];
 
@@ -204,7 +226,7 @@ const Stations = () => {
         } else {
             console.log('Failed');
 
-            showToast('Error adding Station', 'error');
+            showToast(response.message || "failed to add station", 'error');
         }
     };
 
@@ -575,29 +597,41 @@ const Stations = () => {
                                 {/* ... (fields for coordinates, other fields for group, supervisorID, stock, public, status) */}
                                 <div className="field col-12 md:col-12">
                                     {isLoaded && (
+
                                         <GoogleMap
                                             mapContainerStyle={{ width: '100%', height: '400px' }}
                                             center={center} // Initial map center (adjust)
                                             zoom={zoom}
+                                            onLoad={onMapLoad}
                                             onClick={onMapClick}
                                         >
-                                            <div style={{ position: 'relative' }}>
-                                                <StandaloneSearchBox onLoad={(ref) => setSearchBox(ref)} onPlacesChanged={onPlacesChanged}>
-                                                    <InputText type="text" placeholder="Search for places" style={{ width: '100%', padding: '10px', marginBottom: '1em' }} />
-                                                </StandaloneSearchBox>
-                                                {/* Dropdown for location suggestions */}
-                                                {searchPredictions.length > 0 && (
-                                                    <Dropdown
-                                                        className="col-12"
-                                                        // style={{ position: 'absolute', zIndex: 1000 }}
-                                                        value={null}
-                                                        options={searchPredictions}
-                                                        onChange={(e) => handlePlaceSelect(e.value)}
-                                                        optionLabel="formatted_address"
-                                                        placeholder="Select a Location"
-                                                    />
-                                                )}
-                                            </div>
+                                            <StandaloneSearchBox
+                                                onLoad={onSearchBoxLoad}
+                                                onPlacesChanged={onPlacesChanged}
+
+                                            >
+                                                <input
+                                                    autoComplete='on'
+                                                    type="text"
+                                                    placeholder="Enter your location"
+                                                    style={{
+                                                        boxSizing: `border-box`,
+                                                        border: `1px solid transparent`,
+                                                        width: `240px`,
+                                                        height: `32px`,
+                                                        padding: `0 12px`,
+                                                        borderRadius: `3px`,
+                                                        boxShadow: `0 2px 6px rgba(0, 0, 0, 0.3)`,
+                                                        fontSize: `14px`,
+                                                        outline: `none`,
+                                                        textOverflow: `ellipses`,
+                                                        position: "absolute",
+                                                        left: "50%",
+                                                        marginLeft: "-120px",
+                                                        zIndex: 1000
+                                                    }}
+                                                />
+                                            </StandaloneSearchBox>
                                             {markers && <MarkerF position={markers} />}
                                         </GoogleMap>
                                     )}
@@ -616,10 +650,11 @@ const Stations = () => {
                             <Dropdown filter id="supervisorID" value={selectedUser} options={users} onChange={(e) => handleChange('supervisorID', e.value)} optionLabel="name" optionValue="id" placeholder="Select a Supervisor" />
                         </div>
                         {/* ... (submit button) */}
-                        <div className="field col-12 button-row w-full">
-                            <Button label="Submit" type="submit" className="px-5 py-2 w-full" />
-                        </div>
+
                     </form>
+                    <div className="field col-12 button-row w-full">
+                        <Button label="Submit" type="submit" className="px-5 py-2 w-full" onClick={handleSubmit} />
+                    </div>
                 </Dialog>
             )}
 

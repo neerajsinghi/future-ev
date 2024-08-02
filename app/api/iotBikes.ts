@@ -24,7 +24,7 @@ export async function getBikesNearby(lat: number, long: number) {
 export async function getPlans(type = '') {
     let responseObj = { success: false, data: null, message: '' };
     try {
-        let response = await webService.get(baseUrl + 'plan?type=' + type);
+        let response = await webService.get(baseUrl + 'plan/by/admin?type=' + type);
         responseObj = getSuccessResponse(response, responseObj);
     } catch {
         responseObj = getErrorResponse(responseObj);

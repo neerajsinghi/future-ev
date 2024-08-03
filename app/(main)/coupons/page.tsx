@@ -190,7 +190,6 @@ const Coupon = () => {
     };
 
     const deleteCouponD = async () => {
-
         const response = await deleteCoupons(coupon);
         if (response.success) {
             router.refresh();
@@ -247,7 +246,7 @@ const Coupon = () => {
                             <label htmlFor="couponType">Coupon Type</label>
                             <Dropdown filter value={formData.couponType} options={['discount', 'freeRide', 'referral']} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
                         </div>
-                        {(formData.couponType == '' || formData.couponType != 'referral') && (
+                        {formData.couponType != 'freeRide' && formData.couponType != 'referral' && (
                             <div className="field col-12 lg:col-6">
                                 <label htmlFor="serviceType">Service Type</label>
                                 <MultiSelect
@@ -282,13 +281,13 @@ const Coupon = () => {
                             </div>
                         )}
 
-                        {formData.couponType != '' && formData.couponType != 'referral' && (
+                        {formData.couponType != 'freeRide' && formData.couponType != 'referral' && (
                             <div className="field col-12 lg:col-6">
                                 <label htmlFor="minValue">Min Value</label>
                                 <InputNumber id="minValue" value={formData.minValue} onValueChange={(e) => handleChange('minValue', e.value)} />
                             </div>
                         )}
-                        {(formData.couponType == '' || formData.couponType != 'referral') && (
+                        {formData.couponType != 'freeRide' && formData.couponType != 'referral' && (
                             <div className="field col-12 lg:col-6">
                                 <label htmlFor="maxValue">Max Value</label>
                                 <InputNumber id="maxValue" value={formData.maxValue} onValueChange={(e) => handleChange('maxValue', e.value)} />
@@ -300,13 +299,13 @@ const Coupon = () => {
                                 <InputNumber id="maxValue" value={formData.maxValue} onValueChange={(e) => handleChange('maxValue', e.value)} />
                             </div>
                         )}
-                        {(formData.couponType == '' || formData.couponType != 'referral') && (
+                        {formData.couponType != 'freeRide' && formData.couponType != 'referral' && (
                             <div className="field col-12 lg:col-6">
                                 <label htmlFor="maxUsageByUser">Max Usage By User</label>
                                 <InputNumber id="maxUsageByUser" value={formData.maxUsageByUser} onValueChange={(e) => handleChange('maxUsageByUser', e.value)} />
                             </div>
                         )}
-                        {(formData.couponType == '' || formData.couponType != 'referral') && (
+                        {formData.couponType != 'freeRide' && formData.couponType != 'referral' && (
                             <div className="field col-12 lg:col-6">
                                 <label htmlFor="discount">Discount</label>
                                 <InputNumber suffix=" %" id="discount" value={formData.discount} onValueChange={(e) => handleChange('discount', e.value)} />

@@ -8,9 +8,8 @@ import Link from 'next/link';
 import { AppMenuItem } from '@/types';
 
 const AppMenu = () => {
-    const { layoutConfig } = useContext(LayoutContext);
+    // const { layoutConfig } = useContext(LayoutContext);
     const access = localStorage.getItem('access') ? JSON.parse(localStorage.getItem('access') as string) : [];
-    debugger;
     const parsedData = access.reduce((result: { [x: string]: any }, item: { Key: string; Value: string | any[] }) => {
         const key = item.Key === 'totalActiveVeficles' ? 'totalActiveVehicles' : item.Key;
         result[key] = Array.isArray(item.Value) && item.Value.length === 0 ? 0 : item.Value;

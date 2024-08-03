@@ -82,7 +82,6 @@ export async function deleteCoupons(id: string) {
     return responseObj;
 }
 export async function deletePlan(id: string) {
-    debugger;
     let responseObj = { success: false, data: '' as any, message: '' };
     try {
         let response = await webService.delete(baseUrl + 'plan/' + id);

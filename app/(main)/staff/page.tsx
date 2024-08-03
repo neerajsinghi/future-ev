@@ -125,7 +125,7 @@ const Staff = () => {
         setFormData({ ...formData, [name]: value });
     };
     const changeStatus = async (status: any) => {
-        debugger;
+
         const body: any = {
             staffStatus: status.code
         };
@@ -150,7 +150,7 @@ const Staff = () => {
         }
     };
     const handleSubmit = async (e: React.FormEvent) => {
-        // debugger;
+        // 
         e.preventDefault();
         // Send formData to your backend for processing
         console.log(formData);
@@ -191,7 +191,7 @@ const Staff = () => {
         );
     };
     const accessTemplate = (rowData: any) => {
-        debugger;
+
         return (
             <>
                 {rowData.access && (
@@ -260,7 +260,7 @@ const Staff = () => {
     };
 
     const stationCountTemplate = (rowData: any) => {
-        // debugger;
+        // 
         return <Link href={`/stations?userId=${rowData.id}`}>{rowData.stationCount}</Link>;
     };
 
@@ -338,7 +338,7 @@ const Staff = () => {
     };
 
     const onUpload = (e: any) => {
-        debugger;
+
         const file = e.files[0];
 
         if (!file) return;
@@ -349,7 +349,7 @@ const Staff = () => {
         uploadTask.on(
             'state_changed',
             (snapshot) => {
-                debugger;
+
                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
                 setProgresspercent(progress);
             },
@@ -357,7 +357,7 @@ const Staff = () => {
                 alert(error);
             },
             () => {
-                debugger;
+
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     setFormData({ ...formData, staffVerificationId: downloadURL });
                 });

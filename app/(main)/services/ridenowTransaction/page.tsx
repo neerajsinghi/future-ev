@@ -91,7 +91,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         // { key: 'invoice', label: 'Invoice', _props: { scope: 'col' }, body: InvoiceTemplate }
     ];
     const fetchData = async () => {
-        // debugger;
+        // 
         let response = await getBookings('hourly');
         if (response.success && response.data) {
             const data = [];

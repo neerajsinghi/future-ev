@@ -44,7 +44,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     ];
 
     const fetchData = async () => {
-        debugger;
+
         let response = await getBookings('charging');
         if (response.success && response.data) {
             const data = [];

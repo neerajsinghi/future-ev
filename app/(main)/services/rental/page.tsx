@@ -132,7 +132,7 @@ const Plan = () => {
         }
     ];
     const deletePlanD = async () => {
-        // debugger
+        // 
         const response = await deletePlan(selectedUser);
         if (response.success) {
             fetchData();

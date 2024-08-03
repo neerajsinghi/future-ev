@@ -84,7 +84,7 @@ const City: React.FC = () => {
     };
 
     const onSubmit: SubmitHandler<FormData> = async (data: any) => {
-        debugger;
+
         const polyPath = polygonPath;
         if (polygonPath[0] !== polygonPath[polygonPath.length - 1]) {
             polyPath.push(polygonPath[0]);

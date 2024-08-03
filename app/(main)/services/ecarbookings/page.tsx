@@ -42,7 +42,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         { key: 'discount', label: 'Discount', _props: { scope: 'col' } }
     ];
     const fetchData = async () => {
-        debugger;
+
         let response = await getBookings('eCar');
         if (response.success && response.data) {
             const data = [];

@@ -36,7 +36,7 @@ const RentalPlanForm = ({ city, vehicleType, setShowDialog, fetchData, type }: {
         deposit: 0
     });
     const handleChange = (name: keyof ProductFormData, value: any) => {
-        debugger;
+
         if (name === 'city') {
             setSelectedCity(value);
             formData.current.city = value.code;
@@ -74,7 +74,7 @@ const RentalPlanForm = ({ city, vehicleType, setShowDialog, fetchData, type }: {
                 alert('Validity cannot be empty');
                 return;
             }
-            debugger;
+
             const body = {
                 city: formData.current.city,
                 vehicleType: formData.current.vehicleType,
@@ -229,7 +229,7 @@ const TextField: React.FC<{ value: string; onChange: (value: string) => void }> 
     );
 };
 const TextAreaField: React.FC<{ value: string; onChange: (value: string) => void }> = ({ value, onChange }) => {
-    debugger;
+
     const inputRef = useRef<HTMLTextAreaElement>(null);
     useEffect(() => {
         if (inputRef.current) {

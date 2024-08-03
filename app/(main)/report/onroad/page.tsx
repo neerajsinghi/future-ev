@@ -65,7 +65,7 @@ const Stand = () => {
         return <>{timeString}</>;
     };
     const nameTemplate = (rowData: any) => {
-        debugger;
+
         const id = rowData.profileId;
         return (
             <Link

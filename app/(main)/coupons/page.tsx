@@ -190,7 +190,7 @@ const Coupon = () => {
     };
 
     const deleteCouponD = async () => {
-        debugger;
+
         const response = await deleteCoupons(coupon);
         if (response.success) {
             router.refresh();

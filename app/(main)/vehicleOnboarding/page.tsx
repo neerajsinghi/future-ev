@@ -332,7 +332,7 @@ const BikesStationed = () => {
     }, [searchParams]);
 
     //  const deletePlanD = async () => {
-    //      debugger;
+    //      
     //      const response = await delete(selectedUser);
     //      if (response.success) {
     //          fetchData();
@@ -354,7 +354,7 @@ const BikesStationed = () => {
     const handleChange = async (name: keyof BikesStationedProps, value: any) => {
         let valueL = '';
         if (name === 'vehicleTypeID') {
-            debugger;
+
             setSelectedVehicleType(value);
             valueL = value?.code;
         } else if (name === 'city') {
@@ -423,7 +423,7 @@ const BikesStationed = () => {
         setLoading1(false);
     };
     const onUpload = async (e: any, name: string, multiple: boolean) => {
-        debugger;
+
         if (!multiple) {
             const file = e.files[0];
 
@@ -442,7 +442,7 @@ const BikesStationed = () => {
                     alert(error);
                 },
                 () => {
-                    debugger;
+
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         setFormData({ ...formData, [name]: downloadURL });
                     });
@@ -452,7 +452,7 @@ const BikesStationed = () => {
             const urls = [];
             for (let i = 0; i < e.files.length; i++) {
                 const file = e.files[i];
-                debugger;
+
                 if (!file) return;
 
                 const storageRef = ref(storage, `files/${file.name}`);
@@ -475,7 +475,7 @@ const BikesStationed = () => {
         const vTypes: any[] = [];
         for (let i = 0; i < vehicleType.length; i++) {
             if (vehicleType[i].name === res1) {
-                debugger;
+
                 vTypes.push(vehicleType[i]);
             }
         }

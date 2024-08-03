@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export function getSuccessResponse(response, responseObj) {
-  debugger
+
   let obj = { ...responseObj };
   if (response.data.result || response.data.status) {
     obj.success = true;

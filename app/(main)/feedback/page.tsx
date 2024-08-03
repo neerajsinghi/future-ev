@@ -35,7 +35,7 @@ const FeedBack = () => {
         };
     }, []);
     const fetchData = async () => {
-        debugger;
+
         let response = await getFeedback();
         if (response.success) {
             if (response.data) {

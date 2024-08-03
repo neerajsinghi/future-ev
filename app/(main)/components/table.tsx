@@ -65,7 +65,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                 };
             }
         });
-        // debugger;
+        // 
         setFilters1({
             global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 

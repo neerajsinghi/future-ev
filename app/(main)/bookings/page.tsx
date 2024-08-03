@@ -44,7 +44,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         { key: 'discount', label: 'Discount', _props: { scope: 'col' } }
     ];
     const fetchData = async () => {
-        debugger;
+
         let response = await getBookings();
         if (response.success && response.data) {
             const data = [];

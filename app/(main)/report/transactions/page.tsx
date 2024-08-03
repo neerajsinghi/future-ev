@@ -41,7 +41,7 @@ const Stand = () => {
             for (let i = 0; i < response.data.length; i++) {
                 if (response.data[i].status === 'completed') data.push(flattenData(response.data[i]));
             }
-            debugger;
+
             setItems(data);
         }
         setLoading1(false);
@@ -58,7 +58,7 @@ const Stand = () => {
     };
 
     const timeFunctionTotal = (rowData: any) => {
-        debugger;
+
         const time = Math.round((rowData.endTime - rowData.startTime) / 60);
         let timeString = time + ' mins';
         if (time > 60) {
@@ -70,7 +70,7 @@ const Stand = () => {
         return <>{timeString}</>;
     };
     const nameTemplate = (rowData: any) => {
-        debugger;
+
         const id = rowData.profileId;
         return (
             <Link

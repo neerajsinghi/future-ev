@@ -131,11 +131,11 @@ const Stations = () => {
     const [showSuperVisorDialog, setShowSuperVisorDialog] = useState(false);
     const searchBox = useRef<google.maps.places.SearchBox>();
     const onSearchBoxLoad = (ref: google.maps.places.SearchBox | undefined) => {
-        debugger
+
         searchBox.current = ref
     };
     const onPlacesChanged = () => {
-        debugger
+
         const places = searchBox.current?.getPlaces()
         const location = places ? places[0].geometry?.location : null;
         const bounds = new window.google.maps.LatLngBounds(location?.toJSON());
@@ -154,7 +154,7 @@ const Stations = () => {
 
 
     const onMapLoad = useCallback(function callback(map: google.maps.Map) {
-        debugger
+
         const bounds = new window.google.maps.LatLngBounds(center);
         map.setZoom(12);
         setMap(map);
@@ -434,7 +434,7 @@ const Stations = () => {
         { key: 'group', label: 'Group', _props: { scope: 'col' } },
         {
             key: 'supervisor.name', label: 'Supervisor Name', _props: { scope: 'col' }, body: (rowData: any) => <Badge onClick={() => {
-                debugger
+
                 console.log(rowData.supervisor.name);
                 console.log(rowData);
                 setSelectID(rowData.id);

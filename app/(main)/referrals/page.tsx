@@ -36,7 +36,7 @@ const Referral = () => {
         };
     }, []);
     const fetchData = async () => {
-        debugger;
+
         let response = await getReferral();
         if (response.success) {
             if (response.data) {

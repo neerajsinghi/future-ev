@@ -46,7 +46,7 @@ const Page = (params: any) => {
                 }
             }
             setPlans(plan);
-            debugger;
+
             setUserWalletData(nonPlan);
             const response2 = await fetch(`https://futureev.trestx.com/api/v1/users/${userId}`);
             const data2 = await response2.json();

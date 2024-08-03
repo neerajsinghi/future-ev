@@ -100,7 +100,7 @@ const Plan = () => {
             }
         }
         if (formData.deposit > 0) {
-            debugger;
+
             const body = {
                 city: formData.city,
                 vehicleType: formData.vehicleType,
@@ -169,7 +169,7 @@ const Plan = () => {
     const cellMinEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} suffix=" min" onKeyDown={(e) => e.stopPropagation()} />;
     };
-    const textEditor = (options: ColumnEditorOptions) => {};
+    const textEditor = (options: ColumnEditorOptions) => { };
     const onCellEditComplete = async (e: ColumnEvent) => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
@@ -252,7 +252,7 @@ const Plan = () => {
         }
     };
     const deletePlanD = async () => {
-        debugger;
+
         const response = await deletePlan(selectedUser);
         if (response.success) {
             fetchData();

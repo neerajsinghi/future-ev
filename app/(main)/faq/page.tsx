@@ -82,7 +82,7 @@ const FAQ = () => {
     };
 
     const deleteFaqD = async () => {
-        debugger;
+
         const response = await deleteFaq(faqId);
         if (response.success) {
             fetchData();

@@ -11,6 +11,7 @@ import { getBikes, getBookings, getChargers, getStations, getStatistics, getUser
 import { SelectButton } from 'primereact/selectbutton';
 import { getCity } from '@/app/api/services';
 import { Dropdown } from 'primereact/dropdown';
+import { set } from 'date-fns';
 
 type cityType = {
     id: string;
@@ -56,26 +57,55 @@ const Dashboard = () => {
     useEffect(() => {
         fetchData();
     }, []);
+    const clearAll = () => {
+        setNumberOfUsers(0);
+        setIdVerifiedUsers(0);
+        setDlVerifiedUsers(0);
+        setTotalStations(0);
+        setTotalPublicStations(0);
+        setTotalActiveStation(0);
+        setTotalCo2Emission(0);
+        setTotalChargers(0);
+        setTotalRides(0);
+        setTotalDistance(0);
+        setTotalCompletedRides(0);
+        setTotalVehicles(0);
+        setTotalActiveVeficles(0);
+        setTotalVehicleOnRoad(0);
+        setTotalEarning(0);
+        setTotalAmountInWallet(0);
+    };
+
     const fetchData = async () => {
+
+
+        clearAll()
         const resp = await getStatistics(selectedTime.code);
 
+
         if (resp.success && resp.data) {
-            setNumberOfUsers(resp.data[0][0]?.Value ? resp.data[0][0]?.Value : 0);
-            setIdVerifiedUsers(resp.data[0][1]?.Value ? resp.data[0][1]?.Value : 0);
-            setDlVerifiedUsers(resp.data[0][2]?.Value ? resp.data[0][2]?.Value : 0);
-            setTotalStations(resp.data[0][3]?.Value[0] ? resp.data[0][3]?.Value[0] : 0);
-            setTotalPublicStations(resp.data[0][4]?.Value[0] ? resp.data[0][4].Value[0] : 0);
-            setTotalActiveStation(resp.data[0][5]?.Value[0] ? resp.data[0][5]?.Value[0] : 0);
-            setTotalCo2Emission(resp.data[0][6]?.Value[0] ? resp.data[0][6]?.Value[0] : 0);
-            setTotalChargers(resp.data[0][7]?.Value ? resp.data[0][7]?.Value : 0);
-            setTotalRides(resp.data[0][8]?.Value[0] ? resp.data[0][8]?.Value[0] : 0);
-            setTotalDistance(resp.data[0][9]?.Value[0] ? resp.data[0][9]?.Value[0] : 0);
-            setTotalCompletedRides(resp.data[0][10]?.Value[0] ? resp.data[0][10]?.Value[0] : 0);
-            setTotalVehicles(resp.data[0][11]?.Value[0] ? resp.data[0][11]?.Value[0] : 0);
-            setTotalActiveVeficles(resp.data[0][12]?.Value[0] ? resp.data[0][12]?.Value[0] : 0);
-            setTotalVehicleOnRoad(resp.data[0][13]?.Value[0] ? resp.data[0][13].Value[0] : 0);
-            setTotalEarning(resp.data[0][14]?.Value ? resp.data[0][14]?.Value : 0);
-            setTotalAmountInWallet(resp.data[0][15]?.Value ? resp.data[0][15]?.Value : 0);
+            const parsedData = resp.data[0].reduce((result: { [x: string]: any; }, item: { Key: string; Value: string | any[]; }) => {
+                const key = item.Key === "totalActiveVeficles" ? "totalActiveVehicles" : item.Key;
+                result[key] = Array.isArray(item.Value) && item.Value.length === 0 ? 0 : item.Value;
+                return result;
+            }, {} as { [key: string]: any });
+            setNumberOfUsers(parsedData.numberOfUsers);
+            setIdVerifiedUsers(parsedData.idVerified ? parsedData.idVerified : 0);
+            setDlVerifiedUsers(parsedData.dlVerified ? parsedData.dlVerified : 0);
+            setUnVerifiedUsers(parsedData.unVerified ? parsedData.unVerified : numberOfUsers - parsedData.idVerified);
+            setTotalStations(parsedData.totalStations ? parsedData.totalStations : 0);
+            setTotalPublicStations(parsedData.totalPublicStations ? parsedData.totalPublicStations : 0);
+            setTotalActiveStation(parsedData.totalActiveStation ? parsedData.totalActiveStation : 0);
+            setTotalCo2Emission(parsedData.totalCo2Emission ? parsedData.totalCo2Emission : 0);
+            setTotalChargers(parsedData.totalChargers ? parsedData.totalChargers : 0);
+            setTotalRides(parsedData.totalRides ? parsedData.totalRides : 0);
+            setTotalDistance(parsedData.totalDistance ? parsedData.totalDistance : 0);
+            setTotalCompletedRides(parsedData.totalCompletedRides ? parsedData.totalCompletedRides : 0);
+            setTotalVehicles(parsedData.totalVehicles ? parsedData.totalVehicles : 0);
+            setTotalActiveVeficles(parsedData.totalActiveVehicles ? parsedData.totalActiveVehicles : 0);
+            setTotalVehicleOnRoad(parsedData.totalVehicleOnRoad ? parsedData.totalVehicleOnRoad : 0);
+            setTotalEarning(parsedData.totalEarning ? parsedData.totalEarning : 0);
+            setTotalAmountInWallet(parsedData.totalValueInWallet ? parsedData.totalValueInWallet : 0);
         }
 
     };
@@ -95,7 +125,7 @@ const Dashboard = () => {
         fetchCities();
     }, []);
     useEffect(() => {
-        debugger
+
         fetchData();
     }, [selectedTime]);
 

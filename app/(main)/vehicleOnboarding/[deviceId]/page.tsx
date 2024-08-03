@@ -19,7 +19,7 @@ const VehicleData = (params: any) => {
         setLoading1(true);
         try {
             const response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/data/${deviceId}`);
-            // debugger;
+            // 
             const data = await response.json();
             console.log(data);
             if (data.data) {

@@ -1,0 +1,19 @@
+.dashboard-panel {
+      display: flex;
+      justify-content: space-between;
+}
+
+.dashboard-panel .buttons {
+      width: fit-content;
+}
+
+@media (max-width: 800px) {
+      .dashboard-panel {
+            display: flex;
+            flex-direction: column;
+      }
+
+      .dashboard-panel .buttons {
+            width: 100%;
+      }
+}

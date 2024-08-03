@@ -409,7 +409,7 @@ export async function setStation(data: any) {
 export async function getStatistics(startDate: Date, endDate: Date, city = '') {
     let responseObj = { success: false, data: [] as any[], message: '' };
     //get startdate and enddate based on duration
-
+    // debugger;
     try {
         if (city === '') {
             let response = await webService.get(baseUrl + 'statistics?startDate=' + startDate.toISOString() + '&endDate=' + endDate.toISOString());

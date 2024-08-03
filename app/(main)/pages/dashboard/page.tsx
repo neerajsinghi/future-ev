@@ -11,7 +11,8 @@ import { getBikes, getBookings, getChargers, getStations, getStatistics, getUser
 import { SelectButton } from 'primereact/selectbutton';
 import { getCity } from '@/app/api/services';
 import { Dropdown } from 'primereact/dropdown';
-import { set } from 'date-fns';
+import './plan.css';
+import { Calendar } from 'primereact/calendar';
 
 type cityType = {
     id: string;
@@ -45,8 +46,9 @@ const Dashboard = () => {
     const [totalChargers, setTotalChargers] = useState<number>(0);
     const [totalKwhCharged, setTotalKwhCharged] = useState<number>(0);
     const [selectedTime, setSelectedTime] = useState<any>({ name: 'Week', code: 7 });
+    const [date, setDate] = useState<any>('');
     const [cities, setCities] = useState<cityType[]>([]);
-    const [selectedCity, setSelectedCity] = useState('');
+    const [selectedCity, setSelectedCity] = useState<any>({});
     const { layoutConfig } = useContext(LayoutContext);
     const formatCurrency = (value: number) => {
         return value?.toLocaleString('en-IN', {
@@ -77,61 +79,87 @@ const Dashboard = () => {
     };
 
     const fetchData = async () => {
+        clearAll();
 
+        const calculateDateRange = (code: number) => {
+            let startDate = new Date();
+            let endDate = new Date();
 
-        clearAll()
+            switch (code) {
+                case 1:
+                    startDate.setDate(startDate.getDate() - 1);
+                    break;
+                case 2:
+                    endDate.setDate(endDate.getDate() - 1);
+                    startDate.setDate(startDate.getDate() - 2);
+                    break;
+                case 7:
+                    startDate.setDate(startDate.getDate() - 7);
+                    break;
+                case 30:
+                    startDate.setDate(startDate.getDate() - 30);
+                    break;
+                case 365:
+                    startDate.setDate(startDate.getDate() - 365);
+                    break;
+                default:
+                    startDate.setDate(startDate.getDate() - 1);
+                    break;
+            }
 
-        let startDate = new Date();
-        let endDate = new Date();
-        switch (selectedTime.code) {
-            case 1:
-                startDate.setDate(startDate.getDate() - 1);
-                break;
-            case 2:
-                endDate.setDate(endDate.getDate() - 1);
-                startDate.setDate(startDate.getDate() - 2);
-                break;
-            case 7:
-                startDate.setDate(startDate.getDate() - 7);
-                break;
-            case 30:
-                startDate.setDate(startDate.getDate() - 30);
-                break;
-            case 365:
-                startDate.setDate(startDate.getDate() - 365);
-                break;
-            default:
-                startDate.setDate(startDate.getDate() - 1);
-                break;
-        }
-        const resp = await getStatistics(startDate, endDate);
+            return { startDate, endDate };
+        };
 
-
-        if (resp.success && resp.data) {
-            const parsedData = resp.data[0].reduce((result: { [x: string]: any; }, item: { Key: string; Value: string | any[]; }) => {
-                const key = item.Key === "totalActiveVeficles" ? "totalActiveVehicles" : item.Key;
+        const parseData = (data: any) => {
+            return data.reduce((result: any, item: any) => {
+                const key = item.Key === 'totalActiveVeficles' ? 'totalActiveVehicles' : item.Key;
                 result[key] = Array.isArray(item.Value) && item.Value.length === 0 ? 0 : item.Value;
                 return result;
-            }, {} as { [key: string]: any });
-            setNumberOfUsers(parsedData.numberOfUsers);
-            setIdVerifiedUsers(parsedData.idVerified ? parsedData.idVerified : 0);
-            setDlVerifiedUsers(parsedData.dlVerified ? parsedData.dlVerified : 0);
-            setUnVerifiedUsers(parsedData.unVerified ? parsedData.unVerified : numberOfUsers - parsedData.idVerified);
-            setTotalStations(parsedData.totalStations ? parsedData.totalStations : 0);
-            setTotalPublicStations(parsedData.totalPublicStations ? parsedData.totalPublicStations : 0);
-            setTotalActiveStation(parsedData.totalActiveStation ? parsedData.totalActiveStation : 0);
-            setTotalCo2Emission(parsedData.totalCo2Emission ? parsedData.totalCo2Emission : 0);
-            setTotalChargers(parsedData.totalChargers ? parsedData.totalChargers : 0);
-            setTotalRides(parsedData.totalRides ? parsedData.totalRides : 0);
-            setTotalDistance(parsedData.totalDistance ? parsedData.totalDistance : 0);
-            setTotalCompletedRides(parsedData.totalCompletedRides ? parsedData.totalCompletedRides : 0);
-            setTotalVehicles(parsedData.totalVehicles ? parsedData.totalVehicles : 0);
-            setTotalActiveVeficles(parsedData.totalActiveVehicles ? parsedData.totalActiveVehicles : 0);
-            setTotalVehicleOnRoad(parsedData.totalVehicleOnRoad ? parsedData.totalVehicleOnRoad : 0);
-            setTotalEarning(parsedData.totalEarning ? parsedData.totalEarning : 0);
-            setTotalAmountInWallet(parsedData.totalValueInWallet ? parsedData.totalValueInWallet : 0);
-        }
+            }, {});
+        };
 
+        const updateState = (parsedData: any) => {
+            setNumberOfUsers(parsedData.numberOfUsers);
+            setIdVerifiedUsers(parsedData.idVerified || 0);
+            setDlVerifiedUsers(parsedData.dlVerified || 0);
+            setUnVerifiedUsers(parsedData.unVerified || numberOfUsers - parsedData.idVerified);
+            setTotalStations(parsedData.totalStations || 0);
+            setTotalPublicStations(parsedData.totalPublicStations || 0);
+            setTotalActiveStation(parsedData.totalActiveStation || 0);
+            setTotalCo2Emission(parsedData.totalCo2Emission || 0);
+            setTotalChargers(parsedData.totalChargers || 0);
+            setTotalRides(parsedData.totalRides || 0);
+            setTotalDistance(parsedData.totalDistance || 0);
+            setTotalCompletedRides(parsedData.totalCompletedRides || 0);
+            setTotalVehicles(parsedData.totalVehicles || 0);
+            setTotalActiveVeficles(parsedData.totalActiveVehicles || 0);
+            setTotalVehicleOnRoad(parsedData.totalVehicleOnRoad || 0);
+            setTotalEarning(parsedData.totalEarning || 0);
+            setTotalAmountInWallet(parsedData.totalValueInWallet || 0);
+        };
+
+        try {
+            const { startDate, endDate } = calculateDateRange(selectedTime.code);
+            let response;
+
+            if (selectedCity && date) {
+                response = await getStatistics(date[0], date[1], selectedCity.name);
+            } else if (selectedCity) {
+                response = await getStatistics(startDate, endDate, selectedCity.name);
+            } else if (date) {
+                response = await getStatistics(date[0], date[1]);
+            } else {
+                response = await getStatistics(startDate, endDate);
+            }
+
+            if (response.success && response.data) {
+                const parsedData = parseData(response.data[0]);
+                updateState(parsedData);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // Handle error (e.g., show a toast notification)
+        }
     };
 
     useEffect(() => {
@@ -149,9 +177,8 @@ const Dashboard = () => {
         fetchCities();
     }, []);
     useEffect(() => {
-
         fetchData();
-    }, [selectedTime]);
+    }, [selectedTime, selectedCity, date]);
 
     return (
         <>
@@ -163,10 +190,10 @@ const Dashboard = () => {
                 </div>
             </div>
             <div className="card">
-                <div className="grid  align-items-center">
-                    <div className='col-12 md:col-1  align-items-center' style={{ marginRight: "30px" }}>
-
-                        <Dropdown filter
+                <div className="dashboard-panel">
+                    <div className="flex gap-2">
+                        <Dropdown
+                            filter
                             placeholder="Select City"
                             optionLabel="name"
                             optionValue="id"
@@ -176,41 +203,27 @@ const Dashboard = () => {
                                 setSelectedCity(e.value);
                             }}
                         />
+                        <Calendar placeholder="Start Date - End Date" value={date} onChange={(e) => setDate(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection />
                     </div>
-                    <div className='col-12 md:col-2  align-items-center'>
-                        {/* <Dropdown filter
-                            placeholder="Select Service"
-                            optionLabel="name"
-                            optionValue="id"
-                            options={cities}
-                            value={selectedCity}
-                            onChange={(e) => {
-                                setSelectedCity(e.value);
-                            }}
-                        /> */}
-                    </div>
-                    <div className='col-12 md:col-4' />
-                    <div className='col-12 md:col-4'>
-                        <SelectButton
-                            style={{ border: '2px solid white' }}
-                            width={30}
-                            className="flex"
-                            optionLabel="name"
-                            options={[
-                                { name: 'Yesterday', code: 2 },
-                                { name: 'Today', code: 1 },
-                                { name: 'Week', code: 7 },
-                                { name: '15 Days', code: 7 },
-                                { name: 'Month', code: 30 },
-                                { name: 'Year', code: 365 }
-                            ]}
-                            value={selectedTime}
-                            onChange={(e) => setSelectedTime(e.value)}
-                            multiple={false}
-                        />
-                    </div>
+                    {/* <div className="buttons"> */}
+                    <SelectButton
+                        className="flex"
+                        optionLabel="name"
+                        options={[
+                            { name: 'Yesterday', code: 2 },
+                            { name: 'Today', code: 1 },
+                            { name: 'Week', code: 7 },
+                            { name: '15 Days', code: 7 },
+                            { name: 'Month', code: 30 },
+                            { name: 'Year', code: 365 }
+                        ]}
+                        value={selectedTime}
+                        onChange={(e) => setSelectedTime(e.value)}
+                        multiple={false}
+                    />
+                    {/* </div> */}
                 </div>
-            </div >
+            </div>
             <div className="grid">
                 <div className="col-12 lg:col-6 xl:col-3">
                     <FlippingCard
@@ -223,17 +236,17 @@ const Dashboard = () => {
                     />
                 </div>
                 <div className="col-12 lg:col-6 xl:col-3">
-                    <FlippingCard title={'Total Distance Covered (km) '} value={totalDistance.toString()} added={''} since={''} labels={['Distance Covered']} dataP={[totalDistance]} />
+                    <FlippingCard title={'Total Distance Covered (km) '} value={totalDistance?.toString()} added={''} since={''} labels={['Distance Covered']} dataP={[totalDistance]} />
                 </div>
                 <div className="col-12 lg:col-6 xl:col-3">
-                    <FlippingCard title={'CO2 Emission Avoided'} value={totalCo2Emission.toString()} added={''} since={''} labels={['CO2 Emission Avoided']} dataP={[totalCo2Emission]} />
+                    <FlippingCard title={'CO2 Emission Avoided'} value={totalCo2Emission?.toString()} added={''} since={''} labels={['CO2 Emission Avoided']} dataP={[totalCo2Emission]} />
                 </div>
                 <div className="col-12 lg:col-6 xl:col-3">
                     <FlippingCard
                         title={'Total Rides'}
-                        value={totalRides.toString()}
-                        added={totalCompletedRides.toString() + ' completed'}
-                        since={(totalRides - totalCompletedRides).toString() + ' on going'}
+                        value={totalRides?.toString()}
+                        added={totalCompletedRides?.toString() + ' completed'}
+                        since={(totalRides - totalCompletedRides)?.toString() + ' on going'}
                         dataP={[totalCompletedRides, totalRides - totalCompletedRides]}
                         labels={['Completed Rides', 'Ongoing Rides']}
                     />
@@ -241,9 +254,9 @@ const Dashboard = () => {
                 <div className="col-12 lg:col-6 xl:col-3">
                     <FlippingCard
                         title={'Total Users'}
-                        value={numberOfUsers.toString()}
-                        added={dlVerifiedUsers.toString() + ' DL verified ' + idVerifiedUsers.toString() + ' ID verified'}
-                        since={unVerifiedUsers.toString() + ' Unverified'}
+                        value={numberOfUsers?.toString()}
+                        added={dlVerifiedUsers?.toString() + ' DL verified ' + idVerifiedUsers?.toString() + ' ID verified'}
+                        since={unVerifiedUsers?.toString() + ' Unverified'}
                         labels={['Dl Verified', 'Id Verified', 'UnVerified']}
                         dataP={[dlVerifiedUsers, idVerifiedUsers, unVerifiedUsers]}
                     />
@@ -252,9 +265,9 @@ const Dashboard = () => {
                 <div className="col-12 lg:col-6 xl:col-3">
                     <FlippingCard
                         title={'Total Vehicles'}
-                        value={totalVehicles.toString()}
-                        added={totalActiveVehicles.toString() + ' Available'}
-                        since={totalVehicleOnRoad.toString() + ' on road'}
+                        value={totalVehicles?.toString()}
+                        added={totalActiveVehicles?.toString() + ' Available'}
+                        since={totalVehicleOnRoad?.toString() + ' on road'}
                         labels={['Available', 'On road', 'InActive']}
                         dataP={[totalActiveVehicles, totalVehicleOnRoad, totalVehicles - (totalActiveVehicles + totalVehicleOnRoad)]}
                     />
@@ -262,9 +275,9 @@ const Dashboard = () => {
                 <div className="col-12 lg:col-6 xl:col-3">
                     <FlippingCard
                         title={'Total Stations'}
-                        value={totalStations.toString()}
-                        added={totalActiveStations.toString() + ' Active'}
-                        since={totalPublicStations.toString() + ' Public'}
+                        value={totalStations?.toString()}
+                        added={totalActiveStations?.toString() + ' Active'}
+                        since={totalPublicStations?.toString() + ' Public'}
                         labels={['Active', 'Public', 'Inactive']}
                         dataP={[totalActiveStations, totalPublicStations, totalStations - totalActiveStations]}
                     />
@@ -272,8 +285,8 @@ const Dashboard = () => {
                 <div className="col-12 lg:col-6 xl:col-3">
                     <FlippingCard
                         title={'Total Chargers '}
-                        value={totalChargers.toString()}
-                        added={totalKwhCharged.toString() + ' Total kWh Charged'}
+                        value={totalChargers?.toString()}
+                        added={totalKwhCharged?.toString() + ' Total kWh Charged'}
                         since={''}
                         labels={['TotalChargers', 'Total Kwh Charged']}
                         dataP={[totalChargers, totalKwhCharged]}

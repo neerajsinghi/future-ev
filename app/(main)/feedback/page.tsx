@@ -51,20 +51,20 @@ const FeedBack = () => {
 
     return (
         <>
-            {/* {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>} */}
-            {/* {(isAccessible === 'Edit' || isAccessible === 'View') && ( */}
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Feedback' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'Feedback' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
 
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="Feedbacks" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                    <div className="col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="Feedbacks" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        </div>
                     </div>
                 </div>
-            </div>
-            {/* )} */}
+            )}
         </>
     );
 };

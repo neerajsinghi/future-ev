@@ -8,8 +8,10 @@ import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
+    const isAccessible = useIsAccessible('rideNowTransactions');
     const router = useRouter();
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
@@ -116,68 +118,76 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         }
         setLoading1(false);
     };
+
+    if (isAccessible === 'None') {
+        return <h1>You Dont Have Access To This Page</h1>;
+    }
+
     return (
-        <div className="grid">
-            <div className="col-12">
-                <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-            </div>
-            <div className="col-12">
-                <CustomTable tableName="rides" mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
-            </div>
-            <Dialog header="Invoice" visible={preview} onHide={() => setPreview(false)} className="w-[50vw]" style={{ width: '50svw' }}>
-                <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
-                    <div className="field col-6">
-                        <label>Booking ID</label>
-                        <p>{bookingData?.id}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Start Time</label>
-                        <p>{formatTimestampToDate(bookingData?.startTime)}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>End Time</label>
-                        <p>{bookingData?.endTime ? formatTimestampToDate(bookingData?.endTime) : 0}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Start Station</label>
-                        <p>{bookingData?.startingStation.name}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>End Point</label>
-                        <p>{bookingData?.endingStation?.name || 'NA'}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Total Distance</label>
-                        <p>{bookingData?.totalDistance}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Green Points</label>
-                        <p>{bookingData?.greenPoints}</p>
-                    </div>
-                    <div className="field col-6">
-                        <label>Carbon Saved</label>
-                        <p>{bookingData?.carbonSaved}</p>
-                    </div>
-                    <div className="col-6">
-                        <label>Start Address</label>
-                        <p>{bookingData?.startingStation.address.address}</p>
-                    </div>
-                    <div className="col-6">
-                        <label>End Address</label>
-                        <p>{bookingData?.endingStation?.address.address || 'NA'}</p>
-                    </div>
-                    <div className="col-6">
-                        <label>Price</label>
-                        <p>{bookingData?.price}</p>
-                    </div>
+        isAccessible === 'View' ||
+        (isAccessible === 'Edit' && (
+            <div className="grid">
+                <div className="col-12">
+                    <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
                 </div>
-                <div className="w-full">
-                    <Button className="font-bold mx-auto" onClick={downloadInvoice}>
-                        Download Invoice
-                    </Button>
+                <div className="col-12">
+                    <CustomTable tableName="rides" mapNavigatePath="/services/ridenowbooking" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
                 </div>
-            </Dialog>
-        </div>
+                <Dialog header="Invoice" visible={preview} onHide={() => setPreview(false)} className="w-[50vw]" style={{ width: '50svw' }}>
+                    <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
+                        <div className="field col-6">
+                            <label>Booking ID</label>
+                            <p>{bookingData?.id}</p>
+                        </div>
+                        <div className="field col-6">
+                            <label>Start Time</label>
+                            <p>{formatTimestampToDate(bookingData?.startTime)}</p>
+                        </div>
+                        <div className="field col-6">
+                            <label>End Time</label>
+                            <p>{bookingData?.endTime ? formatTimestampToDate(bookingData?.endTime) : 0}</p>
+                        </div>
+                        <div className="field col-6">
+                            <label>Start Station</label>
+                            <p>{bookingData?.startingStation.name}</p>
+                        </div>
+                        <div className="field col-6">
+                            <label>End Point</label>
+                            <p>{bookingData?.endingStation?.name || 'NA'}</p>
+                        </div>
+                        <div className="field col-6">
+                            <label>Total Distance</label>
+                            <p>{bookingData?.totalDistance}</p>
+                        </div>
+                        <div className="field col-6">
+                            <label>Green Points</label>
+                            <p>{bookingData?.greenPoints}</p>
+                        </div>
+                        <div className="field col-6">
+                            <label>Carbon Saved</label>
+                            <p>{bookingData?.carbonSaved}</p>
+                        </div>
+                        <div className="col-6">
+                            <label>Start Address</label>
+                            <p>{bookingData?.startingStation.address.address}</p>
+                        </div>
+                        <div className="col-6">
+                            <label>End Address</label>
+                            <p>{bookingData?.endingStation?.address.address || 'NA'}</p>
+                        </div>
+                        <div className="col-6">
+                            <label>Price</label>
+                            <p>{bookingData?.price}</p>
+                        </div>
+                    </div>
+                    <div className="w-full">
+                        <Button className="font-bold mx-auto" onClick={downloadInvoice}>
+                            Download Invoice
+                        </Button>
+                    </div>
+                </Dialog>
+            </div>
+        ))
     );
 };
 export default Booking;

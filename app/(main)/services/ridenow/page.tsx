@@ -16,6 +16,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { deletePlan, getCity } from '@/app/api/services';
 import useIsMobile from '@/app/api/hooks';
 import { showToast } from '@/app/hooks/toast';
+import useIsAccessible from '@/app/hooks/isAccessible';
 interface ProductFormData {
     city: string;
     vehicleType: string;
@@ -30,6 +31,7 @@ interface ProductFormData {
 }
 
 const Plan = () => {
+    const isAccessible = useIsAccessible('rideNow');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [loadingRows, setLoadingRows] = useState<{ [key: string]: boolean }>({});
@@ -263,141 +265,152 @@ const Plan = () => {
         }
     };
     const isMobile = useIsMobile();
+
+    if (isAccessible === 'None') {
+        return <h1>You Dont Have Access To This Page</h1>;
+    }
+
     return (
         <>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
-                    </div>
-                </div>
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
-                    </div>
-                </div>
-            </div>
-            <Dialog header="Add Plan" className="desktop-dialog" visible={showDialog} onHide={() => setShowDialog(false)}>
-                <form onSubmit={handleSubmit} className="p-fluid grid">
-                    <div className="field col-12 lg:col-6">
-                        <label htmlFor="name">City</label>
-                        <Dropdown filter value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
-                    </div>
-
-                    <div className="field col-12 lg:col-6">
-                        <label htmlFor="description">Vehicle Type</label>
-                        <Dropdown filter value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
-                    </div>
-                    <div className="field col-12">
-                        {formData.price.map((price, index) => {
-                            return (
-                                <>
-                                    <div className="field col-12 lg:col-12" key={index + Math.random()}>
-                                        <div className="grid justify-content-center align-content-center align-items-center">
-                                            <div className="col-3 align-item-center space-y-3">
-                                                <label htmlFor="price">From</label>
-
-                                                <InputNumber
-                                                    value={formData.startingMinutes[index]}
-                                                    onValueChange={(e: InputNumberValueChangeEvent) => {
-                                                        e.stopPropagation();
-                                                        const newPrice: any[] = [...formData.startingMinutes];
-                                                        newPrice[index] = e.value;
-                                                        setFormData({ ...formData, startingMinutes: newPrice });
-                                                    }}
-                                                    onKeyDown={(e) => e.stopPropagation()}
-                                                    suffix=" min"
-                                                />
-                                            </div>
-                                            <div className="col-3 align-item-center">
-                                                <label htmlFor="price">To</label>
-                                                <InputNumber
-                                                    value={formData.endingMinutes[index]}
-                                                    onValueChange={(e: InputNumberValueChangeEvent) => {
-                                                        e.stopPropagation();
-                                                        const newPrice: any[] = [...formData.endingMinutes];
-                                                        newPrice[index] = e.value;
-                                                        setFormData({ ...formData, endingMinutes: newPrice });
-                                                    }}
-                                                    onKeyDown={(e) => e.stopPropagation()}
-                                                    suffix=" min"
-                                                />
-                                            </div>
-                                            <div className="col-3 align-item-center">
-                                                <label htmlFor="price">Price</label>
-                                                <InputNumber
-                                                    value={formData.price[index]}
-                                                    onValueChange={(e: InputNumberValueChangeEvent) => {
-                                                        e.stopPropagation();
-                                                        const newPrice: any[] = [...formData.price];
-                                                        newPrice[index] = e.value;
-                                                        setFormData({ ...formData, price: newPrice });
-                                                    }}
-                                                    mode="currency"
-                                                    currency="INR"
-                                                    locale="en-IN"
-                                                    onKeyDown={(e) => e.stopPropagation()}
-                                                />
-                                            </div>
-                                            {index == 0 && (
-                                                <div className="col-3 align-item-center">
-                                                    <Button
-                                                        icon="pi pi-plus"
-                                                        text
-                                                        onClick={() => {
-                                                            const newPrice: any[] = [...formData.price];
-                                                            newPrice.push(0);
-                                                            setFormData({ ...formData, price: newPrice, startingMinutes: [...formData.startingMinutes, 0], endingMinutes: [...formData.endingMinutes, 0] });
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
-                                            <div className="col-3 align-item-center">
-                                                {index > 0 && (
-                                                    <Button
-                                                        icon="pi pi-minus"
-                                                        text
-                                                        onClick={() => {
-                                                            const newPrice: any[] = [...formData.price];
-                                                            newPrice.pop();
-                                                            setFormData({ ...formData, price: newPrice, startingMinutes: formData.startingMinutes.slice(0, -1), endingMinutes: formData.endingMinutes.slice(0, -1) });
-                                                        }}
-                                                    />
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
-                            );
-                        })}
-                    </div>
-                    <div className="field col-12 lg:col-12">
-                        <div className="flex gap-3 align-content-center align-item-center">
-                            <div className="w-full align-item-center">
-                                <label htmlFor="validity">Extension</label>
-                                <InputNumber value={formData.everyXMinutes} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('everyXMinutes', e.value)} suffix=" min" />
+            {isAccessible === 'Edit' ||
+                (isAccessible === 'View' && (
+                    <div className="grid">
+                        <div className="col-12">
+                            <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                        </div>
+                        <div className="col-12">
+                            <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                                <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                             </div>
-                            <div className="w-full align-item-center">
-                                <label htmlFor="validity" style={{ whiteSpace: 'nowrap' }}>
-                                    Extension Price
-                                </label>
-                                <InputNumber value={formData.extensionPrice} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('extensionPrice', e.value)} mode="currency" currency="INR" locale="en-IN" />
-                            </div>
-                            <div className="w-full align-item-center">
-                                <label htmlFor="validity">Refundable Deposit</label>
-                                <InputNumber value={formData.deposit} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('deposit', e.value)} mode="currency" currency="INR" locale="en-IN" />
+                        </div>
+                        <div className="col-12 m-10">
+                            <div className="card">
+                                <CustomTable tableName="" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
                             </div>
                         </div>
                     </div>
+                ))}
+            {isAccessible === 'Edit' && (
+                <Dialog header="Add Plan" className="desktop-dialog" visible={showDialog} onHide={() => setShowDialog(false)}>
+                    <form onSubmit={handleSubmit} className="p-fluid grid">
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="name">City</label>
+                            <Dropdown filter value={selectedCity} options={city} onChange={(e) => handleChange('city', e.value)} optionLabel="name" placeholder="Select a City" />
+                        </div>
 
-                    <div className="field justify-content-center col-12 button-row">
-                        <Button label="Submit" type="submit" />
-                    </div>
-                </form>
-            </Dialog>
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="description">Vehicle Type</label>
+                            <Dropdown filter value={selectedVehicleType} options={vehicleType} onChange={(e) => handleChange('vehicleType', e.value)} optionLabel="name" placeholder="Select a Vehicle Type" />
+                        </div>
+                        <div className="field col-12">
+                            {formData.price.map((price, index) => {
+                                return (
+                                    <>
+                                        <div className="field col-12 lg:col-12" key={index + Math.random()}>
+                                            <div className="grid justify-content-center align-content-center align-items-center">
+                                                <div className="col-3 align-item-center space-y-3">
+                                                    <label htmlFor="price">From</label>
+
+                                                    <InputNumber
+                                                        value={formData.startingMinutes[index]}
+                                                        onValueChange={(e: InputNumberValueChangeEvent) => {
+                                                            e.stopPropagation();
+                                                            const newPrice: any[] = [...formData.startingMinutes];
+                                                            newPrice[index] = e.value;
+                                                            setFormData({ ...formData, startingMinutes: newPrice });
+                                                        }}
+                                                        onKeyDown={(e) => e.stopPropagation()}
+                                                        suffix=" min"
+                                                    />
+                                                </div>
+                                                <div className="col-3 align-item-center">
+                                                    <label htmlFor="price">To</label>
+                                                    <InputNumber
+                                                        value={formData.endingMinutes[index]}
+                                                        onValueChange={(e: InputNumberValueChangeEvent) => {
+                                                            e.stopPropagation();
+                                                            const newPrice: any[] = [...formData.endingMinutes];
+                                                            newPrice[index] = e.value;
+                                                            setFormData({ ...formData, endingMinutes: newPrice });
+                                                        }}
+                                                        onKeyDown={(e) => e.stopPropagation()}
+                                                        suffix=" min"
+                                                    />
+                                                </div>
+                                                <div className="col-3 align-item-center">
+                                                    <label htmlFor="price">Price</label>
+                                                    <InputNumber
+                                                        value={formData.price[index]}
+                                                        onValueChange={(e: InputNumberValueChangeEvent) => {
+                                                            e.stopPropagation();
+                                                            const newPrice: any[] = [...formData.price];
+                                                            newPrice[index] = e.value;
+                                                            setFormData({ ...formData, price: newPrice });
+                                                        }}
+                                                        mode="currency"
+                                                        currency="INR"
+                                                        locale="en-IN"
+                                                        onKeyDown={(e) => e.stopPropagation()}
+                                                    />
+                                                </div>
+                                                {index == 0 && (
+                                                    <div className="col-3 align-item-center">
+                                                        <Button
+                                                            icon="pi pi-plus"
+                                                            text
+                                                            onClick={() => {
+                                                                const newPrice: any[] = [...formData.price];
+                                                                newPrice.push(0);
+                                                                setFormData({ ...formData, price: newPrice, startingMinutes: [...formData.startingMinutes, 0], endingMinutes: [...formData.endingMinutes, 0] });
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div className="col-3 align-item-center">
+                                                    {index > 0 && (
+                                                        <Button
+                                                            icon="pi pi-minus"
+                                                            text
+                                                            onClick={() => {
+                                                                const newPrice: any[] = [...formData.price];
+                                                                newPrice.pop();
+                                                                setFormData({ ...formData, price: newPrice, startingMinutes: formData.startingMinutes.slice(0, -1), endingMinutes: formData.endingMinutes.slice(0, -1) });
+                                                            }}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                );
+                            })}
+                        </div>
+                        <div className="field col-12 lg:col-12">
+                            <div className="flex gap-3 align-content-center align-item-center">
+                                <div className="w-full align-item-center">
+                                    <label htmlFor="validity">Extension</label>
+                                    <InputNumber value={formData.everyXMinutes} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('everyXMinutes', e.value)} suffix=" min" />
+                                </div>
+                                <div className="w-full align-item-center">
+                                    <label htmlFor="validity" style={{ whiteSpace: 'nowrap' }}>
+                                        Extension Price
+                                    </label>
+                                    <InputNumber value={formData.extensionPrice} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('extensionPrice', e.value)} mode="currency" currency="INR" locale="en-IN" />
+                                </div>
+                                <div className="w-full align-item-center">
+                                    <label htmlFor="validity">Refundable Deposit</label>
+                                    <InputNumber value={formData.deposit} onValueChange={(e: InputNumberValueChangeEvent) => handleChange('deposit', e.value)} mode="currency" currency="INR" locale="en-IN" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="field justify-content-center col-12 button-row">
+                            <Button label="Submit" type="submit" />
+                        </div>
+                    </form>
+                </Dialog>
+            )}
+
             {showDeleteDialog && (
                 <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>
                     <div className="grid">

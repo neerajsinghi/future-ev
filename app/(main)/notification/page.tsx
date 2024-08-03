@@ -13,6 +13,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { MultiSelect } from 'primereact/multiselect';
 import './plan.css';
 import { showToast } from '@/app/hooks/toast';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 interface NotificationFormData {
     title: string;
@@ -24,6 +25,7 @@ interface NotificationFormData {
 }
 
 const Notification = () => {
+    const isAccessible = useIsAccessible('notification');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -166,90 +168,99 @@ const Notification = () => {
 
     return (
         <>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Notification' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                        <Button type="button" label="Send Notification" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
-                    </div>
-                </div>
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="Notifications" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
-                    </div>
-                </div>
-            </div>
-            <Dialog header="Add Notification" visible={showDialog} onHide={() => setShowDialog(false)}>
-                <div className="notif-dialog">
-                    <form onSubmit={handleSubmit} className="notif-form">
-                        <div className="field">
-                            <label htmlFor="title">Title</label>
-                            <InputText className="element" id="title" value={formData.title} onChange={(e) => handleChange('title', e.target.value)} />
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {isAccessible === 'Edit' ||
+                (isAccessible === 'View' && (
+                    <>
+                        <div className="grid">
+                            <div className="col-12">
+                                <BreadCrumb model={[{ label: 'Notification' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                            </div>
+                            <div className="col-12">
+                                <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                                    <Button type="button" label="Send Notification" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+                                </div>
+                            </div>
+                            <div className="col-12 m-10">
+                                <div className="card">
+                                    <CustomTable tableName="Notifications" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                                </div>
+                            </div>
                         </div>
+                    </>
+                ))}
 
-                        <div className="field">
-                            <label htmlFor="category">Category</label>
-                            <Dropdown filter className="element" id="category" value={formData.category} options={categories} onChange={(e) => handleChange('category', e.value)} placeholder="Select Category" />
-                        </div>
-                        {formData.category === 'city' && (
+            {isAccessible === 'Edit' && (
+                <Dialog header="Add Notification" visible={showDialog} onHide={() => setShowDialog(false)}>
+                    <div className="notif-dialog">
+                        <form onSubmit={handleSubmit} className="notif-form">
                             <div className="field">
-                                <label htmlFor="targetValue">City</label>
-                                <InputText className="element" id="targetValue" value={String(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.target.value)} />
+                                <label htmlFor="title">Title</label>
+                                <InputText className="element" id="title" value={formData.title} onChange={(e) => handleChange('title', e.target.value)} />
                             </div>
-                        )}
-                        {formData.category === 'gender' && (
-                            <div className="field">
-                                <label htmlFor="targetValue">Gender</label>
 
-                                <Dropdown
-                                    filter
-                                    className="element"
-                                    id="category"
-                                    value={formData.category}
-                                    options={[
-                                        { value: 'Male', label: 'Male' },
-                                        { value: 'Female', label: 'Female' },
-                                        { value: 'Others', label: 'Others' }
-                                    ]}
-                                    onChange={(e) => handleChange('targetValue', e.value)}
-                                    placeholder="Select Gender"
-                                />
-                            </div>
-                        )}
-                        {formData.category === 'age' && (
                             <div className="field">
-                                <label htmlFor="targetValue">Age</label>
-                                <InputNumber className="element" id="targetValue" value={Number(formData.targetValue)} onChange={(e: InputNumberChangeEvent) => handleChange('targetValue', e.value)} />
+                                <label htmlFor="category">Category</label>
+                                <Dropdown filter className="element" id="category" value={formData.category} options={categories} onChange={(e) => handleChange('category', e.value)} placeholder="Select Category" />
                             </div>
-                        )}
-                        {formData.category === 'birthday' && (
-                            <div className="field">
-                                <label htmlFor="targetValue">Birthday</label>
-                                <Calendar className="element" id="targetValue" value={new Date(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.value)} showIcon />
+                            {formData.category === 'city' && (
+                                <div className="field">
+                                    <label htmlFor="targetValue">City</label>
+                                    <InputText className="element" id="targetValue" value={String(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.target.value)} />
+                                </div>
+                            )}
+                            {formData.category === 'gender' && (
+                                <div className="field">
+                                    <label htmlFor="targetValue">Gender</label>
+
+                                    <Dropdown
+                                        filter
+                                        className="element"
+                                        id="category"
+                                        value={formData.category}
+                                        options={[
+                                            { value: 'Male', label: 'Male' },
+                                            { value: 'Female', label: 'Female' },
+                                            { value: 'Others', label: 'Others' }
+                                        ]}
+                                        onChange={(e) => handleChange('targetValue', e.value)}
+                                        placeholder="Select Gender"
+                                    />
+                                </div>
+                            )}
+                            {formData.category === 'age' && (
+                                <div className="field">
+                                    <label htmlFor="targetValue">Age</label>
+                                    <InputNumber className="element" id="targetValue" value={Number(formData.targetValue)} onChange={(e: InputNumberChangeEvent) => handleChange('targetValue', e.value)} />
+                                </div>
+                            )}
+                            {formData.category === 'birthday' && (
+                                <div className="field">
+                                    <label htmlFor="targetValue">Birthday</label>
+                                    <Calendar className="element" id="targetValue" value={new Date(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.value)} showIcon />
+                                </div>
+                            )}
+                            {formData.category === 'couponCode' && (
+                                <div className="field">
+                                    <label htmlFor="targetValue">Coupon Code</label>
+                                    <InputText className="element" id="targetValue" value={String(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.target.value)} />
+                                </div>
+                            )}
+                            <div className={!formData.category ? 'field field-full' : 'field'}>
+                                <label htmlFor="Users">Users</label>
+                                <MultiSelect filter style={{ width: '100%' }} id="Users" value={selectedUser} options={users} onChange={(e) => setSelectedUser(e.value)} optionLabel="name" placeholder="Select Users" />
                             </div>
-                        )}
-                        {formData.category === 'couponCode' && (
-                            <div className="field">
-                                <label htmlFor="targetValue">Coupon Code</label>
-                                <InputText className="element" id="targetValue" value={String(formData.targetValue)} onChange={(e) => handleChange('targetValue', e.target.value)} />
+                            <div className="field field-full">
+                                <label htmlFor="body">Body</label>
+                                <InputTextarea className="element" id="body" value={formData.body} onChange={(e) => handleChange('body', e.target.value)} />
                             </div>
-                        )}
-                        <div className={!formData.category ? 'field field-full' : 'field'}>
-                            <label htmlFor="Users">Users</label>
-                            <MultiSelect filter style={{ width: '100%' }} id="Users" value={selectedUser} options={users} onChange={(e) => setSelectedUser(e.value)} optionLabel="name" placeholder="Select Users" />
-                        </div>
-                        <div className="field field-full">
-                            <label htmlFor="body">Body</label>
-                            <InputTextarea className="element" id="body" value={formData.body} onChange={(e) => handleChange('body', e.target.value)} />
-                        </div>
-                        <div className="button-row">
-                            <Button style={{ width: '100%' }} label="Submit" type="submit" />
-                        </div>
-                    </form>
-                </div>
-            </Dialog>
+                            <div className="button-row">
+                                <Button style={{ width: '100%' }} label="Submit" type="submit" />
+                            </div>
+                        </form>
+                    </div>
+                </Dialog>
+            )}
         </>
     );
 };

@@ -10,6 +10,7 @@ import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { userLogin } from '../api/user';
 import Dashboard from './pages/dashboard/page';
+import { showToast } from '../hooks/toast';
 const LoginPage = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -18,23 +19,28 @@ const LoginPage = () => {
 
     const router = useRouter();
     const containerClassName = classNames('surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden', { 'p-input-filled': layoutConfig.inputStyle === 'filled' });
-    const isLogin = localStorage.getItem("user") ? true : false;
+    const isLogin = localStorage?.getItem('user') ? true : false;
+
     const handleSubmit = async () => {
-        const response = await userLogin(email, password)
-        if (response.success && response.data && response.data["role"] === "admin") {
-            localStorage.setItem('user', JSON.stringify(response.data))
-            if (response.data["access"]) {
-                localStorage.setItem('access', JSON.stringify(response.data["access"]))
+        const response = await userLogin(email, password);
+        if (response.success && response.data && response.data['role'] === 'admin') {
+            showToast('Login SuccessFul', 'success');
+            localStorage.setItem('user', JSON.stringify(response.data));
+            if (response.data['access']) {
+                localStorage.setItem('access', JSON.stringify(response.data['access']));
             }
             if (response.message) {
-                localStorage.setItem('token', response.message)
+                localStorage.setItem('token', response.message);
             }
-            window.location.reload()
+            window.location.reload();
         } else {
-            console.log('Login failed')
+            showToast('Login Failed', 'error');
+            console.log('Login failed');
         }
-    }
-    return (isLogin ? <Dashboard /> :
+    };
+    return isLogin ? (
+        <Dashboard />
+    ) : (
         <div className={containerClassName}>
             <div className="flex flex-column align-items-center justify-content-center">
                 <img src={`/layout/images/logo-${layoutConfig.colorScheme === 'light' ? 'dark' : 'white'}.svg`} alt="Sakai logo" className="mb-5 w-6rem flex-shrink-0" />
@@ -46,7 +52,6 @@ const LoginPage = () => {
                     }}
                 >
                     <div className="w-full surface-card py-8 px-5 sm:px-8" style={{ borderRadius: '53px' }}>
-
                         <div>
                             <label htmlFor="email1" className="block text-900 text-xl font-medium mb-2">
                                 Email

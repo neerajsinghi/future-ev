@@ -12,8 +12,10 @@ import './plan.css';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { getFeedback, getReferral } from '@/app/api/services';
 import { flattenData } from '@/app/api/user';
+import useIsAccessible from '@/app/hooks/isAccessible';
 
 const Referral = () => {
+    const isAccessible = useIsAccessible('refer');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
 
@@ -52,17 +54,21 @@ const Referral = () => {
 
     return (
         <>
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Feedback' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
+            {isAccessible === 'View' ||
+                (isAccessible === 'Edit' && (
+                    <div className="grid">
+                        <div className="col-12">
+                            <BreadCrumb model={[{ label: 'Feedback' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                        </div>
 
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="Referrals" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        <div className="col-12 m-10">
+                            <div className="card">
+                                <CustomTable tableName="Referrals" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                ))}
         </>
     );
 };

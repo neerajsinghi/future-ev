@@ -137,45 +137,45 @@ const FAQ = () => {
 
     return (
         <>
-            {/* {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>} */}
+            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
 
-            {/* {(isAccessible === 'Edit' || isAccessible === 'View') && ( */}
-            <div className="grid">
-                <div className="col-12">
-                    <BreadCrumb model={[{ label: 'Faq' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                <div className="col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Faq" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'Faq' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    <div className="col-12">
+                        <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                            <Button type="button" icon="pi pi-plus-circle" label="Faq" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+                        </div>
+                    </div>
+                    <div className="col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="faqs" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        </div>
                     </div>
                 </div>
-                <div className="col-12 m-10">
-                    <div className="card">
-                        <CustomTable tableName="faqs" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+            )}
+            {isAccessible === 'Edit' && (
+                <Dialog header="Add Faq" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
+                    <div className="p-8">
+                        <form onSubmit={handleSubmit} className="p-fluid grid">
+                            <div className="field col-12 lg:col-6">
+                                <label htmlFor="question">Question</label>
+                                <InputText id="question" value={formData.question} onChange={(e) => handleChange('question', e.target.value)} />
+                            </div>
+                            <div className="field col-12 lg:col-6">
+                                <label htmlFor="answer">Answer</label>
+                                <InputText id="answer" value={formData.answer} onChange={(e) => handleChange('answer', e.target.value)} />
+                            </div>
+                            <div className="field col-12"></div>
+                            <div className="field col-2 button-row">
+                                <Button label="Submit" type="submit" />
+                            </div>
+                        </form>
                     </div>
-                </div>
-            </div>
-            {/* )} */}
-            {/* {isAccessible === 'Edit' && ( */}
-            <Dialog header="Add Faq" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
-                <div className="p-8">
-                    <form onSubmit={handleSubmit} className="p-fluid grid">
-                        <div className="field col-12 lg:col-6">
-                            <label htmlFor="question">Question</label>
-                            <InputText id="question" value={formData.question} onChange={(e) => handleChange('question', e.target.value)} />
-                        </div>
-                        <div className="field col-12 lg:col-6">
-                            <label htmlFor="answer">Answer</label>
-                            <InputText id="answer" value={formData.answer} onChange={(e) => handleChange('answer', e.target.value)} />
-                        </div>
-                        <div className="field col-12"></div>
-                        <div className="field col-2 button-row">
-                            <Button label="Submit" type="submit" />
-                        </div>
-                    </form>
-                </div>
-            </Dialog>
-            {/* )} */}
+                </Dialog>
+            )}
 
             {showDeleteDialog && (
                 <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>

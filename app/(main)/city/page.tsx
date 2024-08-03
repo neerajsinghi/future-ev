@@ -177,138 +177,138 @@ const City: React.FC = () => {
 
     return (
         <div>
-            {/* {isAccessible === 'None' && <h1>You Dont Have Access To This Page</h1>} */}
-            {/* {isAccessible === 'Edit' ||
-                (isAccessible === 'View' && ( */}
-            <>
-                <h1>Cities</h1>
-                <div className="grid">
-                    <div className="col-12">
-                        <BreadCrumb model={[{ label: 'City' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                    </div>
+            {isAccessible === 'None' && <h1>You Dont Have Access To This Page</h1>}
+            {isAccessible === 'Edit' ||
+                (isAccessible === 'View' && (
+                    <>
+                        <h1>Cities</h1>
+                        <div className="grid">
+                            <div className="col-12">
+                                <BreadCrumb model={[{ label: 'City' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                            </div>
 
-                    <div className="col-12">
-                        <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                            <Button type="button" icon="pi pi-plus-circle" label="City" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+                            <div className="col-12">
+                                <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                                    <Button type="button" icon="pi pi-plus-circle" label="City" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
+                                </div>
+                            </div>
+                            <div className="col-12 m-10">
+                                <div className="card">
+                                    <CustomTable tableName="cities" mapNavigatePath="/stations/viewStationOnMap" editMode={undefined} columns2={[]} columns={columns} items={city} loading1={loading1} />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-12 m-10">
-                        <div className="card">
-                            <CustomTable tableName="cities" mapNavigatePath="/stations/viewStationOnMap" editMode={undefined} columns2={[]} columns={columns} items={city} loading1={loading1} />
-                        </div>
-                    </div>
-                </div>
-            </>
-            {/* // ))} */}
+                    </>
+                ))}
 
-            {/* {isAccessible === 'Edit' && ( */}
-            <Dialog header="Add City" visible={showDialog} style={{ width: '50vw' }} footer={dialogFooter} onHide={() => setShowDialog(false)}>
-                <form className="grid">
-                    <div className="input-container">
-                        <div className="input">
-                            <label htmlFor="name">Name</label>
-                            <Controller
-                                name="name"
-                                control={control}
-                                defaultValue=""
-                                rules={{ required: 'Name is required' }}
-                                render={({ field }: { field: any }) => (
-                                    <>
-                                        <InputText placeholder="Enter City Name" id="name" {...field} />
-                                        {errors.name && <small className="p-error">{errors.name.message}</small>}
-                                    </>
-                                )}
-                            />
-                        </div>
-
-                        <div className="input">
-                            <label htmlFor="services">Services Available</label>
-                            <Controller
-                                name="services"
-                                control={control}
-                                defaultValue={[]}
-                                rules={{ required: 'At least one service is required' }}
-                                render={({ field }: { field: any }) => (
-                                    <>
-                                        <MultiSelect
-                                            value={field.value}
-                                            placeholder="Select Service Type"
-                                            options={[
-                                                { name: 'ride now', code: 'hourly' },
-                                                { name: 'rental', code: 'rental' },
-                                                { name: 'charging', code: 'charging' },
-                                                { name: 'eCar', code: 'eCar' }
-                                            ]}
-                                            onChange={(e) => field.onChange(e.value)}
-                                            optionLabel="name"
-                                            optionValue="code"
-                                        />
-                                        {errors.services && <small className="p-error">{errors.services.message}</small>}
-                                    </>
-                                )}
-                            />
-                        </div>
-
-                        <div className="input">
-                            <label htmlFor="vehicleType">Vehicle Type</label>
-                            <Controller
-                                name="vehicleType"
-                                control={control}
-                                defaultValue=""
-                                rules={{ required: 'Vehicle type is required' }}
-                                render={({ field }) => (
-                                    <>
-                                        <Dropdown filter id="vehicleType" value={field.value} options={['normal', 'fast']} onChange={(e) => field.onChange(e.value)} placeholder="Select a Type" />
-                                        {errors.vehicleType && <small className="p-error">{errors.vehicleType.message}</small>}
-                                    </>
-                                )}
-                            />
-                        </div>
-                    </div>
-                    <div className="w-full col-12 map-container">
-                        <label>Draw Polygon</label>
-                        {isLoaded ? (
-                            <GoogleMap
-                                options={{
-                                    gestureHandling: 'greedy'
-                                }}
-                                mapContainerStyle={{ width: '100%', height: '400px', marginTop: '10px' }}
-                                center={{ lat: 28.6139, lng: 77.209 }} // Centering on Delhi
-                                zoom={8}
-                            >
-                                <DrawingManager
-                                    onPolygonComplete={handlePolygonComplete}
-                                    options={{
-                                        drawingControl: true,
-                                        drawingControlOptions: {
-                                            drawingModes: [google.maps.drawing.OverlayType.POLYGON]
-                                        },
-                                        polygonOptions: {
-                                            editable: true,
-                                            draggable: true
-                                        }
-                                    }}
+            {isAccessible === 'Edit' && (
+                <Dialog header="Add City" visible={showDialog} style={{ width: '50vw' }} footer={dialogFooter} onHide={() => setShowDialog(false)}>
+                    <form className="grid">
+                        <div className="input-container">
+                            <div className="input">
+                                <label htmlFor="name">Name</label>
+                                <Controller
+                                    name="name"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{ required: 'Name is required' }}
+                                    render={({ field }: { field: any }) => (
+                                        <>
+                                            <InputText placeholder="Enter City Name" id="name" {...field} />
+                                            {errors.name && <small className="p-error">{errors.name.message}</small>}
+                                        </>
+                                    )}
                                 />
-                                {polygonPath.length > 0 && (
-                                    <Polygon
-                                        path={polygonPath}
+                            </div>
+
+                            <div className="input">
+                                <label htmlFor="services">Services Available</label>
+                                <Controller
+                                    name="services"
+                                    control={control}
+                                    defaultValue={[]}
+                                    rules={{ required: 'At least one service is required' }}
+                                    render={({ field }: { field: any }) => (
+                                        <>
+                                            <MultiSelect
+                                                value={field.value}
+                                                placeholder="Select Service Type"
+                                                options={[
+                                                    { name: 'ride now', code: 'hourly' },
+                                                    { name: 'rental', code: 'rental' },
+                                                    { name: 'charging', code: 'charging' },
+                                                    { name: 'eCar', code: 'eCar' }
+                                                ]}
+                                                onChange={(e) => field.onChange(e.value)}
+                                                optionLabel="name"
+                                                optionValue="code"
+                                            />
+                                            {errors.services && <small className="p-error">{errors.services.message}</small>}
+                                        </>
+                                    )}
+                                />
+                            </div>
+
+                            <div className="input">
+                                <label htmlFor="vehicleType">Vehicle Type</label>
+                                <Controller
+                                    name="vehicleType"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{ required: 'Vehicle type is required' }}
+                                    render={({ field }) => (
+                                        <>
+                                            <Dropdown filter id="vehicleType" value={field.value} options={['normal', 'fast']} onChange={(e) => field.onChange(e.value)} placeholder="Select a Type" />
+                                            {errors.vehicleType && <small className="p-error">{errors.vehicleType.message}</small>}
+                                        </>
+                                    )}
+                                />
+                            </div>
+                        </div>
+                        <div className="w-full col-12 map-container">
+                            <label>Draw Polygon</label>
+                            {isLoaded ? (
+                                <GoogleMap
+                                    options={{
+                                        gestureHandling: 'greedy'
+                                    }}
+                                    mapContainerStyle={{ width: '100%', height: '400px', marginTop: '10px' }}
+                                    center={{ lat: 28.6139, lng: 77.209 }} // Centering on Delhi
+                                    zoom={8}
+                                >
+                                    <DrawingManager
+                                        onPolygonComplete={handlePolygonComplete}
                                         options={{
-                                            editable: true,
-                                            draggable: true
+                                            drawingControl: true,
+                                            drawingControlOptions: {
+                                                drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+                                            },
+                                            polygonOptions: {
+                                                editable: true,
+                                                draggable: true
+                                            }
                                         }}
-                                        onMouseUp={handlePolygonEdit}
-                                        onDragEnd={handlePolygonEdit}
                                     />
-                                )}
-                            </GoogleMap>
-                        ) : (
-                            <div>Loading...</div>
-                        )}
-                        {polygonPath.length === 0 && <small className="p-error">Drawing a polygon is required</small>}
-                    </div>
-                </form>
-            </Dialog>
-            {/* )} */}
+                                    {polygonPath.length > 0 && (
+                                        <Polygon
+                                            path={polygonPath}
+                                            options={{
+                                                editable: true,
+                                                draggable: true
+                                            }}
+                                            onMouseUp={handlePolygonEdit}
+                                            onDragEnd={handlePolygonEdit}
+                                        />
+                                    )}
+                                </GoogleMap>
+                            ) : (
+                                <div>Loading...</div>
+                            )}
+                            {polygonPath.length === 0 && <small className="p-error">Drawing a polygon is required</small>}
+                        </div>
+                    </form>
+                </Dialog>
+            )}
 
             {showDeleteDialog && (
                 <Dialog header="Delete Plan" visible={showDeleteDialog} style={{ width: '50vw' }} onHide={() => setShowDeleteDialog(false)}>

@@ -40,8 +40,16 @@ interface UserFormData {
 }
 interface AccessOptions {
     staff: 'View' | 'Edit' | 'None';
+    godView: 'View' | 'Edit' | 'None';
+    city: 'View' | 'Edit' | 'None';
     service: 'View' | 'Edit' | 'None';
+    faq: 'View' | 'Edit' | 'None';
+    notification: 'View' | 'Edit' | 'None';
+    feedBack: 'View' | 'Edit' | 'None';
+    refer: 'View' | 'Edit' | 'None';
+    vehicleType: 'View' | 'Edit' | 'None';
     customer: 'View' | 'Edit' | 'None';
+    vehicleOnboarding: 'View' | 'Edit' | 'None';
     bikes: 'View' | 'Edit' | 'None';
     stations: 'View' | 'Edit' | 'None';
     plans: 'View' | 'Edit' | 'None';
@@ -50,6 +58,10 @@ interface AccessOptions {
     coupons: 'View' | 'Edit' | 'None';
     users: 'View' | 'Edit' | 'None';
     charger: 'View' | 'Edit' | 'None';
+    rental: 'View' | 'Edit' | 'None';
+    rentalTransactions: 'View' | 'Edit' | 'None';
+    rideNow: 'View' | 'Edit' | 'None';
+    rideNowTransactions: 'View' | 'Edit' | 'None';
 }
 interface Address {
     address: string;
@@ -59,6 +71,7 @@ interface Address {
 }
 const Staff = () => {
     const isAccessible = useIsAccessible('staff');
+    const isServicesEnabaled = useIsAccessible('service');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -89,7 +102,15 @@ const Staff = () => {
         gender: '',
         access: {
             staff: 'None',
+            godView: 'None',
+            city: 'None',
             customer: 'None',
+            feedBack: 'None',
+            vehicleType: 'None',
+            faq: 'None',
+            vehicleOnboarding: 'None',
+            notification: 'None',
+            refer: 'None',
             bikes: 'None',
             stations: 'None',
             plans: 'None',
@@ -98,7 +119,11 @@ const Staff = () => {
             bikesStations: 'None',
             coupons: 'None',
             users: 'None',
-            charger: 'None'
+            charger: 'None',
+            rental: 'None',
+            rentalTransactions: 'None',
+            rideNow: 'None',
+            rideNowTransactions: 'None'
         },
         password: '',
         staffVerificationId: '',
@@ -125,7 +150,6 @@ const Staff = () => {
         setFormData({ ...formData, [name]: value });
     };
     const changeStatus = async (status: any) => {
-
         const body: any = {
             staffStatus: status.code
         };
@@ -150,7 +174,7 @@ const Staff = () => {
         }
     };
     const handleSubmit = async (e: React.FormEvent) => {
-        // 
+        //
         e.preventDefault();
         // Send formData to your backend for processing
         console.log(formData);
@@ -191,7 +215,6 @@ const Staff = () => {
         );
     };
     const accessTemplate = (rowData: any) => {
-
         return (
             <>
                 {rowData.access && (
@@ -202,6 +225,13 @@ const Staff = () => {
                             setSelectedId(rowData.id);
                             const access: AccessOptions = {
                                 staff: rowData.access.staff,
+                                godView: rowData.access.godView,
+                                notification: rowData.access.notification,
+                                feedBack: rowData.access.feedback,
+                                faq: rowData.access.faq,
+                                city: rowData.access.city,
+                                refer: rowData.access.refer,
+                                vehicleOnboarding: rowData.access.vehicleOnboarding,
                                 customer: rowData.access.customer,
                                 bikes: rowData.access.bikes,
                                 stations: rowData.access.stations,
@@ -211,7 +241,12 @@ const Staff = () => {
                                 bikesStations: rowData.access.bikesStations,
                                 coupons: rowData.access.coupons,
                                 users: rowData.access.users,
-                                charger: rowData.access.charger
+                                charger: rowData.access.charger,
+                                rental: rowData.access.rental,
+                                vehicleType: rowData.access.vehicleType,
+                                rideNow: rowData.access.rideNow,
+                                rideNowTransactions: rowData.access.rideNowTransactions,
+                                rentalTransactions: rowData.access.rentalTransactions
                             };
                             for (let i = 0; i < rowData.access.length; i++) {
                                 if (rowData.access[i]['Key'] === 'staff') {
@@ -260,7 +295,7 @@ const Staff = () => {
     };
 
     const stationCountTemplate = (rowData: any) => {
-        // 
+        //
         return <Link href={`/stations?userId=${rowData.id}`}>{rowData.stationCount}</Link>;
     };
 
@@ -338,7 +373,6 @@ const Staff = () => {
     };
 
     const onUpload = (e: any) => {
-
         const file = e.files[0];
 
         if (!file) return;
@@ -349,7 +383,6 @@ const Staff = () => {
         uploadTask.on(
             'state_changed',
             (snapshot) => {
-
                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
                 setProgresspercent(progress);
             },
@@ -357,7 +390,6 @@ const Staff = () => {
                 alert(error);
             },
             () => {
-
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     setFormData({ ...formData, staffVerificationId: downloadURL });
                 });
@@ -506,26 +538,160 @@ const Staff = () => {
                                 <InputText id="password" value={formData.password} onChange={(e) => handleChange('password', e.target.value)} type="password" />
                             </div>
                             <div className=" col-12 lg:col-12">
-                                <label htmlFor="access">Access</label>
+                                <label htmlFor="access">Control Access For Each Page</label>
                                 <div className=" grid">
-                                    <div className=" col-12 md:col-6">
-                                        <div className=" grid">
+                                    <div className="col-12 md:col-6">
+                                        <div className=" grid mt-3">
                                             <div className="col-3 mt-3">
-                                                <label htmlFor="staff">Staff: </label>
+                                                <label htmlFor="staff">GodView: </label>
                                             </div>
                                             <SelectButton
                                                 list={''}
                                                 width={30}
-                                                onChange={(e) => handleChange('access', { ...formData.access, staff: e.value.code })}
+                                                onChange={(e) => handleChange('access', { ...formData.access, godView: e.value.code })}
                                                 optionLabel="name"
                                                 options={[
                                                     { name: 'View', code: 'View' },
                                                     { name: 'Edit', code: 'Edit' },
                                                     { name: 'None', code: 'None' }
                                                 ]}
-                                                value={{ name: formData.access.staff, code: formData.access.staff }}
+                                                value={{ name: formData.access.godView, code: formData.access.godView }}
                                                 multiple={false}
                                             />
+                                        </div>
+
+                                        <div className=" col-12 md:col-6">
+                                            <div className=" grid mt-3">
+                                                <div className="col-3 mt-3">
+                                                    <label htmlFor="staff">Feedback: </label>
+                                                </div>
+                                                <SelectButton
+                                                    list={''}
+                                                    width={30}
+                                                    onChange={(e) => handleChange('access', { ...formData.access, feedback: e.value.code })}
+                                                    optionLabel="name"
+                                                    options={[
+                                                        { name: 'View', code: 'View' },
+                                                        { name: 'Edit', code: 'Edit' },
+                                                        { name: 'None', code: 'None' }
+                                                    ]}
+                                                    value={{ name: formData.access.feedBack, code: formData.access.feedBack }}
+                                                    multiple={false}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className=" col-12 md:col-6">
+                                            <div className=" grid mt-3">
+                                                <div className="col-3 mt-3">
+                                                    <label htmlFor="staff">Notification: </label>
+                                                </div>
+                                                <SelectButton
+                                                    list={''}
+                                                    width={30}
+                                                    onChange={(e) => handleChange('access', { ...formData.access, notification: e.value.code })}
+                                                    optionLabel="name"
+                                                    options={[
+                                                        { name: 'View', code: 'View' },
+                                                        { name: 'Edit', code: 'Edit' },
+                                                        { name: 'None', code: 'None' }
+                                                    ]}
+                                                    value={{ name: formData.access.notification, code: formData.access.notification }}
+                                                    multiple={false}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className=" grid">
+                                            <div className="col-3 mt-3">
+                                                <label htmlFor="staff">Faq: </label>
+                                            </div>
+                                            <SelectButton
+                                                list={''}
+                                                width={30}
+                                                onChange={(e) => handleChange('access', { ...formData.access, faq: e.value.code })}
+                                                optionLabel="name"
+                                                options={[
+                                                    { name: 'View', code: 'View' },
+                                                    { name: 'Edit', code: 'Edit' },
+                                                    { name: 'None', code: 'None' }
+                                                ]}
+                                                value={{ name: formData.access.faq, code: formData.access.faq }}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                        <div className=" grid">
+                                            <div className="col-3 mt-3">
+                                                <label htmlFor="staff">Refer: </label>
+                                            </div>
+                                            <SelectButton
+                                                list={''}
+                                                width={30}
+                                                onChange={(e) => handleChange('access', { ...formData.access, refer: e.value.code })}
+                                                optionLabel="name"
+                                                options={[
+                                                    { name: 'View', code: 'View' },
+                                                    { name: 'Edit', code: 'Edit' },
+                                                    { name: 'None', code: 'None' }
+                                                ]}
+                                                value={{ name: formData.access.refer, code: formData.access.refer }}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                        <div className=" grid">
+                                            <div className="col-3 mt-3">
+                                                <label htmlFor="staff">vehicle Onboarding: </label>
+                                            </div>
+                                            <SelectButton
+                                                list={''}
+                                                width={30}
+                                                onChange={(e) => handleChange('access', { ...formData.access, vehicleOnboarding: e.value.code })}
+                                                optionLabel="name"
+                                                options={[
+                                                    { name: 'View', code: 'View' },
+                                                    { name: 'Edit', code: 'Edit' },
+                                                    { name: 'None', code: 'None' }
+                                                ]}
+                                                value={{ name: formData.access.vehicleOnboarding, code: formData.access.vehicleOnboarding }}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                        <div className=" grid">
+                                            <div className="col-3 mt-3">
+                                                <label htmlFor="staff">City: </label>
+                                            </div>
+                                            <SelectButton
+                                                list={''}
+                                                width={30}
+                                                onChange={(e) => handleChange('access', { ...formData.access, city: e.value.code })}
+                                                optionLabel="name"
+                                                options={[
+                                                    { name: 'View', code: 'View' },
+                                                    { name: 'Edit', code: 'Edit' },
+                                                    { name: 'None', code: 'None' }
+                                                ]}
+                                                value={{ name: formData.access.city, code: formData.access.city }}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                        <div className=" col-12 md:col-6">
+                                            <div className=" grid">
+                                                <div className="col-3 mt-3">
+                                                    <label htmlFor="staff">Staff: </label>
+                                                </div>
+                                                <SelectButton
+                                                    list={''}
+                                                    width={30}
+                                                    onChange={(e) => handleChange('access', { ...formData.access, staff: e.value.code })}
+                                                    optionLabel="name"
+                                                    options={[
+                                                        { name: 'View', code: 'View' },
+                                                        { name: 'Edit', code: 'Edit' },
+                                                        { name: 'None', code: 'None' }
+                                                    ]}
+                                                    value={{ name: formData.access.staff, code: formData.access.staff }}
+                                                    multiple={false}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                     <div className=" col-12 md:col-6">
@@ -683,6 +849,25 @@ const Staff = () => {
                                     <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
+                                                <label htmlFor="staff">VehicleType:</label>
+                                            </div>
+                                            <SelectButton
+                                                width={30}
+                                                onChange={(e) => handleChange('access', { ...formData.access, coupons: e.value.code })}
+                                                optionLabel="name"
+                                                options={[
+                                                    { name: 'View', code: 'View' },
+                                                    { name: 'Edit', code: 'Edit' },
+                                                    { name: 'None', code: 'None' }
+                                                ]}
+                                                value={{ name: formData.access.vehicleType, code: formData.access.vehicleType }}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className=" col-12 md:col-6">
+                                        <div className=" grid mt-3">
+                                            <div className="col-3">
                                                 <label htmlFor="staff">Users:</label>
                                             </div>
                                             <SelectButton
@@ -699,25 +884,106 @@ const Staff = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className=" col-12 md:col-6">
-                                        <div className=" grid mt-3">
-                                            <div className="col-3">
-                                                <label htmlFor="staff">Charger:</label>
-                                            </div>
-                                            <SelectButton
-                                                width={30}
-                                                onChange={(e) => handleChange('access', { ...formData.access, charger: e.value.code })}
-                                                optionLabel="name"
-                                                options={[
-                                                    { name: 'View', code: 'View' },
-                                                    { name: 'Edit', code: 'Edit' },
-                                                    { name: 'None', code: 'None' }
-                                                ]}
-                                                value={{ name: formData.access.charger, code: formData.access.charger }}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                    </div>
+                                    {isServicesEnabaled === 'Edit' ||
+                                        (isServicesEnabaled === 'View' && (
+                                            <>
+                                                <div className=" col-12 md:col-6">
+                                                    <div className=" grid mt-3">
+                                                        <div className="col-3">
+                                                            <label htmlFor="staff">Charger:</label>
+                                                        </div>
+                                                        <SelectButton
+                                                            width={30}
+                                                            onChange={(e) => handleChange('access', { ...formData.access, charger: e.value.code })}
+                                                            optionLabel="name"
+                                                            options={[
+                                                                { name: 'View', code: 'View' },
+                                                                { name: 'Edit', code: 'Edit' },
+                                                                { name: 'None', code: 'None' }
+                                                            ]}
+                                                            value={{ name: formData.access.charger, code: formData.access.charger }}
+                                                            multiple={false}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className=" col-12 md:col-6">
+                                                    <div className=" grid mt-3">
+                                                        <div className="col-3">
+                                                            <label htmlFor="staff">Rental:</label>
+                                                        </div>
+                                                        <SelectButton
+                                                            width={30}
+                                                            onChange={(e) => handleChange('access', { ...formData.access, rental: e.value.code })}
+                                                            optionLabel="name"
+                                                            options={[
+                                                                { name: 'View', code: 'View' },
+                                                                { name: 'Edit', code: 'Edit' },
+                                                                { name: 'None', code: 'None' }
+                                                            ]}
+                                                            value={{ name: formData.access.rental, code: formData.access.rental }}
+                                                            multiple={false}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className=" col-12 md:col-6">
+                                                    <div className=" grid mt-3">
+                                                        <div className="col-3">
+                                                            <label htmlFor="staff">RideNow:</label>
+                                                        </div>
+                                                        <SelectButton
+                                                            width={30}
+                                                            onChange={(e) => handleChange('access', { ...formData.access, rideNow: e.value.code })}
+                                                            optionLabel="name"
+                                                            options={[
+                                                                { name: 'View', code: 'View' },
+                                                                { name: 'Edit', code: 'Edit' },
+                                                                { name: 'None', code: 'None' }
+                                                            ]}
+                                                            value={{ name: formData.access.rideNow, code: formData.access.rideNow }}
+                                                            multiple={false}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className=" col-12 md:col-6">
+                                                    <div className=" grid mt-3">
+                                                        <div className="col-3">
+                                                            <label htmlFor="staff">RentalTransactions:</label>
+                                                        </div>
+                                                        <SelectButton
+                                                            width={30}
+                                                            onChange={(e) => handleChange('access', { ...formData.access, rentalTransactions: e.value.code })}
+                                                            optionLabel="name"
+                                                            options={[
+                                                                { name: 'View', code: 'View' },
+                                                                { name: 'Edit', code: 'Edit' },
+                                                                { name: 'None', code: 'None' }
+                                                            ]}
+                                                            value={{ name: formData.access.rentalTransactions, code: formData.access.rentalTransactions }}
+                                                            multiple={false}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className=" col-12 md:col-6">
+                                                    <div className=" grid mt-3">
+                                                        <div className="col-3">
+                                                            <label htmlFor="staff">RideNowTransactions:</label>
+                                                        </div>
+                                                        <SelectButton
+                                                            width={30}
+                                                            onChange={(e) => handleChange('access', { ...formData.access, rideNowTransactions: e.value.code })}
+                                                            optionLabel="name"
+                                                            options={[
+                                                                { name: 'View', code: 'View' },
+                                                                { name: 'Edit', code: 'Edit' },
+                                                                { name: 'None', code: 'None' }
+                                                            ]}
+                                                            value={{ name: formData.access.rideNowTransactions, code: formData.access.rideNowTransactions }}
+                                                            multiple={false}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ))}
                                 </div>
                             </div>
                             <div className="field col-12"></div>

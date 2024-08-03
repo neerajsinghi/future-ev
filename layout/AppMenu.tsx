@@ -10,9 +10,9 @@ import { AppMenuItem } from '@/types';
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
     const access = localStorage.getItem('access') ? JSON.parse(localStorage.getItem('access') as string) : [];
-    debugger
-    const parsedData = access.reduce((result: { [x: string]: any; }, item: { Key: string; Value: string | any[]; }) => {
-        const key = item.Key === "totalActiveVeficles" ? "totalActiveVehicles" : item.Key;
+    debugger;
+    const parsedData = access.reduce((result: { [x: string]: any }, item: { Key: string; Value: string | any[] }) => {
+        const key = item.Key === 'totalActiveVeficles' ? 'totalActiveVehicles' : item.Key;
         result[key] = Array.isArray(item.Value) && item.Value.length === 0 ? 0 : item.Value;
         return result;
     }, {} as { [key: string]: any });
@@ -85,44 +85,72 @@ const AppMenu = () => {
         if (item.label === 'Dashboard') {
             return item;
         }
-        if (item.label === 'GodView' && parsedData.godView != "None") {
+        if (item.label === 'GodView' && parsedData.godView != 'None') {
             return item;
         }
-        if (item.label === 'Vehicle Type' && parsedData.vehicleType != "None") {
+        if (item.label === 'Vehicle Type' && parsedData.vehicleType != 'None') {
             return item;
         }
-        if (item.label === 'Services' && parsedData.services != "None") {
+        if (item.label === 'Services' && parsedData.services != 'None') {
+            if (item.label === 'Services') {
+                return item?.items?.filter((subItem) => {
+                    if (subItem.label === 'Ride Now' && parsedData.rideNow != 'None') {
+                        return subItem;
+                    }
+                    if (subItem.label === 'Ride Now Transactions' && parsedData.rideNowTransactions != 'None') {
+                        return subItem;
+                    }
+                    if (subItem.label === 'Rental' && parsedData.rental != 'None') {
+                        return subItem;
+                    }
+                    if (subItem.label === 'Rental Transactions' && parsedData.rentalTransactions != 'None') {
+                        return subItem;
+                    }
+                    if (subItem.label === 'Car Rental' && parsedData.carRental != 'None') {
+                        return subItem;
+                    }
+                    if (subItem.label === 'Car Rental Bookings' && parsedData.carRentalBookings != 'None') {
+                        return subItem;
+                    }
+                    if (subItem.label === 'Charging Station' && parsedData.chargingStation != 'None') {
+                        return subItem;
+                    }
+                    if (subItem.label === 'Charging Station Bookings' && parsedData.chargingStationBookings != 'None') {
+                        return subItem;
+                    }
+                });
+            }
             return item;
         }
-        if (item.label === 'Staff' && parsedData.staff != "None") {
+        if (item.label === 'Staff' && parsedData.staff != 'None') {
             return item;
         }
-        if (item.label === 'City' && parsedData.city != "None") {
+        if (item.label === 'City' && parsedData.city != 'None') {
             return item;
         }
-        if (item.label === 'Stations' && parsedData.stations != "None") {
+        if (item.label === 'Stations' && parsedData.stations != 'None') {
             return item;
         }
-        if (item.label === 'Vehicle Onboarding' && parsedData.vehicleOnboarding != "None") {
+        if (item.label === 'Vehicle Onboarding' && parsedData.vehicleOnboarding != 'None') {
             return item;
         }
-        if (item.label === 'Coupons' && parsedData.coupons != "None") {
+        if (item.label === 'Coupons' && parsedData.coupons != 'None') {
             return item;
         }
-        if (item.label === 'Users' && parsedData.users != "None") {
+        if (item.label === 'Users' && parsedData.users != 'None') {
             return item;
         }
-        if (item.label === 'FAQ' && parsedData.faq != "None") {
+        if (item.label === 'FAQ' && parsedData.faq != 'None') {
             return item;
         }
-        if (item.label === 'Notification' && parsedData.notification != "None") {
+        if (item.label === 'Notification' && parsedData.notification != 'None') {
             return item;
         }
     });
     const model: AppMenuItem[] = [
         {
             label: 'Home',
-            items: ItemsSelected,
+            items: ItemsSelected
         },
 
         // {

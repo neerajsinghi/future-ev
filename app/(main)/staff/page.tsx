@@ -539,7 +539,7 @@ const Staff = () => {
                             </div>
                             <div className=" col-12 lg:col-12">
                                 <label htmlFor="access">Control Access For Each Page</label>
-                                <div className=" grid">
+                                <div className="grid">
                                     <div className="col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3 mt-3">
@@ -560,50 +560,45 @@ const Staff = () => {
                                             />
                                         </div>
 
-                                        <div className=" col-12 md:col-6">
-                                            <div className=" grid mt-3">
-                                                <div className="col-3 mt-3">
-                                                    <label htmlFor="staff">Feedback: </label>
-                                                </div>
-                                                <SelectButton
-                                                    list={''}
-                                                    width={30}
-                                                    onChange={(e) => handleChange('access', { ...formData.access, feedback: e.value.code })}
-                                                    optionLabel="name"
-                                                    options={[
-                                                        { name: 'View', code: 'View' },
-                                                        { name: 'Edit', code: 'Edit' },
-                                                        { name: 'None', code: 'None' }
-                                                    ]}
-                                                    value={{ name: formData.access.feedBack, code: formData.access.feedBack }}
-                                                    multiple={false}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className=" col-12 md:col-6">
-                                            <div className=" grid mt-3">
-                                                <div className="col-3 mt-3">
-                                                    <label htmlFor="staff">Notification: </label>
-                                                </div>
-                                                <SelectButton
-                                                    list={''}
-                                                    width={30}
-                                                    onChange={(e) => handleChange('access', { ...formData.access, notification: e.value.code })}
-                                                    optionLabel="name"
-                                                    options={[
-                                                        { name: 'View', code: 'View' },
-                                                        { name: 'Edit', code: 'Edit' },
-                                                        { name: 'None', code: 'None' }
-                                                    ]}
-                                                    value={{ name: formData.access.notification, code: formData.access.notification }}
-                                                    multiple={false}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className=" grid">
+                                        <div className=" grid mt-3">
                                             <div className="col-3 mt-3">
-                                                <label htmlFor="staff">Faq: </label>
+                                                <label htmlFor="staff">Feedback: </label>
+                                            </div>
+                                            <SelectButton
+                                                list={''}
+                                                width={30}
+                                                onChange={(e) => handleChange('access', { ...formData.access, feedback: e.value.code })}
+                                                optionLabel="name"
+                                                options={[
+                                                    { name: 'View', code: 'View' },
+                                                    { name: 'Edit', code: 'Edit' },
+                                                    { name: 'None', code: 'None' }
+                                                ]}
+                                                value={{ name: formData.access.feedBack, code: formData.access.feedBack }}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                        <div className=" grid mt-3">
+                                            <div className="col-3 mt-3">
+                                                <label htmlFor="staff">Notification: </label>
+                                            </div>
+                                            <SelectButton
+                                                list={''}
+                                                width={30}
+                                                onChange={(e) => handleChange('access', { ...formData.access, notification: e.value.code })}
+                                                optionLabel="name"
+                                                options={[
+                                                    { name: 'View', code: 'View' },
+                                                    { name: 'Edit', code: 'Edit' },
+                                                    { name: 'None', code: 'None' }
+                                                ]}
+                                                value={{ name: formData.access.notification, code: formData.access.notification }}
+                                                multiple={false}
+                                            />
+                                        </div>
+                                        <div className=" grid mt-3">
+                                            <div className="col-3 mt-3">
+                                                <label htmlFor="faq">Faq: </label>
                                             </div>
                                             <SelectButton
                                                 list={''}
@@ -619,7 +614,7 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                        <div className=" grid">
+                                        <div className=" grid mt-3">
                                             <div className="col-3 mt-3">
                                                 <label htmlFor="staff">Refer: </label>
                                             </div>
@@ -637,7 +632,7 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                        <div className=" grid">
+                                        <div className=" grid mt-3">
                                             <div className="col-3 mt-3">
                                                 <label htmlFor="staff">vehicle Onboarding: </label>
                                             </div>
@@ -655,7 +650,7 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                        <div className=" grid">
+                                        <div className=" grid mt-3">
                                             <div className="col-3 mt-3">
                                                 <label htmlFor="staff">City: </label>
                                             </div>
@@ -673,27 +668,26 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                        <div className=" col-12 md:col-6">
-                                            <div className=" grid">
-                                                <div className="col-3 mt-3">
-                                                    <label htmlFor="staff">Staff: </label>
-                                                </div>
-                                                <SelectButton
-                                                    list={''}
-                                                    width={30}
-                                                    onChange={(e) => handleChange('access', { ...formData.access, staff: e.value.code })}
-                                                    optionLabel="name"
-                                                    options={[
-                                                        { name: 'View', code: 'View' },
-                                                        { name: 'Edit', code: 'Edit' },
-                                                        { name: 'None', code: 'None' }
-                                                    ]}
-                                                    value={{ name: formData.access.staff, code: formData.access.staff }}
-                                                    multiple={false}
-                                                />
+                                        <div className=" grid mt-3">
+                                            <div className="col-3 mt-3">
+                                                <label htmlFor="staff">Staff: </label>
                                             </div>
+                                            <SelectButton
+                                                list={''}
+                                                width={30}
+                                                onChange={(e) => handleChange('access', { ...formData.access, staff: e.value.code })}
+                                                optionLabel="name"
+                                                options={[
+                                                    { name: 'View', code: 'View' },
+                                                    { name: 'Edit', code: 'Edit' },
+                                                    { name: 'None', code: 'None' }
+                                                ]}
+                                                value={{ name: formData.access.staff, code: formData.access.staff }}
+                                                multiple={false}
+                                            />
                                         </div>
                                     </div>
+
                                     <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
@@ -712,8 +706,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">Bikes:</label>
@@ -731,8 +723,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">Stations:</label>
@@ -750,8 +740,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">Plans:</label>
@@ -769,8 +757,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">Services:</label>
@@ -788,8 +774,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">Reports:</label>
@@ -807,8 +791,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">Bikes Stations:</label>
@@ -826,8 +808,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">Coupons:</label>
@@ -845,8 +825,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">VehicleType:</label>
@@ -864,8 +842,6 @@ const Staff = () => {
                                                 multiple={false}
                                             />
                                         </div>
-                                    </div>
-                                    <div className=" col-12 md:col-6">
                                         <div className=" grid mt-3">
                                             <div className="col-3">
                                                 <label htmlFor="staff">Users:</label>
@@ -991,14 +967,141 @@ const Staff = () => {
                                 <Button label="Submit" type="submit" />
                             </div>
                         </form>
-                    </Dialog>
+                    </Dialog >
                     <Dialog header="Access" visible={showAccessDialog} style={{ width: '50vw' }} onHide={() => setShowAccessDialog(false)}>
                         <>
-                            <div className=" grid">
-                                <div className=" col-12 md:col-6">
+                            <div className="grid">
+                                <div className="col-12 md:col-6">
                                     <div className=" grid mt-3">
-                                        <div className="col-3">
-                                            <label htmlFor="staff">Staff:</label>
+                                        <div className="col-3 mt-3">
+                                            <label htmlFor="staff">GodView: </label>
+                                        </div>
+                                        <SelectButton
+                                            list={''}
+                                            width={30}
+                                            onChange={(e) => setAccessData({ ...accessData, godView: e.value.code })}
+                                            optionLabel="name"
+                                            options={[
+                                                { name: 'View', code: 'View' },
+                                                { name: 'Edit', code: 'Edit' },
+                                                { name: 'None', code: 'None' }
+                                            ]}
+                                            value={{ name: accessData.godView, code: accessData.godView }}
+                                            multiple={false}
+                                        />
+                                    </div>
+
+                                    <div className=" grid mt-3">
+                                        <div className="col-3 mt-3">
+                                            <label htmlFor="staff">Feedback: </label>
+                                        </div>
+                                        <SelectButton
+                                            list={''}
+                                            width={30}
+                                            onChange={(e) => setAccessData({ ...accessData, feedBack: e.value.code })}
+                                            optionLabel="name"
+                                            options={[
+                                                { name: 'View', code: 'View' },
+                                                { name: 'Edit', code: 'Edit' },
+                                                { name: 'None', code: 'None' }
+                                            ]}
+                                            value={{ name: accessData.feedBack, code: accessData.feedBack }}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                    <div className=" grid mt-3">
+                                        <div className="col-3 mt-3">
+                                            <label htmlFor="staff">Notification: </label>
+                                        </div>
+                                        <SelectButton
+                                            list={''}
+                                            width={30}
+                                            onChange={(e) => setAccessData({ ...accessData, notification: e.value.code })}
+                                            optionLabel="name"
+                                            options={[
+                                                { name: 'View', code: 'View' },
+                                                { name: 'Edit', code: 'Edit' },
+                                                { name: 'None', code: 'None' }
+                                            ]}
+                                            value={{ name: accessData.notification, code: accessData.notification }}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                    <div className=" grid mt-3">
+                                        <div className="col-3 mt-3">
+                                            <label htmlFor="faq">Faq: </label>
+                                        </div>
+                                        <SelectButton
+                                            list={''}
+                                            width={30}
+                                            onChange={(e) => setAccessData({ ...accessData, faq: e.value.code })}
+                                            optionLabel="name"
+                                            options={[
+                                                { name: 'View', code: 'View' },
+                                                { name: 'Edit', code: 'Edit' },
+                                                { name: 'None', code: 'None' }
+                                            ]}
+                                            value={{ name: accessData.faq, code: accessData.faq }}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                    <div className=" grid mt-3">
+                                        <div className="col-3 mt-3">
+                                            <label htmlFor="staff">Refer: </label>
+                                        </div>
+                                        <SelectButton
+                                            list={''}
+                                            width={30}
+                                            onChange={(e) => setAccessData({ ...accessData, refer: e.value.code })}
+                                            optionLabel="name"
+                                            options={[
+                                                { name: 'View', code: 'View' },
+                                                { name: 'Edit', code: 'Edit' },
+                                                { name: 'None', code: 'None' }
+                                            ]}
+                                            value={{ name: accessData.refer, code: accessData.refer }}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                    <div className=" grid mt-3">
+                                        <div className="col-3 mt-3">
+                                            <label htmlFor="staff">vehicle Onboarding: </label>
+                                        </div>
+                                        <SelectButton
+                                            list={''}
+                                            width={30}
+                                            onChange={(e) => setAccessData({ ...accessData, vehicleOnboarding: e.value.code })}
+                                            optionLabel="name"
+                                            options={[
+                                                { name: 'View', code: 'View' },
+                                                { name: 'Edit', code: 'Edit' },
+                                                { name: 'None', code: 'None' }
+                                            ]}
+                                            value={{ name: accessData.vehicleOnboarding, code: accessData.vehicleOnboarding }}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                    <div className=" grid mt-3">
+                                        <div className="col-3 mt-3">
+                                            <label htmlFor="staff">City: </label>
+                                        </div>
+                                        <SelectButton
+                                            list={''}
+                                            width={30}
+                                            onChange={(e) => setAccessData({ ...accessData, city: e.value.code })}
+                                            optionLabel="name"
+                                            options={[
+                                                { name: 'View', code: 'View' },
+                                                { name: 'Edit', code: 'Edit' },
+                                                { name: 'None', code: 'None' }
+                                            ]}
+                                            value={{ name: accessData.city, code: accessData.city }}
+                                            multiple={false}
+                                        />
+                                    </div>
+                                    <div className=" grid mt-3">
+                                        <div className="col-3 mt-3">
+                                            <label htmlFor="staff">Staff: </label>
                                         </div>
                                         <SelectButton
                                             list={''}
@@ -1015,6 +1118,7 @@ const Staff = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div className=" col-12 md:col-6">
                                     <div className=" grid mt-3">
                                         <div className="col-3">
@@ -1033,8 +1137,6 @@ const Staff = () => {
                                             multiple={false}
                                         />
                                     </div>
-                                </div>
-                                <div className=" col-12 md:col-6">
                                     <div className=" grid mt-3">
                                         <div className="col-3">
                                             <label htmlFor="staff">Bikes:</label>
@@ -1052,8 +1154,6 @@ const Staff = () => {
                                             multiple={false}
                                         />
                                     </div>
-                                </div>
-                                <div className=" col-12 md:col-6">
                                     <div className=" grid mt-3">
                                         <div className="col-3">
                                             <label htmlFor="staff">Stations:</label>
@@ -1071,8 +1171,6 @@ const Staff = () => {
                                             multiple={false}
                                         />
                                     </div>
-                                </div>
-                                <div className=" col-12 md:col-6">
                                     <div className=" grid mt-3">
                                         <div className="col-3">
                                             <label htmlFor="staff">Plans:</label>
@@ -1090,8 +1188,6 @@ const Staff = () => {
                                             multiple={false}
                                         />
                                     </div>
-                                </div>
-                                <div className=" col-12 md:col-6">
                                     <div className=" grid mt-3">
                                         <div className="col-3">
                                             <label htmlFor="staff">Services:</label>
@@ -1109,8 +1205,6 @@ const Staff = () => {
                                             multiple={false}
                                         />
                                     </div>
-                                </div>
-                                <div className=" col-12 md:col-6">
                                     <div className=" grid mt-3">
                                         <div className="col-3">
                                             <label htmlFor="staff">Reports:</label>
@@ -1128,8 +1222,6 @@ const Staff = () => {
                                             multiple={false}
                                         />
                                     </div>
-                                </div>
-                                <div className=" col-12 md:col-6">
                                     <div className=" grid mt-3">
                                         <div className="col-3">
                                             <label htmlFor="staff">Bikes Stations:</label>
@@ -1147,8 +1239,6 @@ const Staff = () => {
                                             multiple={false}
                                         />
                                     </div>
-                                </div>
-                                <div className=" col-12 md:col-6">
                                     <div className=" grid mt-3">
                                         <div className="col-3">
                                             <label htmlFor="staff">Coupons:</label>
@@ -1166,8 +1256,23 @@ const Staff = () => {
                                             multiple={false}
                                         />
                                     </div>
-                                </div>
-                                <div className=" col-12 md:col-6">
+                                    <div className=" grid mt-3">
+                                        <div className="col-3">
+                                            <label htmlFor="staff">VehicleType:</label>
+                                        </div>
+                                        <SelectButton
+                                            width={30}
+                                            onChange={(e) => setAccessData({ ...accessData, coupons: e.value.code })}
+                                            optionLabel="name"
+                                            options={[
+                                                { name: 'View', code: 'View' },
+                                                { name: 'Edit', code: 'Edit' },
+                                                { name: 'None', code: 'None' }
+                                            ]}
+                                            value={{ name: accessData.vehicleType, code: accessData.vehicleType }}
+                                            multiple={false}
+                                        />
+                                    </div>
                                     <div className=" grid mt-3">
                                         <div className="col-3">
                                             <label htmlFor="staff">Users:</label>
@@ -1186,25 +1291,108 @@ const Staff = () => {
                                         />
                                     </div>
                                 </div>
-                                <div className=" col-12 md:col-6">
-                                    <div className=" grid mt-3">
-                                        <div className="col-3">
-                                            <label htmlFor="staff">Charger:</label>
-                                        </div>
-                                        <SelectButton
-                                            width={30}
-                                            onChange={(e) => setAccessData({ ...accessData, charger: e.value.code })}
-                                            optionLabel="name"
-                                            options={[
-                                                { name: 'View', code: 'View' },
-                                                { name: 'Edit', code: 'Edit' },
-                                                { name: 'None', code: 'None' }
-                                            ]}
-                                            value={{ name: accessData.charger, code: accessData.charger }}
-                                            multiple={false}
-                                        />
-                                    </div>
-                                </div>
+                                {isServicesEnabaled === 'Edit' ||
+                                    (isServicesEnabaled === 'View' && (
+                                        <>
+                                            <div className=" col-12 md:col-6">
+                                                <div className=" grid mt-3">
+                                                    <div className="col-3">
+                                                        <label htmlFor="staff">Charger:</label>
+                                                    </div>
+                                                    <SelectButton
+                                                        width={30}
+                                                        onChange={(e) => setAccessData({ ...accessData, charger: e.value.code })}
+
+                                                        optionLabel="name"
+                                                        options={[
+                                                            { name: 'View', code: 'View' },
+                                                            { name: 'Edit', code: 'Edit' },
+                                                            { name: 'None', code: 'None' }
+                                                        ]}
+                                                        value={{ name: accessData.charger, code: accessData.charger }}
+                                                        multiple={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className=" col-12 md:col-6">
+                                                <div className=" grid mt-3">
+                                                    <div className="col-3">
+                                                        <label htmlFor="staff">Rental:</label>
+                                                    </div>
+                                                    <SelectButton
+                                                        width={30}
+                                                        onChange={(e) => setAccessData({ ...accessData, rental: e.value.code })}
+
+                                                        optionLabel="name"
+                                                        options={[
+                                                            { name: 'View', code: 'View' },
+                                                            { name: 'Edit', code: 'Edit' },
+                                                            { name: 'None', code: 'None' }
+                                                        ]}
+                                                        value={{ name: accessData.rental, code: accessData.rental }}
+                                                        multiple={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className=" col-12 md:col-6">
+                                                <div className=" grid mt-3">
+                                                    <div className="col-3">
+                                                        <label htmlFor="staff">RideNow:</label>
+                                                    </div>
+                                                    <SelectButton
+                                                        width={30}
+                                                        onChange={(e) => setAccessData({ ...accessData, rideNow: e.value.code })}
+                                                        optionLabel="name"
+                                                        options={[
+                                                            { name: 'View', code: 'View' },
+                                                            { name: 'Edit', code: 'Edit' },
+                                                            { name: 'None', code: 'None' }
+                                                        ]}
+                                                        value={{ name: accessData.rideNow, code: accessData.rideNow }}
+                                                        multiple={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className=" col-12 md:col-6">
+                                                <div className=" grid mt-3">
+                                                    <div className="col-3">
+                                                        <label htmlFor="staff">RentalTransactions:</label>
+                                                    </div>
+                                                    <SelectButton
+                                                        width={30}
+                                                        onChange={(e) => setAccessData({ ...accessData, rentalTransactions: e.value.code })}
+                                                        optionLabel="name"
+                                                        options={[
+                                                            { name: 'View', code: 'View' },
+                                                            { name: 'Edit', code: 'Edit' },
+                                                            { name: 'None', code: 'None' }
+                                                        ]}
+                                                        value={{ name: accessData.rentalTransactions, code: accessData.rentalTransactions }}
+                                                        multiple={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className=" col-12 md:col-6">
+                                                <div className=" grid mt-3">
+                                                    <div className="col-3">
+                                                        <label htmlFor="staff">RideNowTransactions:</label>
+                                                    </div>
+                                                    <SelectButton
+                                                        width={30}
+                                                        onChange={(e) => setAccessData({ ...accessData, rideNowTransactions: e.value.code })}
+                                                        optionLabel="name"
+                                                        options={[
+                                                            { name: 'View', code: 'View' },
+                                                            { name: 'Edit', code: 'Edit' },
+                                                            { name: 'None', code: 'None' }
+                                                        ]}
+                                                        value={{ name: accessData.rideNowTransactions, code: accessData.rideNowTransactions }}
+                                                        multiple={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    ))}
                             </div>
                             <div className="field col-12"></div>
                             <div className="field col-2 button-row">
@@ -1234,7 +1422,8 @@ const Staff = () => {
                         </div>
                     </Dialog>
                 </>
-            )}
+            )
+            }
         </>
     );
 };

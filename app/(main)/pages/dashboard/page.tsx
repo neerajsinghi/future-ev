@@ -80,7 +80,31 @@ const Dashboard = () => {
 
 
         clearAll()
-        const resp = await getStatistics(selectedTime.code);
+
+        let startDate = new Date();
+        let endDate = new Date();
+        switch (selectedTime.code) {
+            case 1:
+                startDate.setDate(startDate.getDate() - 1);
+                break;
+            case 2:
+                endDate.setDate(endDate.getDate() - 1);
+                startDate.setDate(startDate.getDate() - 2);
+                break;
+            case 7:
+                startDate.setDate(startDate.getDate() - 7);
+                break;
+            case 30:
+                startDate.setDate(startDate.getDate() - 30);
+                break;
+            case 365:
+                startDate.setDate(startDate.getDate() - 365);
+                break;
+            default:
+                startDate.setDate(startDate.getDate() - 1);
+                break;
+        }
+        const resp = await getStatistics(startDate, endDate);
 
 
         if (resp.success && resp.data) {

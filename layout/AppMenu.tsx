@@ -8,6 +8,19 @@ import Link from 'next/link';
 import { AppMenuItem } from '@/types';
 
 const AppMenu = () => {
+    // Client-side code to set the userId in a cookie
+    const user = localStorage.getItem('user');
+    if (user) {
+        const parsedUser = JSON.parse(user);
+        if (parsedUser) {
+            console.log(parsedUser);
+            if (parsedUser && parsedUser.id) {
+                console.log(parsedUser.id);
+                document.cookie = `userId=${parsedUser.id}; path=/`;
+            }
+        }
+    }
+
     // const { layoutConfig } = useContext(LayoutContext);
     const access = localStorage.getItem('access') ? JSON.parse(localStorage.getItem('access') as string) : [];
     const parsedData = access.reduce((result: { [x: string]: any }, item: { Key: string; Value: string | any[] }) => {

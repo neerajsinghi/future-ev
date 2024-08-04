@@ -10,12 +10,14 @@ import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import './plan.css';
 import { showToast } from '@/app/hooks/toast';
+import useIsAccessible from '@/app/hooks/isAccessible';
 interface VehicleTypeFormData {
     name: string;
     price: number;
     description: string;
 }
 const VehicleTypePage = () => {
+    const isAccessible = useIsAccessible('vehicleType');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);
@@ -61,48 +63,56 @@ const VehicleTypePage = () => {
         let response = await getVehicleTypes();
         if (response.success) {
             if (response.data) {
-                console.log(response.data);
                 setItems(() => response.data);
             }
         }
         setLoading1(false);
     };
 
+    if (isAccessible === 'None') {
+        return <h1>You Dont Have Access To This Page</h1>;
+    }
+
     return (
         <>
-            <div className="p-grid">
-                <div className="p-col-12">
-                    <BreadCrumb model={[{ label: 'Vehicle Type' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                </div>
-                <div className="p-col-12">
-                    <div className="flex justify-content-end" style={{ marginBottom: '10px' }}>
-                        <Button type="button" icon="pi pi-plus-circle" label="Vehicle Type" style={{ marginBottom: '10px' }} onClick={() => setShowDialog(true)} />
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="p-grid">
+                    <div className="p-col-12">
+                        <BreadCrumb model={[{ label: 'Vehicle Type' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    <div className="p-col-12">
+                        <div className="flex justify-content-end" style={{ marginBottom: '10px' }}>
+                            <Button type="button" icon="pi pi-plus-circle" label="Vehicle Type" style={{ marginBottom: '10px' }} onClick={() => setShowDialog(true)} />
+                        </div>
+                    </div>
+                    <div className="p-col-12">
+                        <CustomTable tableName="vehicleType" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
                     </div>
                 </div>
-                <div className="p-col-12">
-                    <CustomTable tableName="vehicleType" editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} />
-                </div>
-            </div>
-            <Dialog header="Add Vehicle Type" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
-                <form onSubmit={handleSubmit} className="p-fluid grid">
-                    <div className="field col-12 lg:col-6">
-                        <label htmlFor="name">Name</label>
-                        <InputText id="name" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} />
-                    </div>
-                    <div className="field col-12 lg:col-6">
-                        <label htmlFor="price">Price Per Minute</label>
-                        <InputNumber id="price" value={formData.price} onValueChange={(e) => handleChange('price', e.value)} mode="decimal" minFractionDigits={2} />
-                    </div>
-                    <div className="field col-12 lg:col-6">
-                        <label htmlFor="description">Description</label>
-                        <InputTextarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} rows={5} cols={30} autoResize />
-                    </div>
-                    <div className="field col-12"></div>
-                    <div className="field col-2 button-row">
-                        <Button label="Submit" type="submit" />
-                    </div>
-                </form>
-            </Dialog>
+            )}
+
+            {isAccessible === 'Edit' && (
+                <Dialog header="Add Vehicle Type" visible={showDialog} style={{ width: '50vw' }} onHide={() => setShowDialog(false)}>
+                    <form onSubmit={handleSubmit} className="p-fluid grid">
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="name">Name</label>
+                            <InputText id="name" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} />
+                        </div>
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="price">Price Per Minute</label>
+                            <InputNumber id="price" value={formData.price} onValueChange={(e) => handleChange('price', e.value)} mode="decimal" minFractionDigits={2} />
+                        </div>
+                        <div className="field col-12 lg:col-6">
+                            <label htmlFor="description">Description</label>
+                            <InputTextarea id="description" value={formData.description} onChange={(e) => handleChange('description', e.target.value)} rows={5} cols={30} autoResize />
+                        </div>
+                        <div className="field col-12"></div>
+                        <div className="field col-2 button-row">
+                            <Button label="Submit" type="submit" />
+                        </div>
+                    </form>
+                </Dialog>
+            )}
         </>
     );
 };

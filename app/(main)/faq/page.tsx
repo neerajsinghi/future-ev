@@ -33,6 +33,8 @@ const FAQ = () => {
         answer: ''
     });
 
+    console.log(isAccessible);
+
     const handleChange = (name: keyof ProductFormData, value: any) => {
         setFormData({ ...formData, [name]: value });
     };
@@ -82,7 +84,6 @@ const FAQ = () => {
     };
 
     const deleteFaqD = async () => {
-
         const response = await deleteFaq(faqId);
         if (response.success) {
             fetchData();

@@ -6,12 +6,13 @@ interface AccessItem {
 }
 
 const useIsAccessible = (key: string): string | null => {
+    console.log(key);
     const [isAccessible, setIsAccessible] = useState<'None' | 'View' | 'Edit' | null>(null);
 
     useEffect(() => {
         const accessData: AccessItem[] = JSON.parse(localStorage.getItem('access') || '[]');
         const accessItem = accessData.find((item) => item.Key === key);
-
+        console.log(accessItem);
         if (accessItem) {
             switch (accessItem.Value) {
                 case 'Edit':

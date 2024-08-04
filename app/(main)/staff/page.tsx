@@ -248,42 +248,11 @@ const Staff = () => {
                                 rideNowTransactions: rowData.access.rideNowTransactions,
                                 rentalTransactions: rowData.access.rentalTransactions
                             };
-                            for (let i = 0; i < rowData.access.length; i++) {
-                                if (rowData.access[i]['Key'] === 'staff') {
-                                    access.staff = rowData.access[i]['Value'];
-                                }
-                                if (rowData.access[i].Key === 'customer') {
-                                    access.customer = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'bikes') {
-                                    access.bikes = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'stations') {
-                                    access.stations = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'plans') {
-                                    access.plans = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'service') {
-                                    access.service = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'reports') {
-                                    access.reports = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'bikesStations') {
-                                    access.bikesStations = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'coupons') {
-                                    access.coupons = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'users') {
-                                    access.users = rowData.access[i].Value;
-                                }
-                                if (rowData.access[i].Key === 'charger') {
-                                    access.charger = rowData.access[i].Value;
-                                }
-                            }
-                            setAccessData(access);
+                            debugger
+
+                            const parsedAccess = parseData(rowData.access);
+
+                            setAccessData(parsedAccess);
                             setShowAccessDialog((prev) => true);
                         }}
                     >
@@ -293,6 +262,13 @@ const Staff = () => {
             </>
         );
     };
+    const parseData = (data: any) => {
+        return data.reduce((result: any, item: any) => {
+            const key = item.Key;
+            result[key] = item.Value;
+            return result;
+        }, {});
+    }
 
     const stationCountTemplate = (rowData: any) => {
         //
@@ -1262,7 +1238,7 @@ const Staff = () => {
                                         </div>
                                         <SelectButton
                                             width={30}
-                                            onChange={(e) => setAccessData({ ...accessData, coupons: e.value.code })}
+                                            onChange={(e) => setAccessData({ ...accessData, vehicleType: e.value.code })}
                                             optionLabel="name"
                                             options={[
                                                 { name: 'View', code: 'View' },

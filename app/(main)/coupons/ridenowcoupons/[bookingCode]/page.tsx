@@ -9,9 +9,8 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
 import useIsAccessible from '@/app/hooks/isAccessible';
-import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 
-const Booking = (params: Params) => {
+const Booking = (params: any) => {
     const { params: { bookingCode } } = params;
     const isAccessible = useIsAccessible('rideNowTransactions');
     const router = useRouter();

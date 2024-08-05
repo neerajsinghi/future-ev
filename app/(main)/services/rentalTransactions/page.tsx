@@ -108,8 +108,8 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     }
     return (
         <div className="grid">
-            {isAccessible === 'Edit' ||
-                (isAccessible === 'View' && (
+            {(isAccessible === 'Edit' ||
+                isAccessible === 'View') && (
                     <>
                         <div className="col-12">
                             <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
@@ -153,7 +153,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
                             </Dialog>
                         </div>
                     </>
-                ))}
+                )}
         </div>
     );
 };

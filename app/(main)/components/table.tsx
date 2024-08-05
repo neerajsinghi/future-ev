@@ -240,6 +240,7 @@ const CustomTable = ({ columns, columns2 = [], items, loading1, editMode, mapNav
                                 editor={col.cellEditor ? (options) => col.cellEditor(options) : null}
                                 onCellEditComplete={col.onCellEditComplete}
                                 filterField={col.filterField}
+                                style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}
                             />
                         ) : null;
                     }

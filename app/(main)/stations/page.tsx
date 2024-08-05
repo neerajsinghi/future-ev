@@ -267,6 +267,7 @@ const Stations = () => {
 
             for (let i = 0; i < response.data.length; i++) {
                 response.data[i].superVisorName = response.data[i].supervisor.name;
+                response.data[i].servicesAvailable = response.data[i].servicesAvailable.join(', ');
                 data.push(response.data[i]);
             }
             console.log(data);
@@ -421,7 +422,7 @@ const Stations = () => {
             key: 'servicesAvailable',
             label: 'Service',
             _props: { scope: 'col', className: 'column-serviceType' },
-            body: (rowData: any) => (rowData.servicesAvailable ? rowData.servicesAvailable.join(', ') : 'NA'),
+            body: (rowData: any) => (rowData.servicesAvailable ? rowData.servicesAvailable : 'NA'),
             cellEditor: cellEditor,
             onCellEditComplete: onCellEditComplete
         },

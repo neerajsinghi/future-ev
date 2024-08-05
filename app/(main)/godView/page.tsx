@@ -6,6 +6,7 @@ import { getBikes, getStations } from '@/app/api/iotBikes';
 import { Dropdown } from 'primereact/dropdown';
 import Link from 'next/link';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { useMapInstance } from '@/app/api/hooks';
 
 const containerStyle = {
     width: '100%',
@@ -81,9 +82,8 @@ type bikeType = {
 };
 
 const MapComponent = () => {
-    const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
-    });
+    const isLoaded = useMapInstance();
+
     const isAccessible = useIsAccessible('godView');
 
     const [cities, setCities] = useState<cityType[]>([]);

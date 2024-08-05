@@ -2,6 +2,7 @@
 import React from 'react';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
+import { useMapInstance } from '@/app/api/hooks';
 
 const containerStyle = {
     width: '100%',
@@ -15,9 +16,8 @@ const BikeCurrentLocation = (params: any) => {
 
     const coords = currentLocationCoords?.split('%2C').map((coord: any) => parseFloat(coord));
 
-    const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
-    });
+    const isLoaded = useMapInstance();
+
 
     const defaultCenter = {
         lat: coords[1],

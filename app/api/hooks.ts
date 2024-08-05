@@ -1,4 +1,5 @@
 'use client';
+import { useJsApiLoader } from '@react-google-maps/api';
 import { useState, useEffect } from 'react';
 
 const useIsMobile = () => {
@@ -17,3 +18,12 @@ const useIsMobile = () => {
 };
 
 export default useIsMobile;
+
+const useMapInstance = () => {
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc',
+        libraries: ['places']
+    });
+    return isLoaded;
+};
+export { useMapInstance };

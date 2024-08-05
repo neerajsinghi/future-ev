@@ -6,6 +6,7 @@ import { Button } from 'primereact/button';
 import Image from 'next/image';
 import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
+import { useMapInstance } from '@/app/api/hooks';
 
 const containerStyle = {
     width: '100%',
@@ -25,9 +26,7 @@ const RentalBooking = ({ params }: { params: any }) => {
     const [staticMapUrl, setStaticMapUrl] = useState('');
     const [preview, setPreview] = useState(false);
 
-    const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc' // Replace with your actual Google Maps API key
-    });
+    const isLoaded = useMapInstance();
 
     const [geoJsonData, setGeoJsonData] = useState<any>([]);
     const [loading, setLoading] = useState(true);

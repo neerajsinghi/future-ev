@@ -23,6 +23,7 @@ import useIsAccessible from '@/app/hooks/isAccessible';
 import { StandaloneSearchBox } from '@react-google-maps/api';
 import { showToast } from '@/app/hooks/toast';
 import { Badge } from 'primereact/badge';
+import { useMapInstance } from '@/app/api/hooks';
 
 /*
 Name
@@ -79,10 +80,7 @@ interface PlaceResultExtended extends google.maps.places.PlaceResult {
     // Add any custom properties here if needed
 }
 const Stations = () => {
-    const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc',
-        libraries: ['places']
-    });
+    const isLoaded = useMapInstance();
     const router = useRouter();
     const [searchStation, setSearchStation] = useState('');
     const searchParams = useSearchParams();

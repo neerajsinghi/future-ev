@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, Data } from '@react-google-maps/api';
 import { getStations } from '@/app/api/iotBikes';
+import { useMapInstance } from '@/app/api/hooks';
 
 const containerStyle = {
     width: '100%',
@@ -9,9 +10,8 @@ const containerStyle = {
 };
 
 const ViewStations = () => {
-    const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc'
-    });
+    const isLoaded = useMapInstance();
+
 
     const [stationsData, setStationsData] = useState<any>([]);
     const [loading, setLoading] = useState(true);

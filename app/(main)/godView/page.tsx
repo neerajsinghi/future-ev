@@ -279,7 +279,8 @@ const MapComponent = () => {
                                             }}
                                             title={'id: ' + bike.deviceId + '\nName: ' + bike.name + '\nBattery: ' + bike.batteryLevel + '\nSpeed: ' + bike.speed + '\nTotal Distance: ' + bike.totalDistance}
                                             icon={{
-                                                url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                                                url: 'https://futev.s3.ap-south-1.amazonaws.com/car-front-svgrepo-com+(2).svg',
+                                                scaledSize: new google.maps.Size(25, 25),
                                                 // Remove the infoWindowAnchor property
                                             }}
                                             onClick={() => {

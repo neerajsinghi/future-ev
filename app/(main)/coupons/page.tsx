@@ -17,20 +17,7 @@ import { format } from 'date-fns';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { showToast } from '@/app/hooks/toast';
 import { useRouter } from 'next/navigation';
-/*
-ServiceType    []string
-City           []string
-VehicleType    []string
-Code           string             `json
-CouponType     string             `json
-MinValue       float64            `json
-MaxValue       float64            `json
-MaxUsageByUser int                `json
-Discount       float64            `json
-ValidityFrom   string             `json
-ValidTill      string             `json
-Description    string             `json
-*/
+
 interface CouponProps {
     serviceType: string[];
     city: string[];
@@ -103,7 +90,12 @@ const Coupon = () => {
         const date = new Date(rowData[field]);
         return date.getFullYear() === 1 ? 'N/A' : format(date, 'yyyy-MM-dd');
     };
-
+    const ViewBookings = (rowData: any) => {
+        return <Button label={rowData.bookingCount} onClick={() => router.push(`/coupons/ridenowcoupons/${rowData.code}`)} />;
+    }
+    const ViewWallet = (rowData: any) => {
+        return <Button label={rowData.walletCount} onClick={() => router.push(`/coupons/rentalcoupons/${rowData.code}`)} />;
+    }
     // Define your columns
     const columns = [
         { key: 'code', label: 'Coupon Code', _props: { scope: 'col' }, body: discountTemplate, filterField: 'code' },
@@ -111,6 +103,8 @@ const Coupon = () => {
         { key: 'validFrom', label: 'Valid From', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validFrom'), filterField: 'validFrom' },
         { key: 'validTill', label: 'Valid Till', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validTill'), filterField: 'validTill' },
         { key: 'couponType', label: 'Coupon Type', _props: { scope: 'col' }, filterField: 'couponType' },
+        { key: 'bookingCount', label: 'Bookings', _props: { scope: 'col' }, body: ViewBookings },
+        { key: 'walletCount', label: 'Rentals', _props: { scope: 'col' }, body: ViewWallet },
         { key: 'description', label: 'Description', _props: { scope: 'col' }, filterField: 'description' },
         {
             key: 'action',

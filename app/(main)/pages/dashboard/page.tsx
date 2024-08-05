@@ -13,6 +13,7 @@ import { getCity } from '@/app/api/services';
 import { Dropdown } from 'primereact/dropdown';
 import './plan.css';
 import { Calendar } from 'primereact/calendar';
+import { Button } from 'primereact/button';
 
 type cityType = {
     id: string;
@@ -45,7 +46,7 @@ const Dashboard = () => {
     const [totalPublicStations, setTotalPublicStations] = useState<number>(0);
     const [totalChargers, setTotalChargers] = useState<number>(0);
     const [totalKwhCharged, setTotalKwhCharged] = useState<number>(0);
-    const [selectedTime, setSelectedTime] = useState<any>({ name: 'Week', code: 7 });
+    const [selectedTime, setSelectedTime] = useState<any>({ name: 'Today', code: 1 });
     const [date, setDate] = useState<any>('');
     const [cities, setCities] = useState<cityType[]>([]);
     const [selectedCity, setSelectedCity] = useState<any>({});
@@ -57,7 +58,7 @@ const Dashboard = () => {
         });
     };
     useEffect(() => {
-        fetchData();
+        fetchDataSelectedTime();
     }, []);
     const clearAll = () => {
         setNumberOfUsers(0);
@@ -77,66 +78,77 @@ const Dashboard = () => {
         setTotalEarning(0);
         setTotalAmountInWallet(0);
     };
+    const calculateDateRange = (code: number) => {
+        let startDate = new Date();
+        let endDate = new Date();
 
-    const fetchData = async () => {
+        switch (code) {
+            case 0:
+                break;
+            case 1:
+                setDate('');
+                startDate.setDate(startDate.getDate() - 1);
+                break;
+            case 2:
+                setDate('');
+                endDate.setDate(endDate.getDate() - 1);
+                startDate.setDate(startDate.getDate() - 2);
+                break;
+            case 7:
+                setDate('');
+
+                startDate.setDate(startDate.getDate() - 7);
+                break;
+            case 30:
+                setDate('');
+
+                startDate.setDate(startDate.getDate() - 30);
+                break;
+            case 365:
+                setDate('');
+                startDate.setDate(startDate.getDate() - 365);
+                break;
+            default:
+                setDate('');
+                startDate.setDate(startDate.getDate() - 1);
+                break;
+        }
+
+        return { startDate, endDate };
+    };
+
+    const parseData = (data: any) => {
+        return data.reduce((result: any, item: any) => {
+            const key = item.Key === 'totalActiveVeficles' ? 'totalActiveVehicles' : item.Key;
+            result[key] = Array.isArray(item.Value) && item.Value.length === 0 ? 0 : item.Value;
+            return result;
+        }, {});
+    };
+
+    const updateState = (parsedData: any) => {
+        setNumberOfUsers(parsedData.numberOfUsers || 0);
+        setIdVerifiedUsers(parsedData.idVerified || 0);
+        setDlVerifiedUsers(parsedData.dlVerified || 0);
+        setUnVerifiedUsers(parsedData.unVerified || numberOfUsers - parsedData.idVerified);
+        setTotalStations(parsedData.totalStations || 0);
+        setTotalPublicStations(parsedData.totalPublicStations || 0);
+        setTotalActiveStation(parsedData.totalActiveStation || 0);
+        setTotalCo2Emission(parsedData.totalCo2Emission || 0);
+        setTotalChargers(parsedData.totalChargers || 0);
+        setTotalRides(parsedData.totalRides || 0);
+        setTotalDistance(parsedData.totalDistance || 0);
+        setTotalCompletedRides(parsedData.totalCompletedRides || 0);
+        setTotalVehicles(parsedData.totalVehicles || 0);
+        setTotalActiveVeficles(parsedData.totalActiveVehicles || 0);
+        setTotalVehicleOnRoad(parsedData.totalVehicleOnRoad || 0);
+        setTotalEarning(parsedData.totalEarning || 0);
+        setTotalAmountInWallet(parsedData.totalValueInWallet || 0);
+    };
+
+    const fetchDataSelectedTime = async () => {
+        debugger
+        if (selectedTime.code === 0 && date.length < 2) { return }
         clearAll();
-
-        const calculateDateRange = (code: number) => {
-            let startDate = new Date();
-            let endDate = new Date();
-
-            switch (code) {
-                case 1:
-                    startDate.setDate(startDate.getDate() - 1);
-                    break;
-                case 2:
-                    endDate.setDate(endDate.getDate() - 1);
-                    startDate.setDate(startDate.getDate() - 2);
-                    break;
-                case 7:
-                    startDate.setDate(startDate.getDate() - 7);
-                    break;
-                case 30:
-                    startDate.setDate(startDate.getDate() - 30);
-                    break;
-                case 365:
-                    startDate.setDate(startDate.getDate() - 365);
-                    break;
-                default:
-                    startDate.setDate(startDate.getDate() - 1);
-                    break;
-            }
-
-            return { startDate, endDate };
-        };
-
-        const parseData = (data: any) => {
-            return data.reduce((result: any, item: any) => {
-                const key = item.Key === 'totalActiveVeficles' ? 'totalActiveVehicles' : item.Key;
-                result[key] = Array.isArray(item.Value) && item.Value.length === 0 ? 0 : item.Value;
-                return result;
-            }, {});
-        };
-
-        const updateState = (parsedData: any) => {
-            setNumberOfUsers(parsedData.numberOfUsers);
-            setIdVerifiedUsers(parsedData.idVerified || 0);
-            setDlVerifiedUsers(parsedData.dlVerified || 0);
-            setUnVerifiedUsers(parsedData.unVerified || numberOfUsers - parsedData.idVerified);
-            setTotalStations(parsedData.totalStations || 0);
-            setTotalPublicStations(parsedData.totalPublicStations || 0);
-            setTotalActiveStation(parsedData.totalActiveStation || 0);
-            setTotalCo2Emission(parsedData.totalCo2Emission || 0);
-            setTotalChargers(parsedData.totalChargers || 0);
-            setTotalRides(parsedData.totalRides || 0);
-            setTotalDistance(parsedData.totalDistance || 0);
-            setTotalCompletedRides(parsedData.totalCompletedRides || 0);
-            setTotalVehicles(parsedData.totalVehicles || 0);
-            setTotalActiveVeficles(parsedData.totalActiveVehicles || 0);
-            setTotalVehicleOnRoad(parsedData.totalVehicleOnRoad || 0);
-            setTotalEarning(parsedData.totalEarning || 0);
-            setTotalAmountInWallet(parsedData.totalValueInWallet || 0);
-        };
 
         try {
             const { startDate, endDate } = calculateDateRange(selectedTime.code);
@@ -160,6 +172,7 @@ const Dashboard = () => {
             console.error('Error fetching data:', error);
             // Handle error (e.g., show a toast notification)
         }
+
     };
 
     useEffect(() => {
@@ -177,7 +190,8 @@ const Dashboard = () => {
         fetchCities();
     }, []);
     useEffect(() => {
-        fetchData();
+        fetchDataSelectedTime();
+
     }, [selectedTime, selectedCity, date]);
 
     return (
@@ -203,24 +217,28 @@ const Dashboard = () => {
                                 setSelectedCity(e.value);
                             }}
                         />
-                        <Calendar placeholder="Start Date - End Date" value={date} onChange={(e) => setDate(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection />
                     </div>
                     {/* <div className="buttons"> */}
-                    <SelectButton
-                        className="flex"
-                        optionLabel="name"
-                        options={[
-                            { name: 'Yesterday', code: 2 },
-                            { name: 'Today', code: 1 },
-                            { name: 'Week', code: 7 },
-                            { name: '15 Days', code: 7 },
-                            { name: 'Month', code: 30 },
-                            { name: 'Year', code: 365 }
-                        ]}
-                        value={selectedTime}
-                        onChange={(e) => setSelectedTime(e.value)}
-                        multiple={false}
-                    />
+                    {selectedTime?.code !== 0 ? (
+                        <SelectButton
+                            className="flex"
+                            optionLabel="name"
+                            options={[
+                                { name: 'Yesterday', code: 2 },
+                                { name: 'Today', code: 1 },
+                                { name: 'Week', code: 7 },
+                                { name: '15 Days', code: 7 },
+                                { name: 'Month', code: 30 },
+                                { name: 'Year', code: 365 },
+                                { name: 'Custom', code: 0 }
+                            ]}
+                            value={selectedTime}
+                            onChange={(e) => setSelectedTime(e.value)}
+                            multiple={false}
+                        />) : <div className='flex gap-2'> <Calendar placeholder="Start Date - End Date" value={date} onChange={(e) => setDate(e.value)} selectionMode="range" readOnlyInput hideOnRangeSelection />
+                        <Button icon="pi pi-times" outlined onClick={() => setSelectedTime({ name: 'Today', code: 1 })} />
+                    </div>
+                    }
                     {/* </div> */}
                 </div>
             </div>

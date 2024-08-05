@@ -4,9 +4,8 @@ import { showToast } from '@/app/hooks/toast';
 import { useEffect } from 'react';
 
 const Logout = () => {
-    showToast('Logout Successful', 'success');
-
     useEffect(() => {
+        showToast('Logout Successful', 'success');
         localStorage.clear();
         window.location.href = '/';
     }, []);

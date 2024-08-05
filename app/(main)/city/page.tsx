@@ -76,7 +76,6 @@ const City: React.FC = () => {
                     code: item.name,
                     ...item
                 }));
-                console.log(data);
                 setCities(data);
                 setLoading1(false);
             }
@@ -84,7 +83,6 @@ const City: React.FC = () => {
     };
 
     const onSubmit: SubmitHandler<FormData> = async (data: any) => {
-
         const polyPath = polygonPath;
         if (polygonPath[0] !== polygonPath[polygonPath.length - 1]) {
             polyPath.push(polygonPath[0]);
@@ -175,31 +173,32 @@ const City: React.FC = () => {
         }
     ];
 
+    console.log(isAccessible);
+
     return (
         <div>
             {isAccessible === 'None' && <h1>You Dont Have Access To This Page</h1>}
-            {isAccessible === 'Edit' ||
-                (isAccessible === 'View' && (
-                    <>
-                        <h1>Cities</h1>
-                        <div className="grid">
-                            <div className="col-12">
-                                <BreadCrumb model={[{ label: 'City' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                            </div>
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <>
+                    <h1>Cities</h1>
+                    <div className="grid">
+                        <div className="col-12">
+                            <BreadCrumb model={[{ label: 'City' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                        </div>
 
-                            <div className="col-12">
-                                <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                                    <Button type="button" icon="pi pi-plus-circle" label="City" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
-                                </div>
-                            </div>
-                            <div className="col-12 m-10">
-                                <div className="card">
-                                    <CustomTable tableName="cities" mapNavigatePath="/stations/viewStationOnMap" editMode={undefined} columns2={[]} columns={columns} items={city} loading1={loading1} />
-                                </div>
+                        <div className="col-12">
+                            <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                                <Button type="button" icon="pi pi-plus-circle" label="City" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                             </div>
                         </div>
-                    </>
-                ))}
+                        <div className="col-12 m-10">
+                            <div className="card">
+                                <CustomTable tableName="cities" mapNavigatePath="/stations/viewStationOnMap" editMode={undefined} columns2={[]} columns={columns} items={city} loading1={loading1} />
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
 
             {isAccessible === 'Edit' && (
                 <Dialog header="Add City" visible={showDialog} style={{ width: '50vw' }} footer={dialogFooter} onHide={() => setShowDialog(false)}>

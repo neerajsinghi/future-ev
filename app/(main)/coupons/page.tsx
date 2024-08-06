@@ -17,7 +17,7 @@ import { format } from 'date-fns';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { showToast } from '@/app/hooks/toast';
 import { useRouter } from 'next/navigation';
-
+import "./plan.css";
 interface CouponProps {
     serviceType: string[];
     city: string[];
@@ -102,7 +102,12 @@ const Coupon = () => {
         { key: 'discount', label: 'Discount', _props: { scope: 'col' }, filterField: 'discount' },
         { key: 'validFrom', label: 'Valid From', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validFrom'), filterField: 'validFrom' },
         { key: 'validTill', label: 'Valid Till', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validTill'), filterField: 'validTill' },
-        { key: 'couponType', label: 'Coupon Type', _props: { scope: 'col' }, filterField: 'couponType' },
+        {
+            key: 'couponType', label: 'Coupon Type', _props: { scope: 'col' }, filterField: 'couponType', body: (rowData: any) => {
+                return <div style={{ textTransform: "capitalize" }}>{rowData.couponType}</div>;
+
+            },
+        },
         { key: 'bookingCount', label: 'Bookings', _props: { scope: 'col' }, body: ViewBookings },
         { key: 'walletCount', label: 'Rentals', _props: { scope: 'col' }, body: ViewWallet },
         { key: 'description', label: 'Description', _props: { scope: 'col' }, filterField: 'description' },
@@ -238,7 +243,7 @@ const Coupon = () => {
                     <form onSubmit={handleSubmit} className="p-fluid grid">
                         <div className="field col-12 lg:col-6">
                             <label htmlFor="couponType">Coupon Type</label>
-                            <Dropdown filter value={formData.couponType} options={['discount', 'freeRide', 'referral']} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" />
+                            <Dropdown filter value={formData.couponType} options={['discount', 'freeRide', 'referral']} onChange={(e) => handleChange('couponType', e.value)} optionLabel="name" placeholder="Select a Coupon Type" style={{ textTransform: "capitalize" }} />
                         </div>
                         {formData.couponType && formData.couponType != '' && <>{formData.couponType != 'freeRide' && formData.couponType != 'referral' && (
                             <div className="field col-12 lg:col-6">

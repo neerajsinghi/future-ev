@@ -14,3 +14,7 @@
       height: 3px;
       /* Height of the thumb */
 }
+
+.p-dropdown-items {
+      text-transform: capitalize;
+}

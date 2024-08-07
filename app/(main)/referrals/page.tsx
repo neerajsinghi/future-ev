@@ -23,6 +23,7 @@ const Referral = () => {
         { key: 'referralCode', label: 'Code', _props: { scope: 'col' } },
         { key: 'referralOf.name', label: 'Referrer', _props: { scope: 'col' } },
         { key: 'referredByProfile.name', label: 'Referred By', _props: { scope: 'col' } },
+        { key: 'referralStatus ', label: 'Status', _props: { scope: 'col' } },
         {
             key: 'referredByProfile.createdTime',
             label: 'Referred Time',

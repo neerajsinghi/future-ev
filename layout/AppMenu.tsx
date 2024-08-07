@@ -158,6 +158,9 @@ const AppMenu = () => {
         if (item.label === 'Notification' && parsedData.notification != 'None') {
             return item;
         }
+        if (item.label === 'Refer') {
+            return item;
+        }
     });
     const model: AppMenuItem[] = [
         {

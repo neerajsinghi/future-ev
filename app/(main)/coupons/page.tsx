@@ -91,15 +91,18 @@ const Coupon = () => {
         return date.getFullYear() === 1 ? 'N/A' : format(date, 'yyyy-MM-dd');
     };
     const ViewBookings = (rowData: any) => {
-        return <Button label={rowData.bookingCount} onClick={() => router.push(`/coupons/ridenowcoupons/${rowData.code}`)} />;
+        return rowData.bookingCount ? <Button label={rowData.bookingCount} onClick={() => router.push(`/coupons/ridenowcoupons/${rowData.bookingCount}`)} /> : <div>{rowData.bookingCount}</div>;
     }
     const ViewWallet = (rowData: any) => {
-        return <Button label={rowData.walletCount} onClick={() => router.push(`/coupons/rentalcoupons/${rowData.code}`)} />;
+        return rowData.walletCount ? < Button label={rowData.walletCount} onClick={() => router.push(`/coupons/rentalcoupons/${rowData.walletCount}`)} /> : <div>{rowData.walletCount}</div>;
     }
     // Define your columns
     const columns = [
-        { key: 'code', label: 'Coupon Code', _props: { scope: 'col' }, body: discountTemplate, filterField: 'code' },
-        { key: 'discount', label: 'Discount', _props: { scope: 'col' }, filterField: 'discount' },
+        { key: 'code', label: 'Coupon Code', _props: { scope: 'col' }, filterField: 'code' },
+        { key: 'discount', label: 'Discount', _props: { scope: 'col' }, body: discountTemplate, filterField: 'discount' },
+        { key: 'minValue', label: 'Min Value', _props: { scope: 'col' }, filterField: 'minValue' },
+        { key: 'maxValue', label: 'Max Value', _props: { scope: 'col' }, filterField: 'maxValue' },
+        { key: 'maxUsageByUser', label: 'Max Usage By User', _props: { scope: 'col' }, filterField: 'maxUsageByUser' },
         { key: 'validFrom', label: 'Valid From', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validFrom'), filterField: 'validFrom' },
         { key: 'validTill', label: 'Valid Till', _props: { scope: 'col' }, body: (rowData: CouponProps) => dateTemplate(rowData, 'validTill'), filterField: 'validTill' },
         {

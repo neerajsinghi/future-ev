@@ -144,6 +144,7 @@ const Coupon = () => {
     };
 
     const getAvailableServiceTypes = async () => {
+        debugger
         const response = await getServices();
         if (response.data && response.success) {
             setserviceType(response.data);
@@ -181,6 +182,37 @@ const Coupon = () => {
     };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (formData.couponType === 'discount') {
+            if (formData.discount === 0) {
+                showToast('Please Enter Discount', 'error');
+                return;
+            }
+            if (formData.maxValue === 0) {
+                showToast('Please Enter Max Value', 'error');
+                return;
+            }
+            if (formData.maxUsageByUser === 0) {
+                showToast('Please Enter Max Usage By User', 'error');
+                return;
+            }
+            if (formData.city.length === 0) {
+                showToast('Please Select City', 'error');
+                return;
+            }
+            if (formData.serviceType.length === 0) {
+                showToast('Please Select Service Type', 'error');
+                return;
+            } else {
+                for (let i = 0; i < formData.serviceType.length; i++) {
+                    if (formData.serviceType[i] === 'Ride Now') {
+                        formData.serviceType[i] = 'hourly';
+                    } else if (formData.serviceType[i] === 'Rental') {
+                        formData.serviceType[i] = 'rental';
+                    }
+                }
+            }
+
+        }
         const response = await createCoupon(formData);
         if (response.success) {
             getCouponsData();

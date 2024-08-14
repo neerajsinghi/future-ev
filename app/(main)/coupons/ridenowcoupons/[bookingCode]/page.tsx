@@ -71,7 +71,7 @@ const Booking = (params: any) => {
             body: (rowData: any) => <div onClick={() => router.push(`/services/ridenowTransaction/transaction?profileId=${rowData.profileId}&userId=${rowData.id}`)}>{rowData.id}</div>
         },
         { key: 'couponCode', label: 'CouponCode', _props: { scope: 'col' } },
-        { key: 'discount', label: 'Discount', _props: { scope: 'col' } },
+        { key: 'discountedAmount', label: 'Discount', _props: { scope: 'col' } },
         { key: 'profileId', label: 'ProfileId', _props: { scope: 'col' } },
         { key: 'deviceId', label: 'DeviceId', _props: { scope: 'col' } },
         { key: 'startTime', label: 'StartTime', _props: { scope: 'col' } },

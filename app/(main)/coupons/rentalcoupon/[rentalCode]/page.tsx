@@ -79,7 +79,7 @@ const Booking = (params: any) => {
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' }, body: idPlanTemplate },
         { key: "couponCode", label: "Coupon Used", _props: { scope: "col" } },
-        { key: 'discount', label: 'Discount', _props: { scope: 'col' } },
+        { key: 'discountedAmount', label: 'Discount', _props: { scope: 'col' } },
         { key: 'usedMoney', label: 'Used', _props: { scope: 'col' } },
         { key: 'planId', label: 'Plan ID', _props: { scope: 'col' } },
         { key: 'plan.name', label: 'Rental Name', _props: { scope: 'col' } },
@@ -105,7 +105,7 @@ const Booking = (params: any) => {
             for (let i = 0; i < response.data.length; i++) {
                 if (rentalCode === response.data[i].couponCode) {
                     discount += response.data[i].discountedAmount;
-                    total += response.data[i].price;
+                    total += response.data[i].usedMoney;
                     data.push(response.data[i]);
                 }
             }

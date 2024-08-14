@@ -91,10 +91,10 @@ const Coupon = () => {
         return date.getFullYear() === 1 ? 'N/A' : format(date, 'yyyy-MM-dd');
     };
     const ViewBookings = (rowData: any) => {
-        return rowData.bookingCount ? <Button label={rowData.bookingCount} onClick={() => router.push(`/coupons/ridenowcoupons/${rowData.bookingCount}`)} /> : <div>{rowData.bookingCount}</div>;
+        return rowData.bookingCount ? <Button label={rowData.bookingCount} onClick={() => router.push(`/coupons/ridenowcoupons/${rowData.code}`)} /> : <div>{rowData.bookingCount}</div>;
     }
     const ViewWallet = (rowData: any) => {
-        return rowData.walletCount ? < Button label={rowData.walletCount} onClick={() => router.push(`/coupons/rentalcoupons/${rowData.walletCount}`)} /> : <div>{rowData.walletCount}</div>;
+        return rowData.walletCount ? < Button label={rowData.walletCount} onClick={() => router.push(`/coupons/rentalcoupon/${rowData.code}`)} /> : <div>{rowData.walletCount}</div>;
     }
     // Define your columns
     const columns = [

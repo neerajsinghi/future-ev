@@ -272,8 +272,8 @@ const Plan = () => {
 
     return (
         <>
-            {isAccessible === 'Edit' ||
-                (isAccessible === 'View' && (
+            {((isAccessible === 'Edit' ||
+                isAccessible === 'View') && (
                     <div className="grid">
                         <div className="col-12">
                             <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />

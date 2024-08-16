@@ -123,6 +123,8 @@ const BikesStationed = () => {
                 showToast(data.message || 'Immobilised', 'success');
                 router.refresh();
             }
+            router.refresh();
+
             return data;
         };
         return (

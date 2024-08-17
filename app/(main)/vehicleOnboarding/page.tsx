@@ -124,6 +124,7 @@ const BikesStationed = () => {
                 router.refresh();
             }
             router.refresh();
+            fetchBikes();
 
             return data;
         };

@@ -12,7 +12,7 @@ import './plan.css';
 import CustomTable from '../components/table';
 import { Tag } from 'primereact/tag';
 import QRCode from 'react-qr-code';
-import { getCity } from '@/app/api/services';
+import { deleteVehicleOnBoarded, getCity } from '@/app/api/services';
 import { Calendar } from 'primereact/calendar';
 import { FileUpload } from 'primereact/fileupload';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
@@ -640,9 +640,15 @@ const BikesStationed = () => {
                             <Button
                                 label="Yes"
                                 style={{ background: '#ff3333' }}
-                                onClick={() => {
-                                    // deleteFaqD();
-                                    showToast('Under Development', 'info');
+                                onClick={async () => {
+                                    const response = await deleteVehicleOnBoarded(selectedVehicle);
+                                    if (response.success) {
+                                        fetchBikes();
+                                        setShowDeleteDialog(false);
+                                        showToast(response.message || 'Deleted Vehicle', 'success');
+                                    } else {
+                                        showToast(response.message || 'Failed To Delete Vehicle', 'error');
+                                    }
                                 }}
                             />
                             <Button

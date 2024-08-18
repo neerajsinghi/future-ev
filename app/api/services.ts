@@ -91,6 +91,16 @@ export async function deletePlan(id: string) {
     }
     return responseObj;
 }
+export async function deleteVehicleOnBoarded(id: string) {
+    let responseObj = { success: false, data: '' as any, message: '' };
+    try {
+        let response = await webService.delete(baseUrl + 'bike/' + id);
+        responseObj = getSuccessResponse(response, responseObj);
+    } catch {
+        responseObj = getErrorResponse(responseObj);
+    }
+    return responseObj;
+}
 
 export async function getFeedback() {
     let responseObj = { success: false, data: [] as any[], message: '' };

@@ -5,11 +5,12 @@ import { useEffect, useState } from 'react';
 import CustomTable from '../components/table';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { formatUnixTimestamp } from '@/app/hooks/formatTimeString';
 
 export const dynamic = 'force-dynamic';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
-    const isAccessible = useIsAccessible('booking');
+    const isAccessible = "Edit";
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     useEffect(() => {
@@ -18,13 +19,18 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
             setItems([]);
         };
     }, []);
-
+    const startTimeTemplate = (rowData: any) => {
+        return <p>{formatUnixTimestamp(rowData.startTime)}</p>;
+    };
+    const endTimeTemplate = (rowData: any) => {
+        return <p>{formatUnixTimestamp(rowData.endTime)}</p>;
+    };
     const columns: any[] = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
         { key: 'profileId', label: 'ProfileId', _props: { scope: 'col' } },
         { key: 'deviceId', label: 'DeviceId', _props: { scope: 'col' } },
-        { key: 'startTime', label: 'StartTime', _props: { scope: 'col' } },
-        { key: 'endTime', label: 'EndTime', _props: { scope: 'col' } },
+        { key: 'startTime', label: 'StartTime', _props: { scope: 'col' }, body: startTimeTemplate },
+        { key: 'endTime', label: 'EndTime', _props: { scope: 'col' }, body: endTimeTemplate },
         { key: 'startKm', label: 'StartKm', _props: { scope: 'col' } },
         { key: 'endKm', label: 'EndKm', _props: { scope: 'col' } },
         { key: 'totalDistance', label: 'TotalDistance', _props: { scope: 'col' } },
@@ -73,7 +79,6 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     };
     return (
         <div className="grid">
-            {isAccessible === 'None' && <h1>You Dont Have Access To View This Page</h1>}
             {(isAccessible === 'Edit' || isAccessible === 'View') && (
                 <div className="col-12">
                     <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />

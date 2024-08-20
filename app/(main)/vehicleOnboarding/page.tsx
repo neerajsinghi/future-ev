@@ -106,7 +106,7 @@ const BikesStationed = () => {
         return <div>{rowData?.deviceData?.status}</div>;
     };
     const statusDeviceTotalDistanceTemplate = (rowData: any) => {
-        return <div>{rowData?.deviceData?.totalDistance}</div>;
+        return <div>{(rowData?.deviceData?.totalDistance / 1000).toFixed(2)}KM</div>;
     };
     const statusDeviceTypeTemplate = (rowData: any) => {
         return <div>{rowData?.deviceData?.type}</div>;

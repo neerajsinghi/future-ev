@@ -25,7 +25,7 @@ interface ProductFormData {
 }
 
 const Plan = () => {
-    const isAccessible = useIsAccessible('services');
+    const isAccessible = useIsAccessible('service');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
     const [showDialog, setShowDialog] = useState(false);

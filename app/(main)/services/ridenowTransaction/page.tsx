@@ -9,6 +9,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { formatTimestamp } from '@/app/hooks/formatTimeString';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
     const isAccessible = useIsAccessible('rideNowTransactions');
@@ -60,6 +61,11 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         // Return the formatted date
         return date.toLocaleDateString('en-US', options);
     }
+
+    const createdTimeTemplate = (rowData: any) => {
+        return <p>{formatTimestamp(rowData.createdTime)}</p>;
+    };
+
     const columns: any[] = [
         {
             key: 'id',
@@ -81,7 +87,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         { key: 'vehicleType', label: 'VehicleType', _props: { scope: 'col' } },
         { key: 'bookingType', label: 'BookingType', _props: { scope: 'col' } },
         // { key: 'plan', label: 'Plan', _props: { scope: 'col' } },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' }, body: createdTimeTemplate },
         { key: 'startingStationId', label: 'StartingStationId', _props: { scope: 'col' } },
         { key: 'endingStationId', label: 'EndingStationId', _props: { scope: 'col' } },
         { key: 'userId', label: 'EndingStationId', _props: { scope: 'col' } },
@@ -93,7 +99,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         // { key: 'invoice', label: 'Invoice', _props: { scope: 'col' }, body: InvoiceTemplate }
     ];
     const fetchData = async () => {
-        // 
+        //
         let response = await getBookings('hourly');
         if (response.success && response.data) {
             const data = [];

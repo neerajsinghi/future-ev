@@ -14,6 +14,7 @@ import useIsAccessible from '@/app/hooks/isAccessible';
 import { showToast } from '@/app/hooks/toast';
 import { deleteFaq } from '@/app/api/services';
 import { useRouter } from 'next/navigation';
+import { formatTimestamp } from '@/app/hooks/formatTimeString';
 interface ProductFormData {
     question: string;
     answer: string;
@@ -33,7 +34,7 @@ const FAQ = () => {
         answer: ''
     });
 
-    console.log(isAccessible);
+    // console.log(isAccessible);
 
     const handleChange = (name: keyof ProductFormData, value: any) => {
         setFormData({ ...formData, [name]: value });
@@ -95,11 +96,15 @@ const FAQ = () => {
         }
     };
 
+    const createdTimeTemplate = (rowData: any) => {
+        return <p>{formatTimestamp(rowData.createdTime)}</p>;
+    };
+
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' } },
         { key: 'question', label: 'Question', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'answer', label: 'Answer', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' }, body: createdTimeTemplate },
         {
             key: 'action',
             label: 'Action',

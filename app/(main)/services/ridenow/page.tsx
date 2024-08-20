@@ -17,6 +17,7 @@ import { deletePlan, getCity } from '@/app/api/services';
 import useIsMobile from '@/app/api/hooks';
 import { showToast } from '@/app/hooks/toast';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { formatTimestamp } from '@/app/hooks/formatTimeString';
 interface ProductFormData {
     city: string;
     vehicleType: string;
@@ -102,7 +103,6 @@ const Plan = () => {
             }
         }
         if (formData.deposit > 0) {
-
             const body = {
                 city: formData.city,
                 vehicleType: formData.vehicleType,
@@ -171,7 +171,7 @@ const Plan = () => {
     const cellMinEditor = (options: ColumnEditorOptions) => {
         return <InputNumber value={options.value} onValueChange={(e: any) => options?.editorCallback && options.editorCallback(e.value)} suffix=" min" onKeyDown={(e) => e.stopPropagation()} />;
     };
-    const textEditor = (options: ColumnEditorOptions) => { };
+    const textEditor = (options: ColumnEditorOptions) => {};
     const onCellEditComplete = async (e: ColumnEvent) => {
         let { rowData, newValue, field, originalEvent: event } = e;
         const body = {
@@ -183,6 +183,10 @@ const Plan = () => {
         }
     };
 
+    const createdTimeTemplate = (rowData: any) => {
+        return <p>{formatTimestamp(rowData.createdTime)}</p>;
+    };
+
     const columns = [
         { key: 'city', label: 'City', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'vehicleType', label: 'Vehicle type', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
@@ -192,7 +196,7 @@ const Plan = () => {
         { key: 'price', label: 'Price', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
         { key: 'deposit', label: 'Refundable Deposit', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
         { key: 'isActive', label: 'Active', _props: { scope: 'col' }, body: activeTemplate },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' }, body: createdTimeTemplate },
         {
             key: 'action',
             label: 'Action',
@@ -254,7 +258,6 @@ const Plan = () => {
         }
     };
     const deletePlanD = async () => {
-
         const response = await deletePlan(selectedUser);
         if (response.success) {
             fetchData();
@@ -272,24 +275,23 @@ const Plan = () => {
 
     return (
         <>
-            {((isAccessible === 'Edit' ||
-                isAccessible === 'View') && (
-                    <div className="grid">
-                        <div className="col-12">
-                            <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                        </div>
-                        <div className="col-12">
-                            <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
-                                <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
-                            </div>
-                        </div>
-                        <div className="col-12 m-10">
-                            <div className="card">
-                                <CustomTable tableName="" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
-                            </div>
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <div className="grid">
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'Plan' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    <div className="col-12">
+                        <div className="flex justify-content-end" style={{ marginBottom: '0px' }}>
+                            <Button type="button" icon="pi pi-plus-circle" label="Plan" style={{ marginBottom: '0px' }} onClick={() => setShowDialog(true)} />
                         </div>
                     </div>
-                ))}
+                    <div className="col-12 m-10">
+                        <div className="card">
+                            <CustomTable tableName="" editMode={'cell'} columns2={[]} columns={columns} items={items} loading1={loading1} />
+                        </div>
+                    </div>
+                </div>
+            )}
             {isAccessible === 'Edit' && (
                 <Dialog header="Add Plan" className="desktop-dialog" visible={showDialog} onHide={() => setShowDialog(false)}>
                     <form onSubmit={handleSubmit} className="p-fluid grid">

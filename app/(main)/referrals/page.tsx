@@ -13,11 +13,16 @@ import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
 import { getFeedback, getReferral } from '@/app/api/services';
 import { flattenData } from '@/app/api/user';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { formatTimestamp } from '@/app/hooks/formatTimeString';
 
 const Referral = () => {
     const isAccessible = useIsAccessible('refer');
     const [items, setItems] = useState<any>([]);
     const [loading1, setLoading1] = useState(true);
+
+    const createdTimeTemplate = (rowData: any) => {
+        return <p>{formatTimestamp(rowData['referralOf.createdTime'])}</p>;
+    };
 
     const columns = [
         { key: 'referralCode', label: 'Code', _props: { scope: 'col' } },
@@ -27,7 +32,8 @@ const Referral = () => {
         {
             key: 'referredByProfile.createdTime',
             label: 'Referred Time',
-            _props: { scope: 'col' }
+            _props: { scope: 'col' },
+            body: createdTimeTemplate
         }
     ];
 
@@ -39,7 +45,6 @@ const Referral = () => {
         };
     }, []);
     const fetchData = async () => {
-
         let response = await getReferral();
         if (response.success) {
             if (response.data) {

@@ -9,7 +9,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
 import useIsAccessible from '@/app/hooks/isAccessible';
-import { formatTimestamp } from '@/app/hooks/formatTimeString';
+import { formatTimestamp, formatUnixTimestamp } from '@/app/hooks/formatTimeString';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
     const isAccessible = useIsAccessible('rideNowTransactions');
@@ -65,6 +65,12 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     const createdTimeTemplate = (rowData: any) => {
         return <p>{formatTimestamp(rowData.createdTime)}</p>;
     };
+    const startTimeTemplate = (rowData: any) => {
+        return <p>{formatUnixTimestamp(rowData.startTime)}</p>;
+    };
+    const endTimeTemplate = (rowData: any) => {
+        return <p>{formatUnixTimestamp(rowData.endTime)}</p>;
+    };
 
     const columns: any[] = [
         {
@@ -76,8 +82,8 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         //  { key: 'viewOnMap', label: 'ViewMap', _props: { scope: 'col' }, body: ViewStationOnMap },
         { key: 'profileId', label: 'ProfileId', _props: { scope: 'col' } },
         { key: 'deviceId', label: 'DeviceId', _props: { scope: 'col' } },
-        { key: 'startTime', label: 'StartTime', _props: { scope: 'col' } },
-        { key: 'endTime', label: 'EndTime', _props: { scope: 'col' } },
+        { key: 'startTime', label: 'StartTime', _props: { scope: 'col' }, body: startTimeTemplate },
+        { key: 'endTime', label: 'EndTime', _props: { scope: 'col' }, body: endTimeTemplate },
         // { key: 'startKm', label: 'StartKm', _props: { scope: 'col' } },
         // { key: 'endKm', label: 'EndKm', _props: { scope: 'col' } },
         { key: 'totalDistance', label: 'TotalDistance', _props: { scope: 'col' } },

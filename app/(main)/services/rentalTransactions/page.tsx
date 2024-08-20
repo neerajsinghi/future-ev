@@ -9,6 +9,7 @@ import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
 import useIsAccessible from '@/app/hooks/isAccessible';
+import { formatTimestamp } from '@/app/hooks/formatTimeString';
 
 const Booking = ({ searchParams }: { searchParams: any }) => {
     const isAccessible = useIsAccessible('rentalTransactions');
@@ -58,7 +59,7 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     };
     const idPlanTemplate = (rowData: any) => (
         <div
-            style={{ color: '#3262EC' }}
+            style={{ color: '#3262EC', cursor: 'pointer' }}
             onClick={() => {
                 setPlanData({ ...rowData });
                 setPreviewPlan(true);
@@ -74,6 +75,15 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
             </i>
         );
     };
+
+    const createdStartTimeTemplate = (rowData: any) => {
+        return <p>{formatTimestamp(rowData.createdTime)}</p>;
+    };
+
+    const createdEndTimeTemplate = (rowData: any) => {
+        return <p>{formatTimestamp(rowData.createdTime)}</p>;
+    };
+
     const columns = [
         { key: 'id', label: 'Id', _props: { scope: 'col' }, body: idPlanTemplate },
         { key: 'usedMoney', label: 'Used', _props: { scope: 'col' } },
@@ -84,11 +94,12 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
         { key: 'plan.price', label: 'Rental Plan Price', _props: { scope: 'col' } },
         { key: 'userData.name', label: 'User Name', _props: { scope: 'col' } },
         { key: 'bookingCount', label: 'Bookings', _props: { scope: 'col' }, body: ViewBookings },
-        { key: 'createdTime', label: 'Rental Started Time', _props: { scope: 'col' } },
+        { key: 'createdTime', label: 'Rental Started Time', _props: { scope: 'col' }, body: createdStartTimeTemplate },
         {
             key: 'endTime',
             label: 'Rental Ended Time',
-            _props: { scope: 'col' }
+            _props: { scope: 'col' },
+            body: createdEndTimeTemplate
         }
     ];
     const fetchData = async () => {
@@ -108,52 +119,51 @@ const Booking = ({ searchParams }: { searchParams: any }) => {
     }
     return (
         <div className="grid">
-            {(isAccessible === 'Edit' ||
-                isAccessible === 'View') && (
-                    <>
-                        <div className="col-12">
-                            <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
-                        </div>
-                        <div className="col-12">
-                            <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} tableName="plans" />
+            {(isAccessible === 'Edit' || isAccessible === 'View') && (
+                <>
+                    <div className="col-12">
+                        <BreadCrumb model={[{ label: 'Bookings' }]} home={{ icon: 'pi pi-home', url: '/' }} />
+                    </div>
+                    <div className="col-12">
+                        <CustomTable editMode={undefined} columns2={[]} columns={columns} items={items} loading1={loading1} tableName="plans" />
 
-                            <Dialog header="Invoice" visible={previewPlan} onHide={() => setPreviewPlan(false)} className="w-[50vw]" style={{ width: '50svw' }}>
-                                <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
-                                    <div className="field col-6">
-                                        <label>Subscription Name</label>
-                                        <p>{planData?.plan?.name}</p>
-                                    </div>
-                                    <div className="field col-6">
-                                        <label>Name</label>
-                                        <p>{planData?.userData.name}</p>
-                                    </div>
-                                    <div className="field col-6">
-                                        <label>Subscription City</label>
-                                        <p>{planData?.plan?.city}</p>
-                                    </div>
-                                    <div className="field col-6">
-                                        <label>Subscription Validity</label>
-                                        <p>{planData?.plan?.validity}</p>
-                                    </div>
-                                    <div className="field col-6">
-                                        <label>Subscription Price</label>
-                                        <p>{planData?.plan?.price}</p>
-                                    </div>
-                                    <div className="field col-6">
-                                        <label>Start Time</label>
-                                        <p>{planData?.createdTime}</p>
-                                    </div>
+                        <Dialog header="Invoice" visible={previewPlan} onHide={() => setPreviewPlan(false)} className="w-[50vw]" style={{ width: '50svw' }}>
+                            <div ref={invoiceRef} className="grid rounded-lg text-black" style={{ background: '#1F2937' }}>
+                                <div className="field col-6">
+                                    <label>Subscription Name</label>
+                                    <p>{planData?.plan?.name}</p>
                                 </div>
+                                <div className="field col-6">
+                                    <label>Name</label>
+                                    <p>{planData?.userData.name}</p>
+                                </div>
+                                <div className="field col-6">
+                                    <label>Subscription City</label>
+                                    <p>{planData?.plan?.city}</p>
+                                </div>
+                                <div className="field col-6">
+                                    <label>Subscription Validity</label>
+                                    <p>{planData?.plan?.validity}</p>
+                                </div>
+                                <div className="field col-6">
+                                    <label>Subscription Price</label>
+                                    <p>{planData?.plan?.price}</p>
+                                </div>
+                                <div className="field col-6">
+                                    <label>Start Time</label>
+                                    <p>{planData?.createdTime}</p>
+                                </div>
+                            </div>
 
-                                <div className="w-full">
-                                    <Button className="font-bold mx-auto" onClick={downloadInvoice}>
-                                        Download Invoice
-                                    </Button>
-                                </div>
-                            </Dialog>
-                        </div>
-                    </>
-                )}
+                            <div className="w-full">
+                                <Button className="font-bold mx-auto" onClick={downloadInvoice}>
+                                    Download Invoice
+                                </Button>
+                            </div>
+                        </Dialog>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

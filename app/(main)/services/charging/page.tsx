@@ -44,7 +44,6 @@ const Plan = () => {
     });
 
     const handleChange = (name: keyof ProductFormData, value: any) => {
-
         if (name === 'city') {
             setSelectedCity(value);
             value = value.code;

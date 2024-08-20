@@ -17,6 +17,7 @@ import { deletePlan, getCity } from '@/app/api/services';
 import RentalPlanForm from '../component/rentalPlan';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { showToast } from '@/app/hooks/toast';
+import { formatTimestamp } from '@/app/hooks/formatTimeString';
 interface ProductFormData {
     city: string;
     vehicleType: string;
@@ -103,6 +104,10 @@ const Plan = () => {
         }
     };
 
+    const createdTimeTemplate = (rowData: any) => {
+        return <p>{formatTimestamp(rowData.createdTime)}</p>;
+    };
+
     const columns = [
         { key: 'city', label: 'City', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
         { key: 'vehicleType', label: 'Vehicle type', _props: { scope: 'col' }, cellEditor: cellEditor, onCellEditComplete: onCellEditComplete },
@@ -112,7 +117,7 @@ const Plan = () => {
         { key: 'validity', label: 'Plan Validity', _props: { scope: 'col' } },
         { key: 'deposit', label: 'Deposit', _props: { scope: 'col' }, cellEditor: cellNumberEditor, onCellEditComplete: onCellEditComplete },
         { key: 'isActive', label: 'Active', _props: { scope: 'col' }, body: activeTemplate },
-        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' } },
+        { key: 'createdTime', label: 'CreatedTime', _props: { scope: 'col' }, body: createdTimeTemplate },
         {
             key: 'action',
             label: 'Action',
@@ -132,7 +137,7 @@ const Plan = () => {
         }
     ];
     const deletePlanD = async () => {
-        // 
+        //
         const response = await deletePlan(selectedUser);
         if (response.success) {
             fetchData();

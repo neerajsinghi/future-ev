@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Dialog } from 'primereact/dialog';
 import html2canvas from 'html2canvas';
 import { useMapInstance } from '@/app/api/hooks';
+import { baseUrl } from '@/app/api/common';
 
 const containerStyle = {
     width: '100%',
@@ -34,7 +35,7 @@ const RentalBooking = ({ params }: { params: any }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`https://futureev.trestx.com/api/v1/rides/ongoing?userID=${profileId}&bookingId=${userId}`);
+                const response = await fetch(baseUrl + `rides/ongoing?userID=${profileId}&bookingId=${userId}`);
                 const data = await response.json();
 
                 if (Array.isArray(data.data) && data.data.length > 0) {

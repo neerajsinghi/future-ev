@@ -16,7 +16,7 @@ import { deleteVehicleOnBoarded, getCity } from '@/app/api/services';
 import { Calendar } from 'primereact/calendar';
 import { FileUpload } from 'primereact/fileupload';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { storage } from '@/app/api/common';
+import { baseUrl, storage } from '@/app/api/common';
 import { InputSwitch } from 'primereact/inputswitch';
 import Link from 'next/link';
 import { ColumnEditorOptions, ColumnEvent } from 'primereact/column';
@@ -117,7 +117,7 @@ const BikesStationed = () => {
 
     const ImmobiliseToggleTemplate = (rowData: any) => {
         const immobolise = async () => {
-            let response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/immobilize/${rowData.deviceId}`);
+            let response = await fetch(baseUrl + `vehicle/immobilize/${rowData.deviceId}`);
             let data = await response.json();
             if (data.status) {
                 showToast(data.message || 'Immobilised', 'success');

@@ -13,6 +13,7 @@ import html2canvas from 'html2canvas';
 import Link from 'next/link';
 import useIsAccessible from '@/app/hooks/isAccessible';
 import { showToast } from '@/app/hooks/toast';
+import { baseUrl } from '@/app/api/common';
 
 const Page = (params: any) => {
     const {
@@ -34,7 +35,7 @@ const Page = (params: any) => {
     const fetchUserDetails = async () => {
         setLoading1(true);
         try {
-            const response = await fetch(`https://futureev.trestx.com/api/v1/wallet/${userId}`);
+            const response = await fetch(baseUrl + `wallet/${userId}`);
             const data = await response.json();
             const nonPlan: any[] = [];
             const plan: any[] = [];
@@ -48,10 +49,10 @@ const Page = (params: any) => {
             setPlans(plan);
 
             setUserWalletData(nonPlan);
-            const response2 = await fetch(`https://futureev.trestx.com/api/v1/users/${userId}`);
+            const response2 = await fetch(baseUrl + `users/${userId}`);
             const data2 = await response2.json();
             setUserData(data2.data);
-            const response3 = await fetch(`https://futureev.trestx.com/api/v1/bookings/my/${userId}`);
+            const response3 = await fetch(baseUrl + `bookings/my/${userId}`);
             const data3 = await response3.json();
             setBookings(data3.data);
         } catch (error) {

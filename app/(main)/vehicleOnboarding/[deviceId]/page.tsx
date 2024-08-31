@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import CustomTable from '../../components/table';
 import Link from 'next/link';
 import { getBikeByDevice } from '@/app/api/iotBikes';
+import { baseUrl } from '@/app/api/common';
 
 const VehicleData = (params: any) => {
     const {
@@ -18,7 +19,7 @@ const VehicleData = (params: any) => {
     const fetchVehicleData = async () => {
         setLoading1(true);
         try {
-            const response = await fetch(`https://futureev.trestx.com/api/v1/vehicle/data/${deviceId}`);
+            const response = await fetch(baseUrl + `vehicle/data/${deviceId}`);
             // 
             const data = await response.json();
             console.log(data);

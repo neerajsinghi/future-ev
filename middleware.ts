@@ -1,4 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { baseUrl } from './app/api/common';
 
 export async function middleware(request: NextRequest) {
     const userId = request.cookies.get('userId');
@@ -8,7 +9,7 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const apiUrl = `https://futureev.trestx.com/api/v1/users/${userId.value}`;
+    const apiUrl = baseUrl + `users/${userId.value}`;
 
     try {
         const response = await fetch(apiUrl);

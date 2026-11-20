@@ -59,7 +59,7 @@ const RentalBooking = ({ params }: { params: any }) => {
         console.log(markers);
 
         const markerStyles = 'color:green|label:S';
-        const url = `https://maps.googleapis.com/maps/api/staticmap?size=1200x600&scale=2&markers=${markerStyles}|${markers}&key=AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc`;
+        const url = `https://maps.googleapis.com/maps/api/staticmap?size=1200x600&scale=2&markers=${markerStyles}|${markers}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''}`;
         console.log(url);
         setStaticMapUrl(url);
     };

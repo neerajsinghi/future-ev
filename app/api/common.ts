@@ -1,17 +1,17 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 
-export const baseUrl = 'https://futureev.trestx.com/api/v1/';
+export const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
 // Initialize Firebase
 const app = initializeApp({
-    apiKey: 'AIzaSyCxZGM1M4zOejap-RLvtxB2A7uCvjGxcmY',
-    authDomain: 'futureevdemo.firebaseapp.com',
-    projectId: 'futureevdemo',
-    storageBucket: 'futureevdemo.appspot.com',
-    messagingSenderId: '211627305145',
-    appId: '1:211627305145:web:de008b054093e3c1231368',
-    measurementId: 'G-568X1DEL6B'
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 });
 
 // Firebase storage reference

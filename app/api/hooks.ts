@@ -21,7 +21,7 @@ export default useIsMobile;
 
 const useMapInstance = () => {
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc',
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
         libraries: ['places']
     });
     return isLoaded;

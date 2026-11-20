@@ -64,7 +64,7 @@ const City: React.FC = () => {
     } = useForm<FormData>();
 
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: 'AIzaSyAsiZAMvI7a1IYqkik0Mjt-_d0yzYYDGJc',
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? '',
         libraries: ['drawing']
     });
 
